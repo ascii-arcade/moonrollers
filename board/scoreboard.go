@@ -12,15 +12,25 @@ type scoreboard struct {
 	model   *Model
 	players []*games.Player
 	short   bool
+	style   lipgloss.Style
+}
+
+func newScoreboard(model *Model) scoreboard {
+	return scoreboard{
+		model:   model,
+		players: model.Game.OrderedPlayers(),
+		short:   false,
+		style:   model.style,
+	}
 }
 
 func (s *scoreboard) render() string {
-	style := s.model.renderer.NewStyle().Margin(1)
+	style := s.style.Margin(1).Width(s.model.Width / 3)
 
 	if s.short {
 		out := make([]string, 0)
 		for _, p := range s.players {
-			points := s.model.renderer.NewStyle().
+			points := s.style.
 				Foreground(lipgloss.Color(p.Faction.Color)).
 				Render(p.Name + ": " + strconv.Itoa(p.Points))
 			out = append(out, points)
@@ -61,7 +71,7 @@ func (s *scoreboard) additionalPointsCell(playerIndex int) string {
 	output := make([]string, 0)
 
 	for range points / 50 {
-		output = append(output, s.model.renderer.NewStyle().Foreground(s.players[playerIndex].Faction.Color).Render("■"))
+		output = append(output, s.style.Foreground(s.players[playerIndex].Faction.Color).Render("■"))
 	}
 
 	return s.populatedCellStyle().Render(strings.Join(output, " "))
@@ -72,7 +82,7 @@ func (s *scoreboard) pointCell(row int, col int) string {
 	var pips []string
 	for _, player := range s.players {
 		if player.Points%50 == points {
-			pip := s.model.renderer.NewStyle().Foreground(player.Faction.Color).Render("■")
+			pip := s.style.Foreground(player.Faction.Color).Render("■")
 			pips = append(pips, pip)
 		}
 	}
@@ -83,7 +93,7 @@ func (s *scoreboard) pointCell(row int, col int) string {
 }
 
 func (s *scoreboard) populatedCellStyle() lipgloss.Style {
-	return s.model.renderer.NewStyle().
+	return s.style.
 		Border(lipgloss.NormalBorder(), true).
 		BorderForeground(lipgloss.Color("#404040")).
 		Width(5).
