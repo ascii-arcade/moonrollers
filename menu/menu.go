@@ -3,6 +3,8 @@ package menu
 import (
 	"time"
 
+	"github.com/ascii-arcade/moonrollers/messages"
+	"github.com/ascii-arcade/moonrollers/screen"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -27,22 +29,15 @@ const logo = `            ++++*+
          +*+   +* +++*
             +++*++            `
 
-type screen interface {
-	setModel(*Model)
-	update(tea.KeyMsg) (tea.Model, tea.Cmd)
-	view() string
-}
-
 type doneMsg struct{}
 
 type Model struct {
 	Width  int
 	Height int
-	screen screen
+	screen screen.Screen
 	style  lipgloss.Style
 
 	error         string
-	isSplashing   bool
 	gameCodeInput textinput.Model
 }
 
@@ -77,29 +72,25 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.Height, m.Width = msg.Height, msg.Width
+		return m, nil
 
-	case doneMsg:
-		m.screen = m.newOptionScreen()
+	case messages.SwitchScreenMsg:
+		m.screen = msg.Screen.WithModel(&m)
+		return m, nil
 
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
 			return m, tea.Quit
-		default:
-			return m.activeScreen().update(msg)
 		}
 	}
 
-	return m, nil
+	screenModel, cmd := m.screen.Update(msg)
+	return screenModel.(*Model), cmd
 }
 
 func (m Model) View() string {
-	return m.activeScreen().view()
-}
-
-func (m *Model) activeScreen() screen {
-	m.screen.setModel(m)
-	return m.screen
+	return m.screen.View()
 }
 
 func (m *Model) setError(err string) {

@@ -3,20 +3,15 @@ package board
 import (
 	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/messages"
+	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
-type screen interface {
-	setModel(*Model)
-	update(tea.KeyMsg) (tea.Model, tea.Cmd)
-	view() string
-}
-
 type Model struct {
 	Width  int
 	Height int
-	screen screen
+	screen screen.Screen
 	style  lipgloss.Style
 
 	Player *games.Player
@@ -49,10 +44,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.Game.RemovePlayer(m.Player.Name)
 			return m, tea.Quit
 		default:
-			return m.activeScreen().update(msg)
+			activeScreenModel, cmd := m.activeScreen().Update(msg)
+			return activeScreenModel.(*Model), cmd
 		}
 
-	case messages.RefreshGame:
+	case messages.RefreshBoard:
 		return m, waitForRefreshSignal(m.Player.UpdateChan)
 	}
 
@@ -60,10 +56,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	return m.activeScreen().view()
+	return m.activeScreen().View()
 }
 
-func (m *Model) activeScreen() screen {
+func (m *Model) activeScreen() screen.Screen {
 	if m.Game.InProgress() {
 		return m.newTableScreen()
 	} else {
@@ -73,6 +69,6 @@ func (m *Model) activeScreen() screen {
 
 func waitForRefreshSignal(ch chan struct{}) tea.Cmd {
 	return func() tea.Msg {
-		return messages.RefreshGame(<-ch)
+		return messages.RefreshBoard(<-ch)
 	}
 }
