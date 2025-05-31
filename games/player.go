@@ -3,10 +3,7 @@ package games
 import (
 	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/generaterandom"
-	"github.com/charmbracelet/lipgloss"
 )
-
-const defaultPlayerColor = lipgloss.Color("#FFFFFF")
 
 type Player struct {
 	Name      string
