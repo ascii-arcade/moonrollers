@@ -5,6 +5,7 @@ import (
 
 	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/deck"
+	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -28,7 +29,7 @@ func newCard(model *Model, crew *deck.Crew) *card {
 		style:       model.style,
 	}
 
-	for _, die := range deck.AllDice() {
+	for _, die := range dice.All() {
 		pluralValue := c.style.Foreground(die.Color).Bold(true).Italic(true).Render(die.Symbol + " " + die.Name + "s")
 		c.description = strings.ReplaceAll(c.description, "%"+die.Name+"s%", pluralValue)
 		singularValue := c.style.Foreground(die.Color).Bold(true).Italic(true).Render(die.Symbol + " " + die.Name)
