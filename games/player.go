@@ -1,10 +1,17 @@
 package games
 
-import "github.com/ascii-arcade/moonrollers/generaterandom"
+import (
+	"github.com/ascii-arcade/moonrollers/factions"
+	"github.com/ascii-arcade/moonrollers/generaterandom"
+	"github.com/charmbracelet/lipgloss"
+)
+
+const defaultPlayerColor = lipgloss.Color("#FFFFFF")
 
 type Player struct {
 	Name      string
-	Count     int
+	Faction   *factions.Faction
+	Points    int
 	TurnOrder int
 
 	isHost bool
@@ -15,7 +22,7 @@ type Player struct {
 func newPlayer(maxTurnOrder int, host bool) *Player {
 	return &Player{
 		Name:       generaterandom.Name(),
-		Count:      0,
+		Points:     0,
 		TurnOrder:  maxTurnOrder + 1,
 		UpdateChan: make(chan struct{}),
 		isHost:     host,
@@ -26,6 +33,10 @@ func (p *Player) IsHost() bool {
 	return p.isHost
 }
 
-func (p *Player) incrementCount() {
-	p.Count++
+func (p *Player) incrementPoints(amount int) {
+	p.Points += amount
+}
+
+func (p *Player) HasFaction() bool {
+	return p.Faction != nil
 }

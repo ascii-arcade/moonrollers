@@ -1,6 +1,10 @@
 package board
 
 import (
+	"strconv"
+	"strings"
+
+	"github.com/ascii-arcade/moonrollers/factions"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -15,8 +19,25 @@ func (s *lobbyScreen) setModel(model *Model) {
 
 func (s *lobbyScreen) update(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch msg.String() {
+	case "1", "2", "3", "4", "5":
+		i, err := strconv.Atoi(msg.String())
+		if err != nil {
+			return s.model, nil
+		} else {
+			faction := factions.All()[i-1]
+			if !s.model.Game.IsFactionUsed(faction) {
+				s.model.Game.SetFaction(s.model.Player, &faction)
+			}
+		}
 	case "s":
-		if s.model.Player.IsHost() {
+		allHaveColor := true
+		for _, p := range s.model.Game.OrderedPlayers() {
+			if !p.HasFaction() {
+				allHaveColor = false
+				break
+			}
+		}
+		if s.model.Player.IsHost() && allHaveColor {
 			s.model.screen = &tableScreen{}
 			s.model.Game.Begin()
 		}
@@ -28,14 +49,9 @@ func (s *lobbyScreen) update(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (s *lobbyScreen) view() string {
 	style := s.model.renderer.NewStyle().Width(s.model.Width / 3)
 
-	footer := "\nWaiting for host to start the game..."
-	if s.model.Player.IsHost() {
-		footer = "Press 's' to start the game."
-	}
-	footer += "\nPress 'ctrl+c' to quit."
-
 	header := s.model.Game.Code
 	playerList := s.model.renderer.NewStyle().Render(s.playerList())
+	footer := s.model.renderer.NewStyle().Render(s.footer())
 
 	content := lipgloss.JoinVertical(
 		lipgloss.Left,
@@ -59,16 +75,59 @@ func (s *lobbyScreen) view() string {
 }
 
 func (s *lobbyScreen) playerList() string {
-	playerList := ""
+	var playerList strings.Builder
+	style := s.model.renderer.NewStyle()
+
 	for _, p := range s.model.Game.OrderedPlayers() {
-		playerList += "* " + p.Name
+		var listItem strings.Builder
+
+		listItem.WriteString("* " + p.Name)
 		if p.Name == s.model.Player.Name {
-			playerList += " (you)"
+			listItem.WriteString(" (you)")
 		}
 		if p.IsHost() {
-			playerList += " (host)"
+			listItem.WriteString(" (host)")
 		}
-		playerList += "\n"
+		if !p.HasFaction() {
+			listItem.WriteString(" (no faction)")
+		}
+
+		if p.HasFaction() {
+			playerList.WriteString(style.Foreground(p.Faction.Color).Render(listItem.String()) + "\n")
+		} else {
+			playerList.WriteString(listItem.String() + "\n")
+		}
 	}
-	return playerList
+
+	return playerList.String()
+}
+
+func (s *lobbyScreen) footer() string {
+	var sb strings.Builder
+	colorList := make([]string, 0)
+
+	for i, faction := range factions.All() {
+		style := s.model.renderer.NewStyle()
+		word := style.Foreground(faction.Color).Render(faction.Name)
+
+		if s.model.Game.IsFactionUsed(faction) {
+			style = style.Italic(true)
+			word = faction.Name + " (used)"
+		}
+
+		item := style.Render("Press '" + strconv.Itoa(i+1) + "' to choose " + word)
+		colorList = append(colorList, item)
+	}
+
+	sb.WriteString(lipgloss.JoinVertical(lipgloss.Left, colorList...))
+
+	sb.WriteString("\n")
+	if s.model.Player.IsHost() {
+		sb.WriteString("Press 's' to start the game.")
+	} else {
+		sb.WriteString("Waiting for host to start the game...")
+	}
+	sb.WriteString("\nPress 'ctrl+c' to quit.")
+
+	return sb.String()
 }
