@@ -1,9 +1,9 @@
 package games
 
-func (s *Game) Count(pName string) {
+func (s *Game) AddPoints(pName string, amount int) {
 	s.withLock(func() {
 		if player, exists := s.getPlayer(pName); exists {
-			player.incrementCount()
+			player.incrementPoints(amount)
 		}
 	})
 }
