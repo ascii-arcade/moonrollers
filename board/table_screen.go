@@ -35,7 +35,10 @@ func (s *tableScreen) update(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (s *tableScreen) view() string {
 	scoreboard := newScoreboard(s.model)
 
+	card := newCard(s.model, s.model.Game.Deck[0])
+
 	return s.style.Render(fmt.Sprintf("You are %s", s.model.Player.Name)) +
 		"\n\n" + scoreboard.render() +
+		"\n\n" + card.render() +
 		"\n\n" + s.style.Render("Press 'ctrl+c' to quit")
 }

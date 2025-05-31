@@ -10,12 +10,14 @@ type Faction struct {
 	Color lipgloss.Color
 }
 
+var (
+	Blue   = Faction{Name: "Komek", Color: colors.DieReactor}
+	Green  = Faction{Name: "Henko", Color: colors.DieShield}
+	Orange = Faction{Name: "Magnomi", Color: colors.DieDamage}
+	Purple = Faction{Name: "Sorelia", Color: colors.DieExtra}
+	Yellow = Faction{Name: "Ventus", Color: colors.DieThruster}
+)
+
 func All() []Faction {
-	return []Faction{
-		{"blue", colors.PlayerBlue},
-		{"green", colors.PlayerGreen},
-		{"orange", colors.PlayerOrange},
-		{"purple", colors.PlayerPurple},
-		{"yellow", colors.PlayerYellow},
-	}
+	return []Faction{Blue, Green, Orange, Purple, Yellow}
 }

@@ -6,6 +6,7 @@ import (
 
 	"slices"
 
+	"github.com/ascii-arcade/moonrollers/deck"
 	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/generaterandom"
 )
@@ -14,6 +15,7 @@ var games = make(map[string]*Game)
 
 type Game struct {
 	Code string
+	Deck []*deck.Crew
 
 	inProgress bool
 	mu         sync.Mutex
@@ -41,6 +43,7 @@ func (s *Game) InProgress() bool {
 
 func (s *Game) Begin() {
 	s.withLock(func() {
+		s.Deck = deck.NewDeck()
 		s.inProgress = true
 	})
 }
