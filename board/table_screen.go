@@ -3,6 +3,7 @@ package board
 import (
 	"fmt"
 
+	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -19,20 +20,24 @@ func (m *Model) newTableScreen() *tableScreen {
 	}
 }
 
-func (s *tableScreen) setModel(model *Model) {
-	s.model = model
+func (s *tableScreen) WithModel(model any) screen.Screen {
+	s.model = model.(*Model)
+	return s
 }
 
-func (s *tableScreen) update(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
-	switch msg.String() {
-	case "a":
-		s.model.Game.AddPoints(s.model.Player.Name, 1)
+func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "a":
+			s.model.Game.AddPoints(s.model.Player.Name, 1)
+		}
 	}
 
 	return s.model, nil
 }
 
-func (s *tableScreen) view() string {
+func (s *tableScreen) View() string {
 	scoreboard := newScoreboard(s.model)
 
 	cards := make([]string, 0)
