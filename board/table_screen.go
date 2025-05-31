@@ -35,10 +35,13 @@ func (s *tableScreen) update(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (s *tableScreen) view() string {
 	scoreboard := newScoreboard(s.model)
 
-	card := newCard(s.model, s.model.Game.Deck[0])
+	cards := make([]string, 0)
+	for i := range 5 {
+		cards = append(cards, newCard(s.model, s.model.Game.Deck[i]).render())
+	}
 
 	return s.style.Render(fmt.Sprintf("You are %s", s.model.Player.Name)) +
 		"\n\n" + scoreboard.render() +
-		"\n\n" + card.render() +
+		"\n\n" + lipgloss.JoinHorizontal(lipgloss.Top, cards...) +
 		"\n\n" + s.style.Render("Press 'ctrl+c' to quit")
 }
