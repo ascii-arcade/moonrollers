@@ -32,28 +32,30 @@ type screen interface {
 type doneMsg struct{}
 
 type Model struct {
-	Width    int
-	Height   int
-	renderer *lipgloss.Renderer
-	screen   screen
+	Width  int
+	Height int
+	screen screen
+	style  lipgloss.Style
 
 	isSplashing   bool
 	gameCodeInput textinput.Model
 }
 
-func NewModel(width, height int, renderer *lipgloss.Renderer) Model {
+func NewModel(width, height int, style lipgloss.Style) Model {
 	ti := textinput.New()
 	ti.Width = 9
 	ti.CharLimit = 7
 
-	return Model{
-		Width:    width,
-		Height:   height,
-		renderer: renderer,
-		screen:   &splashScreen{},
+	m := Model{
+		Width:  width,
+		Height: height,
+		style:  style,
 
 		gameCodeInput: ti,
 	}
+
+	m.screen = m.newSplashScreen()
+	return m
 }
 
 func (m Model) Init() tea.Cmd {
@@ -72,7 +74,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.Height, m.Width = msg.Height, msg.Width
 
 	case doneMsg:
-		m.screen = &optionScreen{}
+		m.screen = m.newOptionScreen()
 
 	case tea.KeyMsg:
 		switch msg.String() {

@@ -11,6 +11,14 @@ import (
 
 type lobbyScreen struct {
 	model *Model
+	style lipgloss.Style
+}
+
+func (m *Model) newLobbyScreen() *lobbyScreen {
+	return &lobbyScreen{
+		model: m,
+		style: m.style,
+	}
 }
 
 func (s *lobbyScreen) setModel(model *Model) {
@@ -38,7 +46,6 @@ func (s *lobbyScreen) update(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 			}
 		}
 		if s.model.Player.IsHost() && allHaveColor {
-			s.model.screen = &tableScreen{}
 			s.model.Game.Begin()
 		}
 	}
@@ -47,11 +54,11 @@ func (s *lobbyScreen) update(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 }
 
 func (s *lobbyScreen) view() string {
-	style := s.model.renderer.NewStyle().Width(s.model.Width / 3)
+	style := s.style.Width(s.model.Width / 3)
 
 	header := s.model.Game.Code
-	playerList := s.model.renderer.NewStyle().Render(s.playerList())
-	footer := s.model.renderer.NewStyle().Render(s.footer())
+	playerList := s.style.Render(s.playerList())
+	footer := s.style.Render(s.footer())
 
 	content := lipgloss.JoinVertical(
 		lipgloss.Left,
@@ -60,13 +67,13 @@ func (s *lobbyScreen) view() string {
 		style.Render(footer),
 	)
 
-	return s.model.renderer.NewStyle().Width(s.model.Width).Height(s.model.Height).Render(
+	return s.style.Width(s.model.Width).Height(s.model.Height).Render(
 		lipgloss.Place(
 			s.model.Width,
 			s.model.Height,
 			lipgloss.Center,
 			lipgloss.Center,
-			s.model.renderer.NewStyle().
+			s.style.
 				Padding(2, 2).
 				BorderStyle(lipgloss.NormalBorder()).
 				Render(content),
@@ -76,7 +83,7 @@ func (s *lobbyScreen) view() string {
 
 func (s *lobbyScreen) playerList() string {
 	var playerList strings.Builder
-	style := s.model.renderer.NewStyle()
+	style := s.style
 
 	for _, p := range s.model.Game.OrderedPlayers() {
 		var listItem strings.Builder
@@ -107,7 +114,7 @@ func (s *lobbyScreen) footer() string {
 	colorList := make([]string, 0)
 
 	for i, faction := range factions.All() {
-		style := s.model.renderer.NewStyle()
+		style := s.style
 		word := style.Foreground(faction.Color).Render(faction.Name)
 
 		if s.model.Game.IsFactionUsed(faction) {
