@@ -7,6 +7,8 @@ import (
 	"github.com/ascii-arcade/moonrollers/factions"
 )
 
+type Deck []*Crew
+
 func NewDeck() []*Crew {
 	copiedDeck := make([]*Crew, len(deck))
 	for i, c := range deck {
@@ -25,6 +27,13 @@ func NewDeck() []*Crew {
 	}
 
 	return copiedDeck
+}
+
+func (d *Deck) Shuffle() {
+	for i := len(*d) - 1; i > 0; i-- {
+		j := rand.IntN(i + 1)
+		(*d)[i], (*d)[j] = (*d)[j], (*d)[i]
+	}
 }
 
 var deck = []Crew{

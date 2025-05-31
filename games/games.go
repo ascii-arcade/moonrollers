@@ -14,8 +14,9 @@ import (
 var games = make(map[string]*Game)
 
 type Game struct {
-	Code string
-	Deck []*deck.Crew
+	Code        string
+	CrewForHire []*deck.Crew
+	Deck        deck.Deck
 
 	inProgress bool
 	mu         sync.Mutex
@@ -39,13 +40,6 @@ func Get(code string) (*Game, bool) {
 
 func (s *Game) InProgress() bool {
 	return s.inProgress
-}
-
-func (s *Game) Begin() {
-	s.withLock(func() {
-		s.Deck = deck.NewDeck()
-		s.inProgress = true
-	})
 }
 
 func (s *Game) OrderedPlayers() []*Player {

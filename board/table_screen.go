@@ -41,8 +41,8 @@ func (s *tableScreen) View() string {
 	scoreboard := newScoreboard(s.model)
 
 	cards := make([]string, 0)
-	for i := range 5 {
-		cards = append(cards, newCard(s.model, s.model.Game.Deck[i]).render())
+	for _, card := range s.model.Game.CrewForHire {
+		cards = append(cards, newCard(s.model, card).render())
 	}
 
 	return s.style.Render(fmt.Sprintf("You are %s", s.model.Player.Name)) +
