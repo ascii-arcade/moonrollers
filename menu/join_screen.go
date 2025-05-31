@@ -3,7 +3,7 @@ package menu
 import (
 	"strings"
 
-	"github.com/ascii-arcade/wish-template/messages"
+	"github.com/ascii-arcade/moonrollers/messages"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )

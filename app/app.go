@@ -7,10 +7,10 @@ import (
 	"github.com/charmbracelet/ssh"
 	"github.com/charmbracelet/wish/bubbletea"
 
-	"github.com/ascii-arcade/wish-template/board"
-	"github.com/ascii-arcade/wish-template/games"
-	"github.com/ascii-arcade/wish-template/menu"
-	"github.com/ascii-arcade/wish-template/messages"
+	"github.com/ascii-arcade/moonrollers/board"
+	"github.com/ascii-arcade/moonrollers/games"
+	"github.com/ascii-arcade/moonrollers/menu"
+	"github.com/ascii-arcade/moonrollers/messages"
 )
 
 type Model struct {

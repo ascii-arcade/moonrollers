@@ -1,6 +1,6 @@
 package games
 
-import "github.com/ascii-arcade/wish-template/generaterandom"
+import "github.com/ascii-arcade/moonrollers/generaterandom"
 
 type Player struct {
 	Name      string

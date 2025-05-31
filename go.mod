@@ -1,4 +1,4 @@
-module github.com/ascii-arcade/wish-template
+module github.com/ascii-arcade/moonrollers
 
 go 1.24.1
 

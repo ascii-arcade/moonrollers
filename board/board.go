@@ -1,8 +1,8 @@
 package board
 
 import (
-	"github.com/ascii-arcade/wish-template/games"
-	"github.com/ascii-arcade/wish-template/messages"
+	"github.com/ascii-arcade/moonrollers/games"
+	"github.com/ascii-arcade/moonrollers/messages"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
