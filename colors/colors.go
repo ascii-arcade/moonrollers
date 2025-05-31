@@ -6,6 +6,7 @@ const (
 	Border = lipgloss.Color("#404040")
 	Error  = lipgloss.Color("#ff5555")
 	Hazard = lipgloss.Color("#ff0000")
+	Logo   = lipgloss.Color("#eb5761")
 
 	DieReactor  = lipgloss.Color("#2677fe")
 	DieShield   = lipgloss.Color("#23741e")

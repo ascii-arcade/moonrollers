@@ -1,6 +1,7 @@
 package menu
 
 import (
+	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/messages"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -45,7 +46,7 @@ func (s *optionScreen) view() string {
 
 	panes := lipgloss.JoinVertical(
 		lipgloss.Center,
-		paneStyle.MarginBottom(2).Align(lipgloss.Center, lipgloss.Bottom).Render(logo),
+		paneStyle.MarginBottom(2).Align(lipgloss.Center, lipgloss.Bottom).Foreground(colors.Logo).Render(logo),
 		paneStyle.Align(lipgloss.Center, lipgloss.Top).Render(content),
 	)
 
