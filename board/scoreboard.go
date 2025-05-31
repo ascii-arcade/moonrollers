@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -95,12 +96,12 @@ func (s *scoreboard) pointCell(row int, col int) string {
 func (s *scoreboard) populatedCellStyle() lipgloss.Style {
 	return s.style.
 		Border(lipgloss.NormalBorder(), true).
-		BorderForeground(lipgloss.Color("#404040")).
+		BorderForeground(colors.Border).
 		Width(5).
 		Height(1).
 		Align(lipgloss.Center)
 }
 
 func (s *scoreboard) emptyCellStyle() lipgloss.Style {
-	return s.populatedCellStyle().Foreground(lipgloss.Color("#404040"))
+	return s.populatedCellStyle().Foreground(colors.Border)
 }

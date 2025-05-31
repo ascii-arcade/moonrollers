@@ -3,6 +3,7 @@ package menu
 import (
 	"strings"
 
+	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/messages"
 	tea "github.com/charmbracelet/bubbletea"
@@ -65,7 +66,7 @@ func (s *joinScreen) view() string {
 	panes := lipgloss.JoinVertical(
 		lipgloss.Center,
 		paneStyle.MarginBottom(2).Align(lipgloss.Center, lipgloss.Bottom).Render(logo),
-		paneStyle.Align(lipgloss.Center, lipgloss.Top).Render(content+"\n\n"+s.style.Foreground(ErrorColor).Render(s.model.error)),
+		paneStyle.Align(lipgloss.Center, lipgloss.Top).Render(content+"\n\n"+s.style.Foreground(colors.Error).Render(s.model.error)),
 	)
 
 	return style.Render(panes)

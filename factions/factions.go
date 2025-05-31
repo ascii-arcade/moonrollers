@@ -1,6 +1,9 @@
 package factions
 
-import "github.com/charmbracelet/lipgloss"
+import (
+	"github.com/ascii-arcade/moonrollers/colors"
+	"github.com/charmbracelet/lipgloss"
+)
 
 type Faction struct {
 	Name  string
@@ -9,10 +12,10 @@ type Faction struct {
 
 func All() []Faction {
 	return []Faction{
-		{"blue", lipgloss.Color("#2677fe")},
-		{"yellow", lipgloss.Color("#fefe26")},
-		{"orange", lipgloss.Color("#CC5500")},
-		{"green", lipgloss.Color("#23741e")},
-		{"purple", lipgloss.Color("#ab19a6")},
+		{"blue", colors.PlayerBlue},
+		{"green", colors.PlayerGreen},
+		{"orange", colors.PlayerOrange},
+		{"purple", colors.PlayerPurple},
+		{"yellow", colors.PlayerYellow},
 	}
 }
