@@ -3,6 +3,7 @@ package board
 import (
 	"fmt"
 
+	"github.com/ascii-arcade/moonrollers/components"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -33,9 +34,9 @@ func (s *tableScreen) update(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 }
 
 func (s *tableScreen) view() string {
-	scoreboard := newScoreboard(s.model)
+	scoreboard := components.NewScoreboard(s.model.Width/3, s.model.Game.OrderedPlayers(), s.style)
 
 	return s.style.Render(fmt.Sprintf("You are %s", s.model.Player.Name)) +
-		"\n\n" + scoreboard.render() +
+		"\n\n" + scoreboard.Render() +
 		"\n\n" + s.style.Render("Press 'ctrl+c' to quit")
 }

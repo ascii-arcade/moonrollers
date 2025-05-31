@@ -1,4 +1,4 @@
-package board
+package components
 
 import (
 	"strconv"
@@ -9,23 +9,23 @@ import (
 )
 
 type scoreboard struct {
-	model   *Model
+	width   int
 	players []*games.Player
 	short   bool
 	style   lipgloss.Style
 }
 
-func newScoreboard(model *Model) scoreboard {
+func NewScoreboard(width int, players []*games.Player, style lipgloss.Style) scoreboard {
 	return scoreboard{
-		model:   model,
-		players: model.Game.OrderedPlayers(),
+		width:   width,
+		players: players,
 		short:   false,
-		style:   model.style,
+		style:   style,
 	}
 }
 
-func (s *scoreboard) render() string {
-	style := s.style.Margin(1).Width(s.model.Width / 3)
+func (s *scoreboard) Render() string {
+	style := s.style.Margin(1).Width(s.width)
 
 	if s.short {
 		out := make([]string, 0)
