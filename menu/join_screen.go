@@ -65,7 +65,7 @@ func (s *joinScreen) view() string {
 
 	panes := lipgloss.JoinVertical(
 		lipgloss.Center,
-		paneStyle.MarginBottom(2).Align(lipgloss.Center, lipgloss.Bottom).Render(logo),
+		paneStyle.MarginBottom(2).Align(lipgloss.Center, lipgloss.Bottom).Foreground(colors.Logo).Render(logo),
 		paneStyle.Align(lipgloss.Center, lipgloss.Top).Render(content+"\n\n"+s.style.Foreground(colors.Error).Render(s.model.error)),
 	)
 
