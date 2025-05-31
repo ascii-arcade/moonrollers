@@ -6,6 +6,7 @@ import (
 
 	"slices"
 
+	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/generaterandom"
 )
 
@@ -116,4 +117,13 @@ func (s *Game) getPlayer(name string) (*Player, bool) {
 	}
 
 	return nil, false
+}
+
+func (s *Game) IsFactionUsed(faction factions.Faction) bool {
+	for _, player := range s.players {
+		if player.Faction != nil && *player.Faction == faction {
+			return true
+		}
+	}
+	return false
 }

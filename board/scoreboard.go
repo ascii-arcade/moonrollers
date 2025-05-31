@@ -21,7 +21,7 @@ func (s *scoreboard) render() string {
 		out := make([]string, 0)
 		for _, p := range s.players {
 			points := s.model.renderer.NewStyle().
-				Foreground(lipgloss.Color(p.Color)).
+				Foreground(lipgloss.Color(p.Faction.Color)).
 				Render(p.Name + ": " + strconv.Itoa(p.Points))
 			out = append(out, points)
 		}
@@ -61,7 +61,7 @@ func (s *scoreboard) additionalPointsCell(playerIndex int) string {
 	output := make([]string, 0)
 
 	for range points / 50 {
-		output = append(output, s.model.renderer.NewStyle().Foreground(s.players[playerIndex].Color).Render("■"))
+		output = append(output, s.model.renderer.NewStyle().Foreground(s.players[playerIndex].Faction.Color).Render("■"))
 	}
 
 	return s.populatedCellStyle().Render(strings.Join(output, " "))
@@ -72,7 +72,7 @@ func (s *scoreboard) pointCell(row int, col int) string {
 	var pips []string
 	for _, player := range s.players {
 		if player.Points%50 == points {
-			pip := s.model.renderer.NewStyle().Foreground(player.Color).Render("■")
+			pip := s.model.renderer.NewStyle().Foreground(player.Faction.Color).Render("■")
 			pips = append(pips, pip)
 		}
 	}

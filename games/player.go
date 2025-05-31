@@ -1,13 +1,16 @@
 package games
 
 import (
+	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/generaterandom"
 	"github.com/charmbracelet/lipgloss"
 )
 
+const defaultPlayerColor = lipgloss.Color("#FFFFFF")
+
 type Player struct {
 	Name      string
-	Color     lipgloss.Color
+	Faction   *factions.Faction
 	Points    int
 	TurnOrder int
 
@@ -32,4 +35,8 @@ func (p *Player) IsHost() bool {
 
 func (p *Player) incrementPoints(amount int) {
 	p.Points += amount
+}
+
+func (p *Player) HasFaction() bool {
+	return p.Faction != nil
 }
