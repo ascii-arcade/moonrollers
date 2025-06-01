@@ -6,6 +6,7 @@ import (
 
 	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/factions"
+	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -31,18 +32,7 @@ func (s *lobbyScreen) WithModel(model any) screen.Screen {
 func (s *lobbyScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "1", "2", "3", "4", "5":
-			i, err := strconv.Atoi(msg.String())
-			if err != nil {
-				return s.model, nil
-			} else {
-				faction := factions.All()[i-1]
-				if !s.model.Game.IsFactionUsed(faction) {
-					s.model.Game.SetFaction(s.model.Player, &faction)
-				}
-			}
-		case "s":
+		if keys.LobbyStartGame.TriggeredBy(msg.String()) {
 			allHaveColor := true
 			for _, p := range s.model.Game.OrderedPlayers() {
 				if !p.HasFaction() {
@@ -51,7 +41,18 @@ func (s *lobbyScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				}
 			}
 			if s.model.Player.IsHost() && allHaveColor {
-				s.model.Game.Begin()
+				_ = s.model.Game.Begin()
+			}
+		}
+		if keys.LobbyJoinFaction.TriggeredBy(msg.String()) {
+			i, err := strconv.Atoi(msg.String())
+			if err != nil {
+				return s.model, nil
+			} else {
+				faction := factions.All()[i-1]
+				if !s.model.Game.IsFactionUsed(faction) {
+					_ = s.model.Game.SetFaction(s.model.Player, &faction)
+				}
 			}
 		}
 	}
