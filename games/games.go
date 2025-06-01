@@ -37,10 +37,10 @@ func New() *Game {
 func GetOpenGame(code string) (*Game, error) {
 	game, exists := games[code]
 	if !exists {
-		return nil, errors.New("game not found")
+		return nil, errors.New("Game not found")
 	}
 	if game.inProgress {
-		return nil, errors.New("game already in progress")
+		return nil, errors.New("Game already in progress")
 	}
 
 	return game, nil
