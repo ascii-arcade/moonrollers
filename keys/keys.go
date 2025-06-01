@@ -13,10 +13,14 @@ func (k Keys) TriggeredBy(msg string) bool {
 }
 
 func (k Keys) String(style lipgloss.Style) string {
+	return k.IndexedString(0, style)
+}
+
+func (k Keys) IndexedString(index int, style lipgloss.Style) string {
 	if len(k) == 0 {
 		return ""
 	}
-	return style.Bold(true).Italic(true).Render("'" + k[0] + "'")
+	return style.Bold(true).Italic(true).Render("'" + k[index] + "'")
 }
 
 var (
@@ -29,7 +33,7 @@ var (
 	Submit         = Keys{"enter"}
 
 	LobbyStartGame   = Keys{"s"}
-	LobbyJoinFaction = Keys{"1", "2", "3", "4", "5", "6"}
+	LobbyJoinFaction = Keys{"1", "2", "3", "4", "5"}
 
 	GameIncrementPoint = Keys{"a"}
 )

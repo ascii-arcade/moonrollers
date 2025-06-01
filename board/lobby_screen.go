@@ -129,7 +129,7 @@ func (s *lobbyScreen) footer() string {
 			word = faction.Name + " (used)"
 		}
 
-		item := style.Render("Press '" + strconv.Itoa(i+1) + "' to choose " + word)
+		item := style.Render("Press " + keys.LobbyJoinFaction.IndexedString(i, s.style) + " to choose " + word)
 		colorList = append(colorList, item)
 	}
 
@@ -139,14 +139,14 @@ func (s *lobbyScreen) footer() string {
 	if s.model.Player.IsHost() {
 		err := s.model.Game.IsPlayerCountOk()
 		if err == nil {
-			sb.WriteString("Press 's' to start the game.")
+			sb.WriteString("Press " + keys.LobbyStartGame.String(s.style) + " to start the game.")
 		} else {
 			sb.WriteString(s.style.Foreground(colors.Error).Render(err.Error()))
 		}
 	} else {
 		sb.WriteString("Waiting for host to start the game...")
 	}
-	sb.WriteString("\nPress 'ctrl+c' to quit.")
+	sb.WriteString("\nPress " + keys.ExitApplication.String(s.style) + " to quit.")
 
 	return sb.String()
 }

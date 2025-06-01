@@ -48,5 +48,5 @@ func (s *tableScreen) View() string {
 	return s.style.Render(fmt.Sprintf("You are %s", s.model.Player.Name)) +
 		"\n\n" + scoreboard.render() +
 		"\n\n" + lipgloss.JoinHorizontal(lipgloss.Top, cards...) +
-		"\n\n" + s.style.Render("Press 'ctrl+c' to quit")
+		"\n\n" + s.style.Render("Press "+keys.ExitApplication.String(s.style)+" to quit.")
 }
