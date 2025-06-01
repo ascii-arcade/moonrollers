@@ -16,15 +16,7 @@ func (s *Game) Begin() {
 }
 
 func (s *Game) dealCrewForHire() {
-	var draw int
-	switch len(s.players) {
-	case 2:
-		draw = 4
-	case 3:
-		draw = 5
-	default:
-		draw = 6
-	}
+	draw := min(len(s.players)+2, 6)
 
 	skippedCrew := make([]*deck.Crew, 0)
 	for len(s.CrewForHire) < draw {
