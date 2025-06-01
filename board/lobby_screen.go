@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
@@ -135,7 +136,12 @@ func (s *lobbyScreen) footer() string {
 
 	sb.WriteString("\n")
 	if s.model.Player.IsHost() {
-		sb.WriteString("Press 's' to start the game.")
+		message, ok := s.model.Game.IsPlayerCountOk()
+		if ok {
+			sb.WriteString("Press 's' to start the game.")
+		} else {
+			sb.WriteString(s.style.Foreground(colors.Error).Render(message))
+		}
 	} else {
 		sb.WriteString("Waiting for host to start the game...")
 	}
