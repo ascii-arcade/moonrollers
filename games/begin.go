@@ -1,6 +1,7 @@
 package games
 
 import (
+	"errors"
 	"slices"
 
 	"github.com/ascii-arcade/moonrollers/deck"
@@ -12,14 +13,15 @@ const (
 	maximumPlayers = 5
 )
 
-func (s *Game) Begin() {
-	s.withLock(func() {
-		if _, ok := s.IsPlayerCountOk(); !ok {
-			return
+func (s *Game) Begin() error {
+	return s.withLock(func() error {
+		if err := s.IsPlayerCountOk(); err != nil {
+			return err
 		}
 		s.Deck = deck.NewDeck()
 		s.dealCrewForHire()
 		s.inProgress = true
+		return nil
 	})
 }
 
@@ -51,12 +53,12 @@ func (s *Game) hasFactionForHire(faction factions.Faction) bool {
 	return false
 }
 
-func (s *Game) IsPlayerCountOk() (string, bool) {
+func (s *Game) IsPlayerCountOk() error {
 	if len(s.players) > maximumPlayers {
-		return "Too many players", false
+		return errors.New("Too many players")
 	}
 	if len(s.players) < minimumPlayers {
-		return "Not enough players", false
+		return errors.New("Not enough players")
 	}
-	return "", true
+	return nil
 }

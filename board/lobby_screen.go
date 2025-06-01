@@ -136,11 +136,11 @@ func (s *lobbyScreen) footer() string {
 
 	sb.WriteString("\n")
 	if s.model.Player.IsHost() {
-		message, ok := s.model.Game.IsPlayerCountOk()
-		if ok {
+		err := s.model.Game.IsPlayerCountOk()
+		if err == nil {
 			sb.WriteString("Press 's' to start the game.")
 		} else {
-			sb.WriteString(s.style.Foreground(colors.Error).Render(message))
+			sb.WriteString(s.style.Foreground(colors.Error).Render(err.Error()))
 		}
 	} else {
 		sb.WriteString("Waiting for host to start the game...")
