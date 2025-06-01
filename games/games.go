@@ -34,7 +34,7 @@ func New() *Game {
 	return game
 }
 
-func Get(code string) (*Game, error) {
+func GetOpenGame(code string) (*Game, error) {
 	game, exists := games[code]
 	if !exists {
 		return nil, errors.New("game not found")
