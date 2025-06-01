@@ -3,6 +3,7 @@ package board
 import (
 	"fmt"
 
+	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -28,9 +29,8 @@ func (s *tableScreen) WithModel(model any) screen.Screen {
 func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "a":
-			s.model.Game.AddPoints(s.model.Player.Name, 1)
+		if keys.GameIncrementPoint.TriggeredBy(msg.String()) {
+			_ = s.model.Game.AddPoints(s.model.Player.Name, 1)
 		}
 	}
 
@@ -48,5 +48,5 @@ func (s *tableScreen) View() string {
 	return s.style.Render(fmt.Sprintf("You are %s", s.model.Player.Name)) +
 		"\n\n" + scoreboard.render() +
 		"\n\n" + lipgloss.JoinHorizontal(lipgloss.Top, cards...) +
-		"\n\n" + s.style.Render("Press 'ctrl+c' to quit")
+		"\n\n" + s.style.Render("Press "+keys.ExitApplication.String(s.style)+" to quit.")
 }

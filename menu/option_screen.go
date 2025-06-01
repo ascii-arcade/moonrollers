@@ -2,6 +2,7 @@ package menu
 
 import (
 	"github.com/ascii-arcade/moonrollers/colors"
+	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/messages"
 	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
@@ -28,10 +29,10 @@ func (s *optionScreen) WithModel(model any) screen.Screen {
 func (s *optionScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "n":
+		if keys.MenuStartNewGame.TriggeredBy(msg.String()) {
 			return s.model, func() tea.Msg { return messages.NewGame{} }
-		case "j":
+		}
+		if keys.MenuJoinGame.TriggeredBy(msg.String()) {
 			return s.model, func() tea.Msg {
 				return messages.SwitchScreenMsg{
 					Screen: s.model.newJoinScreen(),
@@ -48,8 +49,8 @@ func (s *optionScreen) View() string {
 	paneStyle := s.style.Width(s.model.Width).Height(s.model.Height / 2)
 
 	content := "Welcome to the Game!\n\n"
-	content += "Press 'n' to create a new game.\n"
-	content += "Press 'j' to join an existing game.\n"
+	content += "Press " + keys.MenuStartNewGame.String(s.style) + " to create a new game.\n"
+	content += "Press " + keys.MenuJoinGame.String(s.style) + " to join an existing game.\n"
 
 	panes := lipgloss.JoinVertical(
 		lipgloss.Center,

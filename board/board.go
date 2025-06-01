@@ -2,6 +2,7 @@ package board
 
 import (
 	"github.com/ascii-arcade/moonrollers/games"
+	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/messages"
 	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
@@ -39,20 +40,17 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.Height, m.Width = msg.Height, msg.Width
 
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c":
-			m.Game.RemovePlayer(m.Player.Name)
+		if keys.ExitApplication.TriggeredBy(msg.String()) {
+			_ = m.Game.RemovePlayer(m.Player.Name)
 			return m, tea.Quit
-		default:
-			activeScreenModel, cmd := m.activeScreen().Update(msg)
-			return activeScreenModel.(*Model), cmd
 		}
 
 	case messages.RefreshBoard:
 		return m, waitForRefreshSignal(m.Player.UpdateChan)
 	}
 
-	return m, nil
+	screenModel, cmd := m.activeScreen().Update(msg)
+	return screenModel.(*Model), cmd
 }
 
 func (m Model) View() string {
