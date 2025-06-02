@@ -9,6 +9,10 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+const (
+	scoreboardPip = "■"
+)
+
 type scoreboard struct {
 	model   *Model
 	players []*games.Player
@@ -72,7 +76,7 @@ func (s *scoreboard) additionalPointsCell(playerIndex int) string {
 	output := make([]string, 0)
 
 	for range points / 50 {
-		output = append(output, s.style.Foreground(s.players[playerIndex].Faction.Color).Render("■"))
+		output = append(output, s.style.Foreground(s.players[playerIndex].Faction.Color).Render(scoreboardPip))
 	}
 
 	return s.populatedCellStyle().Render(strings.Join(output, " "))
@@ -83,7 +87,7 @@ func (s *scoreboard) pointCell(row int, col int) string {
 	var pips []string
 	for _, player := range s.players {
 		if player.Points%50 == points {
-			pip := s.style.Foreground(player.Faction.Color).Render("■")
+			pip := s.style.Foreground(player.Faction.Color).Render(scoreboardPip)
 			pips = append(pips, pip)
 		}
 	}

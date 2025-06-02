@@ -10,8 +10,8 @@ func NewDeck() Deck {
 	copiedDeck := make(Deck, len(allCrew))
 	for i, c := range allCrew {
 		copiedDeck[i] = &Crew{
-			Ability:    c.Ability,
 			Faction:    c.Faction,
+			ID:         c.ID,
 			IsStarter:  c.IsStarter,
 			Name:       c.Name,
 			Objectives: c.Objectives,

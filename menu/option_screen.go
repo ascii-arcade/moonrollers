@@ -1,8 +1,12 @@
 package menu
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/keys"
+	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/ascii-arcade/moonrollers/messages"
 	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
@@ -29,6 +33,12 @@ func (s *optionScreen) WithModel(model any) screen.Screen {
 func (s *optionScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
+		if keys.MenuEnglish.TriggeredBy(msg.String()) {
+			s.model.languagePreference.SetLanguage("EN")
+		}
+		if keys.MenuSpanish.TriggeredBy(msg.String()) {
+			s.model.languagePreference.SetLanguage("ES")
+		}
 		if keys.MenuStartNewGame.TriggeredBy(msg.String()) {
 			return s.model, func() tea.Msg { return messages.NewGame{} }
 		}
@@ -45,17 +55,25 @@ func (s *optionScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 }
 
 func (s *optionScreen) View() string {
+	var content strings.Builder
 	style := s.style.Width(s.model.Width).Height(s.model.Height)
 	paneStyle := s.style.Width(s.model.Width).Height(s.model.Height / 2)
 
-	content := "Welcome to the Game!\n\n"
-	content += "Press " + keys.MenuStartNewGame.String(s.style) + " to create a new game.\n"
-	content += "Press " + keys.MenuJoinGame.String(s.style) + " to join an existing game.\n"
+	content.WriteString(s.model.lang().Get("menu.welcome") + "\n\n")
+	content.WriteString(fmt.Sprintf(s.model.lang().Get("menu.press_to_create"), keys.MenuStartNewGame.String(s.style)) + "\n")
+	content.WriteString(fmt.Sprintf(s.model.lang().Get("menu.press_to_join"), keys.MenuJoinGame.String(s.style)) + "\n")
+	content.WriteString("\n\n")
+
+	if s.model.lang() == language.Languages["EN"] {
+		content.WriteString(fmt.Sprintf(language.Languages["ES"].Get("menu.choose_language"), keys.MenuSpanish.String(s.style)))
+	} else if s.model.lang() == language.Languages["ES"] {
+		content.WriteString(fmt.Sprintf(language.Languages["EN"].Get("menu.choose_language"), keys.MenuEnglish.String(s.style)))
+	}
 
 	panes := lipgloss.JoinVertical(
 		lipgloss.Center,
 		paneStyle.MarginBottom(2).Align(lipgloss.Center, lipgloss.Bottom).Foreground(colors.Logo).Render(logo),
-		paneStyle.Align(lipgloss.Center, lipgloss.Top).Render(content),
+		paneStyle.Align(lipgloss.Center, lipgloss.Top).Render(content.String()),
 	)
 
 	return style.Render(panes)

@@ -1,0 +1,88 @@
+{
+  "id": "en",
+  "name": "English",
+  "translations": {
+    "global": {
+      "quit": "Press %s to quit the game"
+    },
+    "ssh": {
+      "starting_server": "Starting SSH server on %s:%s",
+      "stopping_server": "Stopping SSH server",
+      "could_not_start_server": "Could not start server",
+      "could_not_stop_server": "Could not stop server"
+    },
+    "error": {
+      "player_not_found": "Player not found",
+      "faction_cannot_be_nil": "Faction cannot be nil",
+      "too_many_players": "Too many players",
+      "not_enough_players": "Not enough players",
+      "game_not_found": "Game not found",
+      "game_already_in_progress": "Game already in progress"
+    },
+    "menu": {
+      "choose_language": "For english, press %s",
+      "enter_code": "Enter the game code to join:",
+      "welcome": "Welcome to the game!",
+      "press_to_create": "Press %s to create a new game",
+      "press_to_join": "Press %s to join an existing game"
+    },
+    "board": {
+      "waiting_for_start": "Waiting for the host to start the game...",
+      "press_to_start": "Press %s to start the game",
+      "player_list_you": "you",
+      "player_list_host": "host",
+      "you_are" : "You are %s",
+      "no_faction": "no faction",
+      "used": "used",
+      "choose_faction": "Press %s to choose %s"
+    },
+    "dice": {
+      "reactor": "reactor",
+      "damage": "damage",
+      "shield": "shield",
+      "thruster": "thruster",
+      "wild": "wild",
+      "extra": "extra"
+    },
+    "dice_plural": {
+      "reactor": "reactors",
+      "damage": "damages",
+      "shield": "shields",
+      "thruster": "thrusters",
+      "wild": "wilds",
+      "extra": "extras"
+    },
+    "crew_abilities": {
+      "ada": "May lock each %extra% as 2 %reactors%.",
+      "aponi": "If your rolling pool is 1-3 dice, each %reactor% or %wild% locked this roll is treated as 2 %reactors%.",
+      "at-ok": "If you roll 2+ %shields% you cannot bust on your next roll.",
+      "avari": "If you roll all %wilds%, gain 3 dice for your next roll.",
+      "b3ar": "If you roll 3+ %thrusters% finish the current requirement.",
+      "bill": "If you roll exactly 1 %shield% you may lock it as %wild%.",
+      "dana": "May lock each %extra% as 2 %damage%.",
+      "drumbrage": "If your rolling pool is 1-3 dice, each %damage% or %wild% locked this roll is treated as 2 %damage%.",
+      "ft1000": "If you roll exactly 1 %wild%, you may treat it as %extra%.",
+      "imdar": "If you roll no %shields% you may draw 1 %hazard%.",
+      "kal": "Your rolling pool starts with 6 dice.",
+      "kary": "Any %damage% from your first roll may be treated as %extra%.",
+      "lee": "If you roll exactly 1 %reactor% you may lock it as %wild%.",
+      "lila": "If you roll 2+ %reactors% you may re-roll any number of dice.",
+      "meg": "1 %wild% from your first roll may be saved for your next roll.",
+      "moro": "If your pool is 1-3 dice, you cannot bust if you roll at least one %extra%.",
+      "myla": "If you roll 2+ %thrusters% you may treat 1 of your dice as %extra%.",
+      "namari": "Gain 2 Prestige after busting.",
+      "nella": "May lock each %extra% as 2 %thrusters%.",
+      "redacted": "If your rolling pool is 1-3 dice, each %shield% or %wild% locked this roll is treated as 2 %shields%.",
+      "ryan": "If you roll 2+ %damage%, roll 2 supply dice and keep any that are %wild%.",
+      "ryle": "May lock each %extra% as 2 %shields%.",
+      "saghari": "If you roll no %damage%, roll 1 supply die and keep if %wild% or %extra%.",
+      "salatar": "If you roll no %reactors% you may re-roll 2 dice.",
+      "sella": "If you roll exactly 1 %extra% you may lock it as %wild%.",
+      "sol": "If your rolling pool is 1-3 dice, each %thruster% or %wild% locked this roll is treated as 2 %thrusters%.",
+      "tantin": "If you roll exactly 1 %damage% you may lock it as %wild%.",
+      "vanta": "If you roll no %extra% you may lock any 1 die as %wild%.",
+      "vila": "If you roll no %reactors% you may re-roll 2 dice.",
+      "zek": "If you roll exactly 1 %thruster% you may lock it as %wild%."
+    }
+  }
+}

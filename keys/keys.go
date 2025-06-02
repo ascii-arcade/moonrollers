@@ -28,6 +28,8 @@ var (
 
 	MenuJoinGame     = Keys{"j"}
 	MenuStartNewGame = Keys{"n"}
+	MenuEnglish      = Keys{"1"}
+	MenuSpanish      = Keys{"2"}
 
 	PreviousScreen = Keys{"esc"}
 	Submit         = Keys{"enter"}

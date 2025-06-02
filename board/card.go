@@ -1,17 +1,20 @@
 package board
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/deck"
 	"github.com/ascii-arcade/moonrollers/dice"
+	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/charmbracelet/lipgloss"
 )
 
 const (
 	emptyPip = "◇"
 	fullPip  = "◆"
+	hazard   = "!"
 )
 
 type card struct {
@@ -23,17 +26,25 @@ type card struct {
 
 func newCard(model *Model, crew *deck.Crew) *card {
 	c := &card{
-		model:       model,
-		Crew:        crew,
-		description: crew.Ability.Description,
-		style:       model.style,
+		model: model,
+		Crew:  crew,
+		style: model.style,
 	}
 
+	c.description = c.model.lang().Get("crew_abilities." + crew.ID)
 	for _, die := range dice.All() {
-		pluralValue := c.style.Foreground(die.Color).Bold(true).Italic(true).Render(die.Symbol + " " + die.Name + "s")
-		c.description = strings.ReplaceAll(c.description, "%"+die.Name+"s%", pluralValue)
-		singularValue := c.style.Foreground(die.Color).Bold(true).Italic(true).Render(die.Symbol + " " + die.Name)
-		c.description = strings.ReplaceAll(c.description, "%"+die.Name+"%", singularValue)
+		symbolStyle := c.style.Foreground(die.Color).Bold(true).Italic(true)
+		findSingular := language.Languages["EN"].Get("dice." + die.ID)
+		findPlural := language.Languages["EN"].Get("dice_plural." + die.ID)
+
+		singular := c.model.lang().Get("dice." + die.ID)
+		plural := c.model.lang().Get("dice_plural." + die.ID)
+
+		singularValue := symbolStyle.Render(fmt.Sprintf("%s %s", die.Symbol, singular))
+		pluralValue := symbolStyle.Render(fmt.Sprintf("%s %s", die.Symbol, plural))
+
+		c.description = strings.ReplaceAll(c.description, "%"+findSingular+"%", singularValue)
+		c.description = strings.ReplaceAll(c.description, "%"+findPlural+"%", pluralValue)
 	}
 
 	return c
@@ -56,7 +67,7 @@ func (c *card) render() string {
 		line.WriteString(c.style.Foreground(objective.Type.Color).Render(objective.Type.Symbol))
 		line.WriteString(" ")
 		if objective.Hazard {
-			line.WriteString(c.style.Foreground(colors.Hazard).Render("!"))
+			line.WriteString(c.style.Foreground(colors.Hazard).Render(hazard))
 		} else {
 			line.WriteString(" ")
 		}

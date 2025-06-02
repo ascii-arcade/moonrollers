@@ -7,17 +7,17 @@ import (
 
 type Die struct {
 	Color  lipgloss.Color
-	Name   string
+	ID     string
 	Symbol string
 }
 
 var (
-	DieDamage   = Die{Symbol: "X", Color: colors.DieDamage, Name: "damage"}
-	DieShield   = Die{Symbol: "#", Color: colors.DieShield, Name: "shield"}
-	DieThruster = Die{Symbol: "↟", Color: colors.DieThruster, Name: "thruster"}
-	DieReactor  = Die{Symbol: "@", Color: colors.DieReactor, Name: "reactor"}
-	DieWild     = Die{Symbol: "%", Color: colors.DieWild, Name: "wild"}
-	DieExtra    = Die{Symbol: "+", Color: colors.DieExtra, Name: "extra"}
+	DieDamage   = Die{Symbol: "X", Color: colors.DieDamage, ID: "damage"}
+	DieShield   = Die{Symbol: "#", Color: colors.DieShield, ID: "shield"}
+	DieThruster = Die{Symbol: "↟", Color: colors.DieThruster, ID: "thruster"}
+	DieReactor  = Die{Symbol: "@", Color: colors.DieReactor, ID: "reactor"}
+	DieWild     = Die{Symbol: "%", Color: colors.DieWild, ID: "wild"}
+	DieExtra    = Die{Symbol: "+", Color: colors.DieExtra, ID: "extra"}
 )
 
 func All() []Die {
