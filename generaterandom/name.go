@@ -3,113 +3,13 @@ package generaterandom
 import (
 	"fmt"
 	"math/rand/v2"
+
+	"github.com/ascii-arcade/moonrollers/language"
 )
 
-var adjectives = []string{
-	"Alien",
-	"Ancient",
-	"Astral",
-	"Binary",
-	"Blazing",
-	"Bold",
-	"Celestial",
-	"Cosmic",
-	"Crimson",
-	"Dark",
-	"Deep",
-	"Distant",
-	"Echoing",
-	"Eclipse",
-	"Emerald",
-	"Frozen",
-	"Galactic",
-	"Gravitic",
-	"Icy",
-	"Infinite",
-	"Ionized",
-	"Lost",
-	"Luminous",
-	"Magnetic",
-	"Meteoric",
-	"Mysterious",
-	"Nebulous",
-	"Nova",
-	"Obsidian",
-	"Orbiting",
-	"Plasma",
-	"Prime",
-	"Pulsar",
-	"Quantum",
-	"Radiant",
-	"Roaming",
-	"Shimmering",
-	"Silent",
-	"Singular",
-	"Solar",
-	"Spectral",
-	"Stellar",
-	"Swift",
-	"Twilight",
-	"Uncharted",
-	"Vast",
-	"Void",
-	"Warped",
-}
+func Name(lang *language.Language) string {
+	a := lang.UsernameFirstWords[rand.IntN(len(lang.UsernameFirstWords))]
+	b := lang.UsernameSecondWords[rand.IntN(len(lang.UsernameSecondWords))]
 
-var nouns = []string{
-	"Aegis",
-	"Asteroid",
-	"Atlas",
-	"Aurora",
-	"Beacon",
-	"Carrier",
-	"Celeste",
-	"Comet",
-	"Corsair",
-	"Crusader",
-	"Destroyer",
-	"Drifter",
-	"Eclipse",
-	"Explorer",
-	"Freighter",
-	"Frigate",
-	"Genesis",
-	"Guardian",
-	"Harbinger",
-	"Helix",
-	"Horizon",
-	"Interceptor",
-	"Meteor",
-	"Nebula",
-	"Nomad",
-	"Nova",
-	"Obelisk",
-	"Odyssey",
-	"Oracle",
-	"Outrider",
-	"Phantom",
-	"Pioneer",
-	"Probe",
-	"Pulsar",
-	"Quasar",
-	"Ranger",
-	"Satellite",
-	"Scout",
-	"Sentinel",
-	"Shuttle",
-	"Specter",
-	"Star",
-	"Titan",
-	"Vanguard",
-	"Voyager",
-	"Wanderer",
-	"Wraith",
-	"Zenith",
-}
-
-func Name() string {
-	adj := adjectives[rand.IntN(len(adjectives))]
-	noun := nouns[rand.IntN(len(nouns))]
-
-	return fmt.Sprintf("%s %s", adj, noun)
+	return fmt.Sprintf("%s %s", a, b)
 }
