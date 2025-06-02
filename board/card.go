@@ -77,7 +77,6 @@ func (c *card) render() string {
 		line.WriteString("\n")
 		sb.WriteString(line.String())
 	}
-	sb.WriteString(c.description)
 
 	return style.Render(sb.String())
 }
