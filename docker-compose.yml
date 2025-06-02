@@ -1,6 +1,10 @@
 services:
   moonrollers:
-    build: .
+    build:
+      context: .
+      args:
+        - GIT_TAG=${GIT_TAG:-dev}
+    image: ascii-arcade/moonrollers:${GIT_TAG:-dev}
     ports:
       - "23234:23234"
     restart: always
