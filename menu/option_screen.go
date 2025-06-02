@@ -1,8 +1,11 @@
 package menu
 
 import (
+	"fmt"
+
 	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/keys"
+	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/ascii-arcade/moonrollers/messages"
 	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
@@ -29,6 +32,12 @@ func (s *optionScreen) WithModel(model any) screen.Screen {
 func (s *optionScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
+		if keys.MenuEnglish.TriggeredBy(msg.String()) {
+			s.model.languagePreference.SetLanguage("EN")
+		}
+		if keys.MenuSpanish.TriggeredBy(msg.String()) {
+			s.model.languagePreference.SetLanguage("ES")
+		}
 		if keys.MenuStartNewGame.TriggeredBy(msg.String()) {
 			return s.model, func() tea.Msg { return messages.NewGame{} }
 		}
@@ -51,6 +60,12 @@ func (s *optionScreen) View() string {
 	content := "Welcome to the Game!\n\n"
 	content += "Press " + keys.MenuStartNewGame.String(s.style) + " to create a new game.\n"
 	content += "Press " + keys.MenuJoinGame.String(s.style) + " to join an existing game.\n"
+
+	if s.model.lang() == language.Languages["EN"] {
+		content += fmt.Sprintf(language.Languages["ES"].Get("menu.choose_language"), keys.MenuSpanish.String(s.style))
+	} else if s.model.lang() == language.Languages["ES"] {
+		content += fmt.Sprintf(language.Languages["EN"].Get("menu.choose_language"), keys.MenuEnglish.String(s.style))
+	}
 
 	panes := lipgloss.JoinVertical(
 		lipgloss.Center,
