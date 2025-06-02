@@ -62,7 +62,7 @@ func (s *lobbyScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 }
 
 func (s *lobbyScreen) View() string {
-	style := s.style.Width(s.model.Width / 3)
+	style := s.style.Width(s.model.Width / 2)
 
 	header := s.model.Game.Code
 	playerList := s.style.Render(s.playerList())
