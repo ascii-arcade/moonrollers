@@ -1,0 +1,88 @@
+{
+  "id": "en",
+  "name": "Español",
+  "translations": {
+    "global": {
+      "quit": "Presiona %s para salir del juego"
+    },
+    "ssh": {
+      "starting_server": "Iniciando servidor SSH en %s:%s",
+      "stopping_server": "Deteniendo servidor SSH",
+      "could_not_start_server": "No se pudo iniciar el servidor",
+      "could_not_stop_server": "No se pudo detener el servidor"
+    },
+    "error": {
+      "player_not_found": "Jugador no encontrado",
+      "faction_cannot_be_nil": "La facción no puede estar vacía",
+      "too_many_players": "Demasiados jugadores",
+      "not_enough_players": "No hay suficientes jugadores",
+      "game_not_found": "Partida no encontrada",
+      "game_already_in_progress": "La partida ya está en curso"
+    },
+    "menu": {
+      "choose_language": "Para español, presiona %s",
+      "enter_code": "Ingresa el código de la partida para unirte:",
+      "welcome": "¡Bienvenido al juego!",
+      "press_to_create": "Presiona %s para crear una nueva partida",
+      "press_to_join": "Presiona %s para unirte a una partida existente"
+    },
+    "board": {
+      "waiting_for_start": "Esperando que el anfitrión inicie la partida...",
+      "press_to_start": "Presiona %s para iniciar la partida",
+      "player_list_you": "tú",
+      "player_list_host": "anfitrión",
+      "you_are" : "Eres %s",
+      "no_faction": "sin facción",
+      "used": "usado",
+      "choose_faction": "Presiona %s para elegir %s"
+    },
+    "dice": {
+      "reactor": "reactor",
+      "damage": "daño",
+      "shield": "escudo",
+      "thruster": "impulsor",
+      "wild": "comodín",
+      "extra": "extra"
+    },
+    "dice_plural": {
+      "reactor": "reactores",
+      "damage": "daños",
+      "shield": "escudos",
+      "thruster": "impulsores",
+      "wild": "comodines",
+      "extra": "extras"
+    },
+    "crew_abilities": {
+      "ada": "Puede bloquear cada %extra% como 2 %reactors%.",
+      "aponi": "Si tu grupo de dados es de 1-3, cada %reactor% o %wild% bloqueado en esta tirada cuenta como 2 %reactors%.",
+      "at-ok": "Si lanzas 2+ %shields% no puedes perder en tu siguiente tirada.",
+      "avari": "Si lanzas todos %wilds%, obtén 3 dados para tu siguiente tirada.",
+      "b3ar": "Si lanzas 3+ %thrusters% completa el requisito actual.",
+      "bill": "Si lanzas exactamente 1 %shield% puedes bloquearlo como %wild%.",
+      "dana": "Puede bloquear cada %extra% como 2 %damage%.",
+      "drumbrage": "Si tu grupo de dados es de 1-3, cada %damage% o %wild% bloqueado en esta tirada cuenta como 2 %damage%.",
+      "ft1000": "Si lanzas exactamente 1 %wild%, puedes tratarlo como %extra%.",
+      "imdar": "Si no lanzas %shields% puedes robar 1 %hazard%.",
+      "kal": "Tu grupo de dados comienza con 6 dados.",
+      "kary": "Cualquier %damage% de tu primera tirada puede ser tratado como %extra%.",
+      "lee": "Si lanzas exactamente 1 %reactor% puedes bloquearlo como %wild%.",
+      "lila": "Si lanzas 2+ %reactors% puedes volver a lanzar cualquier cantidad de dados.",
+      "meg": "1 %wild% de tu primera tirada puede guardarse para tu siguiente tirada.",
+      "moro": "Si tu grupo es de 1-3 dados, no puedes perder si lanzas al menos un %extra%.",
+      "myla": "Si lanzas 2+ %thrusters% puedes tratar 1 de tus dados como %extra%.",
+      "namari": "Gana 2 Prestigio después de perder.",
+      "nella": "Puede bloquear cada %extra% como 2 %thrusters%.",
+      "redacted": "Si tu grupo de dados es de 1-3, cada %shield% o %wild% bloqueado en esta tirada cuenta como 2 %shields%.",
+      "ryan": "Si lanzas 2+ %damage%, lanza 2 dados de suministro y quédate con los que sean %wild%.",
+      "ryle": "Puede bloquear cada %extra% como 2 %shields%.",
+      "saghari": "Si no lanzas %damage%, lanza 1 dado de suministro y quédate si es %wild% o %extra%.",
+      "salatar": "Si no lanzas %reactors% puedes volver a lanzar 2 dados.",
+      "sella": "Si lanzas exactamente 1 %extra% puedes bloquearlo como %wild%.",
+      "sol": "Si tu grupo de dados es de 1-3, cada %thruster% o %wild% bloqueado en esta tirada cuenta como 2 %thrusters%.",
+      "tantin": "Si lanzas exactamente 1 %damage% puedes bloquearlo como %wild%.",
+      "vanta": "Si no lanzas %extra% puedes bloquear cualquier 1 dado como %wild%.",
+      "vila": "Si no lanzas %reactors% puedes volver a lanzar 2 dados.",
+      "zek": "Si lanzas exactamente 1 %thruster% puedes bloquearlo como %wild%."
+    }
+  }
+}

@@ -7,6 +7,7 @@ import (
 
 	"github.com/ascii-arcade/moonrollers/board"
 	"github.com/ascii-arcade/moonrollers/games"
+	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/ascii-arcade/moonrollers/menu"
 	"github.com/ascii-arcade/moonrollers/messages"
 )
@@ -64,10 +65,11 @@ func TeaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 	pty, _, _ := s.Pty()
 	renderer := bubbletea.MakeRenderer(s)
 	style := renderer.NewStyle()
+	languagePreference := language.LanguagePreference{Lang: language.Languages["EN"]}
 
 	m := Model{
-		board: board.NewModel(pty.Window.Width, pty.Window.Height, style),
-		menu:  menu.NewModel(pty.Window.Width, pty.Window.Height, style),
+		board: board.NewModel(pty.Window.Width, pty.Window.Height, style, &languagePreference),
+		menu:  menu.NewModel(pty.Window.Width, pty.Window.Height, style, &languagePreference),
 	}
 	m.active = m.menu
 
