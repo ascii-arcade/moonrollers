@@ -5,13 +5,9 @@ import (
 	"github.com/ascii-arcade/moonrollers/factions"
 )
 
-type ability struct {
-	Description string
-}
-
 type Crew struct {
-	Ability    ability
 	Faction    factions.Faction
+	ID         string
 	IsStarter  bool
 	Name       string
 	Objectives []objective
@@ -20,8 +16,8 @@ type Crew struct {
 var allCrew = []Crew{
 	{
 		Name:    "Aponi",
+		ID:      "aponi",
 		Faction: factions.Blue,
-		Ability: ability{Description: "If your rolling pool is 1-3 dice, each %reactor% or %wild% locked this roll is treated as 2 %reactors%."},
 		Objectives: []objective{
 			{Type: dice.DieReactor, Amount: 4, Hazard: true},
 			{Type: dice.DieThruster, Amount: 3},
@@ -31,8 +27,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Vila",
+		ID:      "vila",
 		Faction: factions.Blue,
-		Ability: ability{Description: "If you roll no %reactors% you may re-roll 2 dice."},
 		Objectives: []objective{
 			{Type: dice.DieReactor, Amount: 4},
 			{Type: dice.DieReactor, Amount: 3},
@@ -42,8 +38,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Salatar",
+		ID:      "salatar",
 		Faction: factions.Blue,
-		Ability: ability{Description: "If you roll no %reactors% you may re-roll 2 dice."},
 		Objectives: []objective{
 			{Type: dice.DieReactor, Amount: 4},
 			{Type: dice.DieThruster, Amount: 3, Hazard: true},
@@ -53,8 +49,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Ada",
+		ID:      "ada",
 		Faction: factions.Blue,
-		Ability: ability{Description: "May lock each %extra% as 2 %reactors%."},
 		Objectives: []objective{
 			{Type: dice.DieReactor, Amount: 2},
 			{Type: dice.DieThruster, Amount: 2},
@@ -64,8 +60,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Lee",
+		ID:      "lee",
 		Faction: factions.Blue,
-		Ability: ability{Description: "If you roll exactly 1 %reactor% you may lock it as %wild%."},
 		Objectives: []objective{
 			{Type: dice.DieReactor, Amount: 2},
 			{Type: dice.DieThruster, Amount: 2, Hazard: true},
@@ -75,8 +71,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Lila",
+		ID:      "lila",
 		Faction: factions.Blue,
-		Ability: ability{Description: "If you roll 2+ %reactors% you may re-roll any number of dice."},
 		Objectives: []objective{
 			{Type: dice.DieReactor, Amount: 3, Hazard: true},
 			{Type: dice.DieThruster, Amount: 3},
@@ -86,8 +82,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "[REDACTED]",
+		ID:      "redacted",
 		Faction: factions.Green,
-		Ability: ability{Description: "If your rolling pool is 1-3 dice, each %shield% or %wild% locked this roll is treated as 2 %shields%."},
 		Objectives: []objective{
 			{Type: dice.DieShield, Amount: 4, Hazard: true},
 			{Type: dice.DieDamage, Amount: 3},
@@ -97,8 +93,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Imdar",
+		ID:      "imdar",
 		Faction: factions.Green,
-		Ability: ability{Description: "If you roll no %shields% you may draw 1 %hazard%."},
 		Objectives: []objective{
 			{Type: dice.DieShield, Amount: 4},
 			{Type: dice.DieShield, Amount: 3},
@@ -108,8 +104,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Namari",
+		ID:      "namari",
 		Faction: factions.Green,
-		Ability: ability{Description: "Gain 2 Prestige after busting."},
 		Objectives: []objective{
 			{Type: dice.DieShield, Amount: 4},
 			{Type: dice.DieDamage, Amount: 3, Hazard: true},
@@ -119,8 +115,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Ryle",
+		ID:      "ryle",
 		Faction: factions.Green,
-		Ability: ability{Description: "May lock each %extra% as 2 %shields%."},
 		Objectives: []objective{
 			{Type: dice.DieShield, Amount: 2},
 			{Type: dice.DieDamage, Amount: 2},
@@ -130,8 +126,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Bill",
+		ID:      "bill",
 		Faction: factions.Green,
-		Ability: ability{Description: "If you roll exactly 1 %shield% you may lock it as %wild%."},
 		Objectives: []objective{
 			{Type: dice.DieShield, Amount: 2, Hazard: true},
 			{Type: dice.DieDamage, Amount: 2},
@@ -141,8 +137,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "AT-OK",
+		ID:      "at-ok",
 		Faction: factions.Green,
-		Ability: ability{Description: "If you roll 2+ %shields% you cannot bust on your next roll."},
 		Objectives: []objective{
 			{Type: dice.DieShield, Amount: 3, Hazard: true},
 			{Type: dice.DieDamage, Amount: 3},
@@ -152,8 +148,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Dr.Umbrage",
+		ID:      "drumbrage",
 		Faction: factions.Orange,
-		Ability: ability{Description: "If your rolling pool is 1-3 dice, each %damage% or %wild% locked this roll is treated as 2 %damage%."},
 		Objectives: []objective{
 			{Type: dice.DieDamage, Amount: 4, Hazard: true},
 			{Type: dice.DieShield, Amount: 3},
@@ -163,8 +159,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Saghari",
+		ID:      "saghari",
 		Faction: factions.Orange,
-		Ability: ability{Description: "If you roll no %damage%, roll 1 supply die and keep if %wild% or %extra%."},
 		Objectives: []objective{
 			{Type: dice.DieDamage, Amount: 4},
 			{Type: dice.DieDamage, Amount: 3},
@@ -174,8 +170,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Kary",
+		ID:      "kary",
 		Faction: factions.Orange,
-		Ability: ability{Description: "Any %damage% from your first roll may be treated as %extra%."},
 		Objectives: []objective{
 			{Type: dice.DieDamage, Amount: 4},
 			{Type: dice.DieShield, Amount: 3, Hazard: true},
@@ -185,8 +181,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Dana",
+		ID:      "dana",
 		Faction: factions.Orange,
-		Ability: ability{Description: "May lock each %extra% as 2 %damage%."},
 		Objectives: []objective{
 			{Type: dice.DieDamage, Amount: 3},
 			{Type: dice.DieShield, Amount: 3},
@@ -196,8 +192,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Tantin",
+		ID:      "tantin",
 		Faction: factions.Orange,
-		Ability: ability{Description: "If you roll exactly 1 %damage% you may lock it as %wild%."},
 		Objectives: []objective{
 			{Type: dice.DieDamage, Amount: 2},
 			{Type: dice.DieShield, Amount: 2, Hazard: true},
@@ -207,8 +203,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Ryan",
+		ID:      "ryan",
 		Faction: factions.Orange,
-		Ability: ability{Description: "If you roll 2+ %damage%, roll 2 supply dice and keep any that are %wild%."},
 		Objectives: []objective{
 			{Type: dice.DieDamage, Amount: 3, Hazard: true},
 			{Type: dice.DieShield, Amount: 3},
@@ -218,8 +214,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Moro",
+		ID:      "moro",
 		Faction: factions.Purple,
-		Ability: ability{Description: "If your pool is 1-3 dice, you cannot bust if you roll at least one %extra%."},
 		Objectives: []objective{
 			{Type: dice.DieReactor, Amount: 4},
 			{Type: dice.DieDamage, Amount: 3, Hazard: true},
@@ -229,8 +225,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Vanta",
+		ID:      "vanta",
 		Faction: factions.Purple,
-		Ability: ability{Description: "If you roll no %extra% you may lock any 1 die as %wild%."},
 		Objectives: []objective{
 			{Type: dice.DieWild, Amount: 3},
 			{Type: dice.DieWild, Amount: 2},
@@ -240,8 +236,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Meg",
+		ID:      "meg",
 		Faction: factions.Purple,
-		Ability: ability{Description: "1 %wild% from your first roll may be saved for your next roll."},
 		Objectives: []objective{
 			{Type: dice.DieThruster, Amount: 4, Hazard: true},
 			{Type: dice.DieDamage, Amount: 3},
@@ -251,8 +247,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Sella",
+		ID:      "sella",
 		Faction: factions.Purple,
-		Ability: ability{Description: "If you roll exactly 1 %extra% you may lock it as %wild%."},
 		Objectives: []objective{
 			{Type: dice.DieThruster, Amount: 2},
 			{Type: dice.DieReactor, Amount: 2},
@@ -262,8 +258,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "FT-1000",
+		ID:      "ft1000",
 		Faction: factions.Purple,
-		Ability: ability{Description: "If you roll exactly 1 %wild%, you may treat it as %extra%."},
 		Objectives: []objective{
 			{Type: dice.DieShield, Amount: 3},
 			{Type: dice.DieThruster, Amount: 2, Hazard: true},
@@ -273,8 +269,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Avari",
+		ID:      "avari",
 		Faction: factions.Purple,
-		Ability: ability{Description: "If you roll all %wilds%, gain 3 dice for your next roll."},
 		Objectives: []objective{
 			{Type: dice.DieDamage, Amount: 3, Hazard: true},
 			{Type: dice.DieReactor, Amount: 3},
@@ -284,8 +280,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Sol",
+		ID:      "sol",
 		Faction: factions.Yellow,
-		Ability: ability{Description: "If your rolling pool is 1-3 dice, each %thruster% or %wild% locked this roll is treated as 2 %thrusters%."},
 		Objectives: []objective{
 			{Type: dice.DieThruster, Amount: 4, Hazard: true},
 			{Type: dice.DieReactor, Amount: 3},
@@ -295,8 +291,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "B3-AR",
+		ID:      "b3ar",
 		Faction: factions.Yellow,
-		Ability: ability{Description: "If you roll 3+ %thrusters% finish the current requirement."},
 		Objectives: []objective{
 			{Type: dice.DieThruster, Amount: 4},
 			{Type: dice.DieThruster, Amount: 3},
@@ -306,8 +302,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Kal",
+		ID:      "kal",
 		Faction: factions.Yellow,
-		Ability: ability{Description: "Your rolling pool starts with 6 dice."},
 		Objectives: []objective{
 			{Type: dice.DieThruster, Amount: 4},
 			{Type: dice.DieReactor, Amount: 3, Hazard: true},
@@ -317,8 +313,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Nella",
+		ID:      "nella",
 		Faction: factions.Yellow,
-		Ability: ability{Description: "May lock each %extra% as 2 %thrusters%."},
 		Objectives: []objective{
 			{Type: dice.DieThruster, Amount: 2},
 			{Type: dice.DieReactor, Amount: 2},
@@ -328,8 +324,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Zek",
+		ID:      "zek",
 		Faction: factions.Yellow,
-		Ability: ability{Description: "If you roll exactly 1 %thruster% you may lock it as %wild%."},
 		Objectives: []objective{
 			{Type: dice.DieThruster, Amount: 2},
 			{Type: dice.DieReactor, Amount: 2, Hazard: true},
@@ -339,8 +335,8 @@ var allCrew = []Crew{
 	},
 	{
 		Name:    "Myla",
+		ID:      "myla",
 		Faction: factions.Yellow,
-		Ability: ability{Description: "If you roll 2+ %thrusters% you may treat 1 of your dice as %extra%."},
 		Objectives: []objective{
 			{Type: dice.DieThruster, Amount: 3, Hazard: true},
 			{Type: dice.DieReactor, Amount: 3},
