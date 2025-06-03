@@ -23,3 +23,15 @@ var (
 func All() []Die {
 	return []Die{DieDamage, DieShield, DieThruster, DieReactor, DieWild, DieExtra}
 }
+
+func (d *Die) Render(style lipgloss.Style) string {
+	return style.
+		Height(1).
+		Border(lipgloss.RoundedBorder()).
+		Padding(0, 1).
+		Align(lipgloss.Center).
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(d.Color).
+		Foreground(d.Color).
+		Render(d.Symbol)
+}
