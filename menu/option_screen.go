@@ -2,11 +2,8 @@ package menu
 
 import (
 	"fmt"
-	"math/rand/v2"
 	"strings"
 
-	"github.com/ascii-arcade/moonrollers/colors"
-	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/ascii-arcade/moonrollers/messages"
@@ -58,16 +55,6 @@ func (s *optionScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 
 func (s *optionScreen) View() string {
 	var content strings.Builder
-	style := s.style.Width(s.model.Width).Height(s.model.Height)
-	paneStyle := s.style.Width(s.model.Width).Height(s.model.Height / 2)
-
-	d := make([]string, 0)
-	for range 12 {
-		i := rand.IntN(len(dice.All()))
-		d = append(d, dice.All()[i].Render(s.style))
-	}
-	content.WriteString(lipgloss.JoinHorizontal(lipgloss.Top, d...) + "\n\n")
-
 	content.WriteString(s.model.lang().Get("menu.welcome") + "\n\n")
 	content.WriteString(fmt.Sprintf(s.model.lang().Get("menu.press_to_create"), keys.MenuStartNewGame.String(s.style)) + "\n")
 	content.WriteString(fmt.Sprintf(s.model.lang().Get("menu.press_to_join"), keys.MenuJoinGame.String(s.style)) + "\n")
@@ -79,11 +66,5 @@ func (s *optionScreen) View() string {
 		content.WriteString(fmt.Sprintf(language.Languages["EN"].Get("menu.choose_language"), keys.MenuEnglish.String(s.style)))
 	}
 
-	panes := lipgloss.JoinVertical(
-		lipgloss.Center,
-		paneStyle.MarginBottom(2).Align(lipgloss.Center, lipgloss.Bottom).Foreground(colors.Logo).Render(logo),
-		paneStyle.Align(lipgloss.Center, lipgloss.Top).Render(content.String()),
-	)
-
-	return style.Render(panes)
+	return content.String()
 }
