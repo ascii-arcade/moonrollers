@@ -1,9 +1,12 @@
 package menu
 
 import (
+	"math/rand/v2"
 	"time"
 
+	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/config"
+	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/ascii-arcade/moonrollers/messages"
@@ -40,8 +43,9 @@ type Model struct {
 	screen             screen.Screen
 	style              lipgloss.Style
 	languagePreference *language.LanguagePreference
+	displayDice        []string
 
-	error         string
+	errorCode     string
 	gameCodeInput textinput.Model
 }
 
@@ -55,8 +59,13 @@ func NewModel(width, height int, style lipgloss.Style, languagePreference *langu
 		Height:             height,
 		style:              style,
 		languagePreference: languagePreference,
+		displayDice:        make([]string, 0),
 
 		gameCodeInput: ti,
+	}
+	for range 12 {
+		i := rand.IntN(len(dice.All()))
+		m.displayDice = append(m.displayDice, dice.All()[i].Render(style))
 	}
 
 	m.screen = m.newSplashScreen()
@@ -105,13 +114,23 @@ func (m Model) View() string {
 		return m.lang().Get("error.window_too_short")
 	}
 
-	return m.screen.View()
+	style := m.style.Width(m.Width).Height(m.Height)
+	paneStyle := m.style.Width(m.Width).PaddingTop(1)
+
+	panes := lipgloss.JoinVertical(
+		lipgloss.Center,
+		paneStyle.Align(lipgloss.Center, lipgloss.Bottom).Foreground(colors.Logo).Height(m.Height/2).Render(logo),
+		paneStyle.Align(lipgloss.Center, lipgloss.Top).Render(lipgloss.JoinHorizontal(lipgloss.Top, m.displayDice...)),
+		paneStyle.Align(lipgloss.Center, lipgloss.Top).Render(m.screen.View()),
+	)
+
+	return style.Render(panes)
 }
 
 func (m *Model) setError(err string) {
-	m.error = err
+	m.errorCode = err
 }
 
 func (m *Model) clearError() {
-	m.error = ""
+	m.errorCode = ""
 }

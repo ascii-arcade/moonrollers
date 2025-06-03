@@ -69,16 +69,12 @@ func (s *joinScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 }
 
 func (s *joinScreen) View() string {
-	style := s.style.Width(s.model.Width).Height(s.model.Height)
-	paneStyle := s.style.Width(s.model.Width).Height(s.model.Height / 2)
+	errorMessage := s.model.lang().Get(s.model.errorCode)
 
-	content := s.model.lang().Get("menu.enter_code") + "\n\n" + s.model.gameCodeInput.View()
+	var content strings.Builder
+	content.WriteString(s.model.lang().Get("menu.enter_code") + "\n\n")
+	content.WriteString(s.model.gameCodeInput.View() + "\n\n")
+	content.WriteString(s.style.Foreground(colors.Error).Render(errorMessage))
 
-	panes := lipgloss.JoinVertical(
-		lipgloss.Center,
-		paneStyle.MarginBottom(2).Align(lipgloss.Center, lipgloss.Bottom).Foreground(colors.Logo).Render(logo),
-		paneStyle.Align(lipgloss.Center, lipgloss.Top).Render(content+"\n\n"+s.style.Foreground(colors.Error).Render(s.model.error)),
-	)
-
-	return style.Render(panes)
+	return content.String()
 }
