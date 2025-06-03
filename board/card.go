@@ -31,14 +31,14 @@ func newCard(model *Model, crew *deck.Crew) *card {
 		style: model.style,
 	}
 
-	c.description = c.model.lang().Get("crew_abilities." + crew.ID)
+	c.description = c.model.lang().Get("crew_abilities", crew.ID)
 	for _, die := range dice.All() {
 		symbolStyle := c.style.Foreground(die.Color).Bold(true).Italic(true)
-		findSingular := language.Languages["EN"].Get("dice." + die.ID)
-		findPlural := language.Languages["EN"].Get("dice_plural." + die.ID)
+		findSingular := language.Languages["EN"].Get("dice", die.ID)
+		findPlural := language.Languages["EN"].Get("dice_plural", die.ID)
 
-		singular := c.model.lang().Get("dice." + die.ID)
-		plural := c.model.lang().Get("dice_plural." + die.ID)
+		singular := c.model.lang().Get("dice", die.ID)
+		plural := c.model.lang().Get("dice_plural", die.ID)
 
 		singularValue := symbolStyle.Render(fmt.Sprintf("%s %s", die.Symbol, singular))
 		pluralValue := symbolStyle.Render(fmt.Sprintf("%s %s", die.Symbol, plural))

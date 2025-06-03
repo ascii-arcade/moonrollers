@@ -69,10 +69,13 @@ func (s *joinScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 }
 
 func (s *joinScreen) View() string {
-	errorMessage := s.model.lang().Get(s.model.errorCode)
+	errorMessage := ""
+	if s.model.errorCode != "" {
+		errorMessage = s.model.lang().Get("error", s.model.errorCode)
+	}
 
 	var content strings.Builder
-	content.WriteString(s.model.lang().Get("menu.enter_code") + "\n\n")
+	content.WriteString(s.model.lang().Get("menu", "enter_code") + "\n\n")
 	content.WriteString(s.model.gameCodeInput.View() + "\n\n")
 	content.WriteString(s.style.Foreground(colors.Error).Render(errorMessage))
 
