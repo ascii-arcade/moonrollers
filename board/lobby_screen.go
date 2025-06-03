@@ -98,13 +98,13 @@ func (s *lobbyScreen) playerList() string {
 
 		listItem.WriteString("* " + p.Name)
 		if p.Name == s.model.Player.Name {
-			listItem.WriteString(fmt.Sprintf(" (%s)", s.model.lang().Get("board.player_list_you")))
+			listItem.WriteString(fmt.Sprintf(" (%s)", s.model.lang().Get("board", "player_list_you")))
 		}
 		if p.IsHost() {
-			listItem.WriteString(fmt.Sprintf(" (%s)", s.model.lang().Get("board.player_list_host")))
+			listItem.WriteString(fmt.Sprintf(" (%s)", s.model.lang().Get("board", "player_list_host")))
 		}
 		if !p.HasFaction() {
-			listItem.WriteString(fmt.Sprintf(" (%s)", s.model.lang().Get("board.no_faction")))
+			listItem.WriteString(fmt.Sprintf(" (%s)", s.model.lang().Get("board", "no_faction")))
 		}
 
 		if p.HasFaction() {
@@ -127,10 +127,10 @@ func (s *lobbyScreen) footer() string {
 
 		if s.model.Game.IsFactionUsed(faction) {
 			style = style.Italic(true)
-			word = fmt.Sprintf("%s (%s)", faction.Name, s.model.lang().Get("board.used"))
+			word = fmt.Sprintf("%s (%s)", faction.Name, s.model.lang().Get("board", "used"))
 		}
 
-		item := style.Render(fmt.Sprintf(s.model.lang().Get("board.choose_faction"), keys.LobbyJoinFaction.IndexedString(i, s.style), word))
+		item := style.Render(fmt.Sprintf(s.model.lang().Get("board", "choose_faction"), keys.LobbyJoinFaction.IndexedString(i, s.style), word))
 		colorList = append(colorList, item)
 	}
 
@@ -140,16 +140,16 @@ func (s *lobbyScreen) footer() string {
 	if s.model.Player.IsHost() {
 		err := s.model.Game.IsPlayerCountOk()
 		if err == nil {
-			sb.WriteString(fmt.Sprintf(s.model.lang().Get("board.press_to_start"), keys.MenuStartNewGame.String(s.style)))
+			sb.WriteString(fmt.Sprintf(s.model.lang().Get("board", "press_to_start"), keys.LobbyStartGame.String(s.style)))
 		} else {
-			errorMessage := s.model.lang().Get(err.Error())
+			errorMessage := s.model.lang().Get("error", err.Error())
 			sb.WriteString(s.style.Foreground(colors.Error).Render(errorMessage))
 		}
 	} else {
-		sb.WriteString(s.model.lang().Get("board.waiting_for_start"))
+		sb.WriteString(s.model.lang().Get("board", "waiting_for_start"))
 	}
 	sb.WriteString("\n")
-	sb.WriteString(fmt.Sprintf(s.model.lang().Get("global.quit"), keys.ExitApplication.String(s.style)))
+	sb.WriteString(fmt.Sprintf(s.model.lang().Get("global", "quit"), keys.ExitApplication.String(s.style)))
 
 	return sb.String()
 }
