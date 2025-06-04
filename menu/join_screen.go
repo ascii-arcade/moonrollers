@@ -35,6 +35,10 @@ func (s *joinScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 	var cmd tea.Cmd
 
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		s.model.height, s.model.width = msg.Height, msg.Width
+		return s.model, nil
+
 	case tea.KeyMsg:
 		if keys.PreviousScreen.TriggeredBy(msg.String()) {
 			return s.model, func() tea.Msg {
