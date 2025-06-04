@@ -40,7 +40,7 @@ func (s *tableScreen) View() string {
 
 	cards := make([]string, 0)
 	for _, card := range s.model.Game.CrewForHire {
-		cards = append(cards, newCard(s.model, card).renderTall())
+		cards = append(cards, newCard(s.model, card).renderForHire())
 	}
 
 	var cardRows []string
