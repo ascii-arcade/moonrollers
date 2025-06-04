@@ -51,19 +51,24 @@ func newFullCard(model *Model, crew *deck.Crew) *fullCard {
 }
 
 func (c *fullCard) render() string {
+	width := 70
+	iconWidth := 8
+	objectivesWidth := 7
+	descriptionWidth := width - iconWidth - objectivesWidth - 5
+
 	style := c.style.
 		Border(lipgloss.NormalBorder()).
 		BorderForeground(c.Crew.Faction.Color).
-		Width(11).
-		Height(7)
+		Width(width)
 
-	var sb strings.Builder
-	sb.WriteString(c.style.Foreground(c.Crew.Faction.Color).Bold(true).Render(c.Crew.Name))
-	sb.WriteString("\n\n")
+	name := c.style.Foreground(c.Crew.Faction.Color).Bold(true).Render(c.Crew.Name)
 
-	for _, objective := range c.Crew.Objectives {
+	var objectives strings.Builder
+	for i, objective := range c.Crew.Objectives {
 		var line strings.Builder
-		line.WriteString(" ")
+		if i > 0 {
+			line.WriteString("\n")
+		}
 		line.WriteString(c.style.Foreground(objective.Type.Color).Render(objective.Type.Symbol))
 		line.WriteString(" ")
 		if objective.Hazard {
@@ -74,9 +79,20 @@ func (c *fullCard) render() string {
 		for range objective.Amount {
 			line.WriteString(emptyPip)
 		}
-		line.WriteString("\n")
-		sb.WriteString(line.String())
+		objectives.WriteString(line.String())
 	}
 
-	return style.Render(sb.String())
+	return style.Render(lipgloss.JoinHorizontal(
+		lipgloss.Left,
+		c.style.Width(iconWidth).Foreground(c.Crew.Faction.Color).Render(c.Crew.Faction.Icon),
+		lipgloss.JoinVertical(
+			lipgloss.Top,
+			c.style.MarginLeft(1).Render(name),
+			lipgloss.JoinHorizontal(
+				lipgloss.Left,
+				c.style.MarginLeft(1).Width(objectivesWidth).Render(objectives.String()),
+				c.style.MarginLeft(1).Width(descriptionWidth).Render(c.description),
+			),
+		),
+	))
 }
