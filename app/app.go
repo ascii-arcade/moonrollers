@@ -17,8 +17,6 @@ type Model struct {
 	active tea.Model
 	menu   menu.Model
 	board  board.Model
-
-	languagePreference *language.LanguagePreference
 }
 
 func (m Model) Init() tea.Cmd {
@@ -68,12 +66,14 @@ func TeaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 	pty, _, _ := s.Pty()
 	renderer := bubbletea.MakeRenderer(s)
 	style := renderer.NewStyle()
+
 	languagePreference := language.LanguagePreference{Lang: config.Language}
 
+	player := games.NewPlayer(s.Context(), &languagePreference)
+
 	m := Model{
-		languagePreference: &languagePreference,
-		board:              board.NewModel(pty.Window.Width, pty.Window.Height, style, &languagePreference),
-		menu:               menu.NewModel(pty.Window.Width, pty.Window.Height, style, &languagePreference),
+		board: board.NewModel(pty.Window.Width, pty.Window.Height, style, player),
+		menu:  menu.NewModel(pty.Window.Width, pty.Window.Height, style, player),
 	}
 	m.active = m.menu
 
@@ -91,14 +91,10 @@ func (m *Model) joinGame(code string, isNew bool) error {
 	if err != nil {
 		return err
 	}
-
-	player, err := game.AddPlayer(isNew, m.languagePreference.Lang)
-	if err != nil {
+	if err := game.AddPlayer(m.board.Player, isNew); err != nil {
 		return err
 	}
 
 	m.board.Game = game
-	m.board.Player = player
-
 	return nil
 }
