@@ -10,7 +10,11 @@ import (
 	"github.com/ascii-arcade/moonrollers/deck"
 	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/generaterandom"
-	"github.com/ascii-arcade/moonrollers/language"
+)
+
+var (
+	ErrGameInProgress = errors.New("game_already_in_progress")
+	ErrGameNotFound   = errors.New("game_not_found")
 )
 
 var games = make(map[string]*Game)
@@ -38,10 +42,10 @@ func New() *Game {
 func GetOpenGame(code string) (*Game, error) {
 	game, exists := games[code]
 	if !exists {
-		return nil, errors.New("game_not_found")
+		return nil, ErrGameNotFound
 	}
 	if game.inProgress {
-		return nil, errors.New("game_not_found")
+		return nil, ErrGameInProgress
 	}
 
 	return game, nil
@@ -79,24 +83,32 @@ func (s *Game) withLock(fn func() error) error {
 	return fn()
 }
 
-func (s *Game) AddPlayer(isHost bool, lang *language.Language) (*Player, error) {
-	var player *Player
-	err := s.withLock(func() error {
+func (s *Game) AddPlayer(player *Player, isHost bool) error {
+	return s.withLock(func() error {
 		if s.inProgress {
-			return errors.New("not_enough_players")
+			return ErrGameInProgress
 		}
+
 		maxTurnOrder := 0
 		for _, p := range s.players {
 			if p.TurnOrder > maxTurnOrder {
 				maxTurnOrder = p.TurnOrder
 			}
 		}
-		player = newPlayer(maxTurnOrder, isHost, lang)
+
+		player.SetTurnOrder(maxTurnOrder + 1)
+		if isHost {
+			player.MakeHost()
+		}
+
+		go func() {
+			<-player.ctx.Done()
+			_ = s.RemovePlayer(player.Name)
+		}()
+
 		s.players = append(s.players, player)
 		return nil
 	})
-
-	return player, err
 }
 
 func (s *Game) RemovePlayer(playerName string) error {

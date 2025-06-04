@@ -7,6 +7,7 @@ import (
 	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/config"
 	"github.com/ascii-arcade/moonrollers/dice"
+	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/ascii-arcade/moonrollers/messages"
@@ -38,30 +39,30 @@ const logo = `            ++++*+
 type doneMsg struct{}
 
 type Model struct {
-	Width              int
-	Height             int
-	screen             screen.Screen
-	style              lipgloss.Style
-	languagePreference *language.LanguagePreference
-	displayDice        []string
+	Width       int
+	Height      int
+	screen      screen.Screen
+	style       lipgloss.Style
+	displayDice []string
 
 	errorCode     string
 	gameCodeInput textinput.Model
+
+	player *games.Player
 }
 
-func NewModel(width, height int, style lipgloss.Style, languagePreference *language.LanguagePreference) Model {
+func NewModel(width, height int, style lipgloss.Style, player *games.Player) Model {
 	ti := textinput.New()
 	ti.Width = 9
 	ti.CharLimit = 7
 
 	m := Model{
-		Width:              width,
-		Height:             height,
-		style:              style,
-		languagePreference: languagePreference,
-		displayDice:        make([]string, 0),
-
+		Width:         width,
+		Height:        height,
+		style:         style,
+		displayDice:   make([]string, 0),
 		gameCodeInput: ti,
+		player:        player,
 	}
 	for range 12 {
 		i := rand.IntN(len(dice.All()))
@@ -83,7 +84,7 @@ func (m Model) Init() tea.Cmd {
 }
 
 func (m *Model) lang() *language.Language {
-	return m.languagePreference.Lang
+	return m.player.LanguagePreference.Lang
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
