@@ -30,8 +30,6 @@ func newScoreboard(model *Model) scoreboard {
 }
 
 func (s *scoreboard) render() string {
-	style := s.style.Margin(1).Width(s.model.Width / 3)
-
 	if s.short {
 		out := make([]string, 0)
 		for _, p := range s.players {
@@ -41,7 +39,7 @@ func (s *scoreboard) render() string {
 			out = append(out, points)
 		}
 
-		return lipgloss.JoinVertical(lipgloss.Left, style.Padding(1).Render(strings.Join(out, "\n")))
+		return lipgloss.JoinVertical(lipgloss.Left, s.style.Padding(1).Render(strings.Join(out, "\n")))
 	}
 
 	rows := make([]string, 0)
@@ -59,7 +57,7 @@ func (s *scoreboard) render() string {
 	}
 	rows = append(rows, lipgloss.JoinHorizontal(lipgloss.Top, morePointsRow...))
 
-	return style.Render(strings.Join(rows, "\n"))
+	return s.style.Render(strings.Join(rows, "\n"))
 }
 
 func (s *scoreboard) additionalPointsCell(playerIndex int) string {

@@ -1,8 +1,6 @@
 package board
 
 import (
-	"fmt"
-
 	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
@@ -42,11 +40,12 @@ func (s *tableScreen) View() string {
 
 	cards := make([]string, 0)
 	for _, card := range s.model.Game.CrewForHire {
-		cards = append(cards, newCard(s.model, card).render())
+		cards = append(cards, newFullCard(s.model, card).render())
 	}
 
-	return s.style.Render(fmt.Sprintf(s.model.lang().Get("board", "you_are"), s.model.Player.Name)) +
-		"\n\n" + scoreboard.render() +
-		"\n\n" + lipgloss.JoinHorizontal(lipgloss.Top, cards...) +
-		"\n\n" + s.style.Render(fmt.Sprintf(s.model.lang().Get("global", "quit"), keys.ExitApplication.String(s.style)))
+	return lipgloss.JoinHorizontal(
+		lipgloss.Left,
+		scoreboard.render(),
+		lipgloss.JoinVertical(lipgloss.Left, cards...),
+	)
 }

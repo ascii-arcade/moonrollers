@@ -17,15 +17,15 @@ const (
 	hazard   = "!"
 )
 
-type card struct {
+type fullCard struct {
 	model       *Model
 	Crew        *deck.Crew
 	description string
 	style       lipgloss.Style
 }
 
-func newCard(model *Model, crew *deck.Crew) *card {
-	c := &card{
+func newFullCard(model *Model, crew *deck.Crew) *fullCard {
+	c := &fullCard{
 		model: model,
 		Crew:  crew,
 		style: model.style,
@@ -50,7 +50,7 @@ func newCard(model *Model, crew *deck.Crew) *card {
 	return c
 }
 
-func (c *card) render() string {
+func (c *fullCard) render() string {
 	style := c.style.
 		Border(lipgloss.NormalBorder()).
 		BorderForeground(c.Crew.Faction.Color).
