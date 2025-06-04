@@ -40,12 +40,22 @@ func (s *tableScreen) View() string {
 
 	cards := make([]string, 0)
 	for _, card := range s.model.Game.CrewForHire {
-		cards = append(cards, newFullCard(s.model, card).render())
+		cards = append(cards, newCard(s.model, card).renderTall())
+	}
+
+	var cardRows []string
+	if len(cards) > 0 {
+		row1 := lipgloss.JoinHorizontal(lipgloss.Left, cards[:min(3, len(cards))]...)
+		cardRows = append(cardRows, row1)
+	}
+	if len(cards) > 3 {
+		row2 := lipgloss.JoinHorizontal(lipgloss.Left, cards[3:min(6, len(cards))]...)
+		cardRows = append(cardRows, row2)
 	}
 
 	return lipgloss.JoinHorizontal(
 		lipgloss.Left,
 		scoreboard.render(),
-		lipgloss.JoinVertical(lipgloss.Left, cards...),
+		lipgloss.JoinVertical(lipgloss.Left, cardRows...),
 	)
 }

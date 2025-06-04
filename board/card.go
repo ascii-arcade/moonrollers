@@ -17,15 +17,15 @@ const (
 	hazard   = "!"
 )
 
-type fullCard struct {
+type card struct {
 	model       *Model
 	Crew        *deck.Crew
 	description string
 	style       lipgloss.Style
 }
 
-func newFullCard(model *Model, crew *deck.Crew) *fullCard {
-	c := &fullCard{
+func newCard(model *Model, crew *deck.Crew) *card {
+	c := &card{
 		model: model,
 		Crew:  crew,
 		style: model.style,
@@ -50,7 +50,7 @@ func newFullCard(model *Model, crew *deck.Crew) *fullCard {
 	return c
 }
 
-func (c *fullCard) render() string {
+func (c *card) renderFull() string {
 	width := 70
 	iconWidth := 8
 	objectivesWidth := 7
@@ -93,6 +93,55 @@ func (c *fullCard) render() string {
 				c.style.MarginLeft(1).Width(objectivesWidth).Render(objectives.String()),
 				c.style.MarginLeft(1).Width(descriptionWidth).Render(c.description),
 			),
+		),
+	))
+}
+
+func (c *card) renderTall() string {
+	width := 20
+	height := 14
+	iconWidth := 8
+	objectivesWidth := 7
+	descriptionWidth := width - 2
+
+	style := c.style.
+		Border(lipgloss.NormalBorder()).
+		BorderForeground(c.Crew.Faction.Color).
+		Width(width).
+		Height(height)
+
+	name := c.style.Foreground(c.Crew.Faction.Color).Bold(true).Render(c.Crew.Name)
+
+	var objectives strings.Builder
+	for i, objective := range c.Crew.Objectives {
+		var line strings.Builder
+		if i > 0 {
+			line.WriteString("\n")
+		}
+		line.WriteString(c.style.Foreground(objective.Type.Color).Render(objective.Type.Symbol))
+		line.WriteString(" ")
+		if objective.Hazard {
+			line.WriteString(c.style.Foreground(colors.Hazard).Render(hazard))
+		} else {
+			line.WriteString(" ")
+		}
+		for range objective.Amount {
+			line.WriteString(emptyPip)
+		}
+		objectives.WriteString(line.String())
+	}
+
+	return style.Render(lipgloss.JoinHorizontal(
+		lipgloss.Left,
+		lipgloss.JoinVertical(
+			lipgloss.Top,
+			c.style.MarginLeft(1).Render(name),
+			lipgloss.JoinHorizontal(
+				lipgloss.Left,
+				c.style.MarginLeft(1).MarginTop(1).Width(objectivesWidth).Render(objectives.String()),
+				c.style.MarginLeft(3).Width(iconWidth).Foreground(c.Crew.Faction.Color).Render(c.Crew.Faction.Icon),
+			),
+			c.style.MarginLeft(1).MarginTop(1).Width(descriptionWidth).Render(c.description),
 		),
 	))
 }
