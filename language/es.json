@@ -35,6 +35,7 @@
       "player_list_you": "tú",
       "player_list_host": "anfitrión",
       "you_are" : "Eres %s",
+      "disconnected_player": "%s se ha desconectado. Esperando a que se reconecte...",
       "no_faction": "sin facción",
       "used": "usado",
       "choose_faction": "Presiona %s para elegir %s"
