@@ -35,6 +35,7 @@
       "player_list_you": "you",
       "player_list_host": "host",
       "you_are" : "You are %s",
+      "disconnected_player": "%s has disconnected. Waiting for them to reconnect...",
       "no_faction": "no faction",
       "used": "used",
       "choose_faction": "Press %s to choose %s"

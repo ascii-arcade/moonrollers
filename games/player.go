@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/ascii-arcade/moonrollers/factions"
-	"github.com/ascii-arcade/moonrollers/generaterandom"
 	"github.com/ascii-arcade/moonrollers/language"
+	"github.com/charmbracelet/ssh"
 )
 
 type Player struct {
@@ -17,18 +17,11 @@ type Player struct {
 
 	UpdateChan chan struct{}
 
-	isHost bool
-	ctx    context.Context
-}
+	isHost    bool
+	connected bool
 
-func NewPlayer(ctx context.Context, lang *language.LanguagePreference) *Player {
-	return &Player{
-		Name:               generaterandom.Name(lang.Lang),
-		Points:             0,
-		UpdateChan:         make(chan struct{}),
-		LanguagePreference: lang,
-		ctx:                ctx,
-	}
+	Sess ssh.Session
+	ctx  context.Context
 }
 
 func (p *Player) SetName(name string) *Player {

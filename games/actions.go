@@ -17,11 +17,11 @@ func (s *Game) SetFaction(player *Player, faction *factions.Faction) error {
 	})
 }
 
-func (s *Game) AddPoints(pName string, amount int) error {
+func (s *Game) AddPoints(player *Player, amount int) error {
 	return s.withLock(func() error {
-		player, exists := s.getPlayer(pName)
+		player, exists := s.getPlayer(player.Sess)
 		if !exists {
-			return errors.New("player")
+			return errors.New("player_not_found")
 		}
 		player.incrementPoints(amount)
 		return nil
