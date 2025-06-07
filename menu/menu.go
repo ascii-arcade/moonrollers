@@ -1,6 +1,7 @@
 package menu
 
 import (
+	"errors"
 	"math/rand/v2"
 	"time"
 
@@ -130,4 +131,15 @@ func (m *Model) setError(err string) {
 
 func (m *Model) clearError() {
 	m.errorCode = ""
+}
+
+func (m *Model) joinGame(code string, isNew bool) error {
+	game, err := games.GetOpenGame(code)
+	if err != nil && !(errors.Is(err, games.ErrGameInProgress) && game.HasPlayer(m.player)) {
+		return err
+	}
+	if err := game.AddPlayer(m.player, isNew); err != nil {
+		return err
+	}
+	return nil
 }
