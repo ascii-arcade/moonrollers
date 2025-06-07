@@ -74,6 +74,12 @@ func (s *Game) AddPlayer(player *Player, isHost bool) error {
 			player.MakeHost()
 		}
 
+		player.OnDisconnect(func() {
+			if !s.inProgress {
+				s.RemovePlayer(player)
+			}
+		})
+
 		s.players = append(s.players, player)
 		return nil
 	})
@@ -90,7 +96,7 @@ func (s *Game) RemovePlayer(player *Player) {
 				}
 			}
 
-			if len(s.players) == 0 {
+			if s.GetPlayerCount(false) == 0 {
 				delete(games, player.Sess.User())
 			}
 		}
@@ -133,4 +139,14 @@ func (s *Game) IsFactionUsed(faction factions.Faction) bool {
 		}
 	}
 	return false
+}
+
+func (s *Game) GetPlayerCount(includeDisconnected bool) int {
+	count := 0
+	for _, p := range s.players {
+		if includeDisconnected || p.connected {
+			count++
+		}
+	}
+	return count
 }
