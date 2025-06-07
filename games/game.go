@@ -43,7 +43,16 @@ func (s *Game) refresh() {
 	}
 }
 
-func (s *Game) withLock(fn func() error) error {
+func (s *Game) withLock(fn func()) {
+	s.mu.Lock()
+	defer func() {
+		s.refresh()
+		s.mu.Unlock()
+	}()
+	fn()
+}
+
+func (s *Game) withErrLock(fn func() error) error {
 	s.mu.Lock()
 	defer func() {
 		s.refresh()
@@ -53,7 +62,7 @@ func (s *Game) withLock(fn func() error) error {
 }
 
 func (s *Game) AddPlayer(player *Player, isHost bool) error {
-	return s.withLock(func() error {
+	return s.withErrLock(func() error {
 		if _, ok := s.getPlayer(player.Sess); ok {
 			return nil
 		}
@@ -86,7 +95,7 @@ func (s *Game) AddPlayer(player *Player, isHost bool) error {
 }
 
 func (s *Game) RemovePlayer(player *Player) {
-	_ = s.withLock(func() error {
+	s.withLock(func() {
 		if player, exists := s.getPlayer(player.Sess); exists {
 			close(player.UpdateChan)
 			for i, p := range s.players {
@@ -100,7 +109,6 @@ func (s *Game) RemovePlayer(player *Player) {
 				delete(games, player.Sess.User())
 			}
 		}
-		return nil
 	})
 }
 
@@ -115,14 +123,13 @@ func (s *Game) getPlayer(sess ssh.Session) (*Player, bool) {
 
 func (s *Game) DisconnectedPlayer() *Player {
 	var player *Player
-	_ = s.withLock(func() error {
+	s.withLock(func() {
 		for _, p := range s.players {
 			if !p.connected {
 				player = p
 				break
 			}
 		}
-		return nil
 	})
 	return player
 }
