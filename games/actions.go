@@ -7,7 +7,7 @@ import (
 )
 
 func (s *Game) SetFaction(player *Player, faction *factions.Faction) error {
-	return s.withLock(func() error {
+	return s.withErrLock(func() error {
 		if faction == nil {
 			return errors.New("faction_cannot_be_nil")
 		}
@@ -18,7 +18,7 @@ func (s *Game) SetFaction(player *Player, faction *factions.Faction) error {
 }
 
 func (s *Game) AddPoints(player *Player, amount int) error {
-	return s.withLock(func() error {
+	return s.withErrLock(func() error {
 		player, exists := s.getPlayer(player.Sess)
 		if !exists {
 			return errors.New("player_not_found")
