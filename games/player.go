@@ -21,7 +21,9 @@ type Player struct {
 	connected bool
 
 	Sess ssh.Session
-	ctx  context.Context
+
+	onDisconnect []func()
+	ctx          context.Context
 }
 
 func (p *Player) SetName(name string) *Player {
@@ -49,4 +51,8 @@ func (p *Player) incrementPoints(amount int) {
 
 func (p *Player) HasFaction() bool {
 	return p.Faction != nil
+}
+
+func (p *Player) OnDisconnect(fn func()) {
+	p.onDisconnect = append(p.onDisconnect, fn)
 }
