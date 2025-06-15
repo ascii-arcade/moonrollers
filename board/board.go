@@ -1,6 +1,8 @@
 package board
 
 import (
+	"fmt"
+
 	"github.com/ascii-arcade/moonrollers/config"
 	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/keys"
@@ -63,6 +65,17 @@ func (m Model) View() string {
 	}
 	if m.height < config.MinimumHeight {
 		return m.lang().Get("error", "window_too_short")
+	}
+
+	disconnectedPlayer := m.Game.DisconnectedPlayer()
+	if disconnectedPlayer != nil {
+		return m.style.Render(
+			lipgloss.JoinVertical(
+				lipgloss.Center,
+				m.style.Align(lipgloss.Center).MarginBottom(2).Render(m.Game.Code),
+				fmt.Sprintf(m.lang().Get("board", "disconnected_player"), disconnectedPlayer.Name)) +
+				"\n\n" + m.style.Render(fmt.Sprintf(m.lang().Get("global", "quit"), keys.ExitApplication.String(m.style))),
+		)
 	}
 
 	return m.activeScreen().View()

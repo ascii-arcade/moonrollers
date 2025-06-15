@@ -1,8 +1,6 @@
 package board
 
 import (
-	"fmt"
-
 	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
@@ -42,17 +40,6 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 }
 
 func (s *tableScreen) View() string {
-	disconnectedPlayer := s.model.Game.DisconnectedPlayer()
-	if disconnectedPlayer != nil {
-		return s.style.Render(
-			lipgloss.JoinVertical(
-				lipgloss.Center,
-				s.model.style.Align(lipgloss.Center).MarginBottom(2).Render(s.model.Game.Code),
-				fmt.Sprintf(s.model.lang().Get("board", "disconnected_player"), disconnectedPlayer.Name)) +
-				"\n\n" + s.style.Render(fmt.Sprintf(s.model.lang().Get("global", "quit"), keys.ExitApplication.String(s.style))),
-		)
-	}
-
 	scoreboard := newScoreboard(s.model)
 
 	cards := make([]string, 0)
