@@ -123,14 +123,12 @@ func (s *Game) getPlayer(sess ssh.Session) (*Player, bool) {
 
 func (s *Game) DisconnectedPlayer() *Player {
 	var player *Player
-	s.withLock(func() {
-		for _, p := range s.players {
-			if !p.connected {
-				player = p
-				break
-			}
+	for _, p := range s.players {
+		if !p.connected {
+			player = p
+			break
 		}
-	})
+	}
 	return player
 }
 
