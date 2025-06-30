@@ -31,7 +31,8 @@ func (s *lobbyScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		return s.model, nil
 
 	case tea.KeyMsg:
-		if keys.LobbyStartGame.TriggeredBy(msg.String()) {
+		switch {
+		case keys.LobbyStartGame.TriggeredBy(msg.String()):
 			allHaveColor := true
 			for _, p := range s.model.Game.OrderedPlayers() {
 				if !p.HasFaction() {
@@ -42,8 +43,7 @@ func (s *lobbyScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 			if s.model.Player.IsHost() && allHaveColor {
 				_ = s.model.Game.Begin()
 			}
-		}
-		if keys.LobbyJoinFaction.TriggeredBy(msg.String()) {
+		case keys.LobbyJoinFaction.TriggeredBy(msg.String()):
 			i, err := strconv.Atoi(msg.String())
 			if err != nil {
 				return s.model, nil
@@ -52,6 +52,12 @@ func (s *lobbyScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				if !s.model.Game.IsFactionUsed(faction) {
 					_ = s.model.Game.SetFaction(s.model.Player, &faction)
 				}
+			}
+		case keys.LobbySettings.TriggeredBy(msg.String()):
+			if s.model.Player.IsHost() {
+				settingsScreen := s.model.newSettingsScreen()
+				settingsScreen.Init()
+				s.model.screen = settingsScreen
 			}
 		}
 	}

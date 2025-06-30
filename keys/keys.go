@@ -36,6 +36,7 @@ var (
 
 	LobbyStartGame   = Keys{"s"}
 	LobbyJoinFaction = Keys{"1", "2", "3", "4", "5"}
+	LobbySettings    = Keys{"c"}
 
 	GameIncrementPoint = Keys{"a"}
 )
