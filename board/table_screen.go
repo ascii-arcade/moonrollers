@@ -2,7 +2,6 @@ package board
 
 import (
 	"github.com/ascii-arcade/moonrollers/keys"
-	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -17,11 +16,6 @@ func (m *Model) newTableScreen() *tableScreen {
 		model: m,
 		style: m.style,
 	}
-}
-
-func (s *tableScreen) WithModel(model any) screen.Screen {
-	s.model = model.(*Model)
-	return s
 }
 
 func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {

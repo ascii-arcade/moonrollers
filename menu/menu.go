@@ -11,7 +11,6 @@ import (
 	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/language"
-	"github.com/ascii-arcade/moonrollers/messages"
 	"github.com/ascii-arcade/moonrollers/screen"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -38,6 +37,7 @@ const logo = `            ++++*+
             +++*++            `
 
 type doneMsg struct{}
+type SwitchToBoardMsg struct{ Game *games.Game }
 
 type Model struct {
 	width       int
@@ -90,10 +90,6 @@ func (m *Model) lang() *language.Language {
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case messages.SwitchScreenMsg:
-		m.screen = msg.Screen.WithModel(&m)
-		return m, nil
-
 	case tea.KeyMsg:
 		if keys.ExitApplication.TriggeredBy(msg.String()) {
 			return m, tea.Quit

@@ -8,7 +8,6 @@ import (
 	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/keys"
-	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -23,11 +22,6 @@ func (m *Model) newLobbyScreen() *lobbyScreen {
 		model: m,
 		style: m.style,
 	}
-}
-
-func (s *lobbyScreen) WithModel(model any) screen.Screen {
-	s.model = model.(*Model)
-	return s
 }
 
 func (s *lobbyScreen) Update(msg tea.Msg) (any, tea.Cmd) {
