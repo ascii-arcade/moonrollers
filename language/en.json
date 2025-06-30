@@ -35,6 +35,9 @@
       "game_over": "Game over! Thanks for playing!",
       "winner": "The winner is %s!"
     },
+    "settings": {
+      "press_to_open": "Press %s to open settings"
+    },
     "dice": {
       "reactor": "reactor",
       "damage": "damage",

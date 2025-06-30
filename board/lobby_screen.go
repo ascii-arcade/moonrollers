@@ -149,9 +149,12 @@ func (s *lobbyScreen) footer() string {
 			errorMessage := s.model.lang().Get("error", err.Error())
 			sb.WriteString(s.style.Foreground(colors.Error).Render(errorMessage))
 		}
+		sb.WriteString("\n")
 	} else {
 		sb.WriteString(s.model.lang().Get("board", "waiting_for_start"))
 	}
+	sb.WriteString("\n")
+	sb.WriteString(fmt.Sprintf(s.model.lang().Get("settings", "press_to_open"), keys.LobbySettings.String(s.style)))
 	sb.WriteString("\n")
 	sb.WriteString(fmt.Sprintf(s.model.lang().Get("global", "quit"), keys.ExitApplication.String(s.style)))
 
