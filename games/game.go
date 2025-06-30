@@ -105,7 +105,7 @@ func (s *Game) RemovePlayer(player *Player) {
 			}
 
 			if s.GetPlayerCount(false) == 0 {
-				delete(games, player.Sess.User())
+				delete(games, s.Code)
 			}
 		}
 	})
