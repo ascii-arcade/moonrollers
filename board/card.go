@@ -46,6 +46,9 @@ func newCard(model *Model, crew *deck.Crew) *card {
 		c.description = strings.ReplaceAll(c.description, "%"+findSingular+"%", singularValue)
 		c.description = strings.ReplaceAll(c.description, "%"+findPlural+"%", pluralValue)
 	}
+	hazardStyle := c.style.Foreground(colors.Hazard).Bold(true).Italic(true)
+	hazardValue := hazardStyle.Render(fmt.Sprintf("%s %s", hazard, "hazard"))
+	c.description = strings.ReplaceAll(c.description, "%hazard%", hazardValue)
 
 	return c
 }
