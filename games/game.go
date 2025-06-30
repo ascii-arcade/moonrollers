@@ -78,6 +78,7 @@ func (s *Game) AddPlayer(player *Player, isHost bool) error {
 		}
 
 		player.SetTurnOrder(maxTurnOrder + 1)
+		player.Faction = nil
 		if isHost {
 			player.MakeHost()
 		}
