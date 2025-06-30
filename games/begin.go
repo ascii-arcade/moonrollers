@@ -6,6 +6,7 @@ import (
 
 	"github.com/ascii-arcade/moonrollers/deck"
 	"github.com/ascii-arcade/moonrollers/factions"
+	"github.com/ascii-arcade/moonrollers/messages"
 )
 
 const (
@@ -21,6 +22,10 @@ func (s *Game) Begin() error {
 		s.Deck = deck.NewDeck()
 		s.dealCrewForHire()
 		s.inProgress = true
+
+		for _, p := range s.players {
+			p.update(messages.TableScreen)
+		}
 		return nil
 	})
 }

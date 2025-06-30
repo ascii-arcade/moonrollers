@@ -7,6 +7,7 @@ import (
 
 	"github.com/ascii-arcade/moonrollers/deck"
 	"github.com/ascii-arcade/moonrollers/factions"
+	"github.com/ascii-arcade/moonrollers/messages"
 	"github.com/charmbracelet/ssh"
 )
 
@@ -15,6 +16,7 @@ type Game struct {
 	CrewForHire []*deck.Crew
 	Deck        deck.Deck
 
+	Settings   Settings
 	inProgress bool
 	mu         sync.Mutex
 	players    []*Player
@@ -36,10 +38,7 @@ func (s *Game) OrderedPlayers() []*Player {
 
 func (s *Game) refresh() {
 	for _, p := range s.players {
-		select {
-		case p.UpdateChan <- struct{}{}:
-		default:
-		}
+		p.update(messages.Refresh)
 	}
 }
 
@@ -154,4 +153,8 @@ func (s *Game) GetPlayerCount(includeDisconnected bool) int {
 		}
 	}
 	return count
+}
+
+func (s *Game) GetWinner() *Player {
+	return nil
 }

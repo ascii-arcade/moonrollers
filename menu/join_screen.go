@@ -7,8 +7,6 @@ import (
 	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/keys"
-	"github.com/ascii-arcade/moonrollers/messages"
-	"github.com/ascii-arcade/moonrollers/screen"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -27,11 +25,6 @@ func (m *Model) newJoinScreen() *joinScreen {
 	}
 }
 
-func (s *joinScreen) WithModel(model any) screen.Screen {
-	s.model = model.(*Model)
-	return s
-}
-
 func (s *joinScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 	var cmd tea.Cmd
 
@@ -42,11 +35,8 @@ func (s *joinScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 
 	case tea.KeyMsg:
 		if keys.PreviousScreen.TriggeredBy(msg.String()) {
-			return s.model, func() tea.Msg {
-				return messages.SwitchScreenMsg{
-					Screen: s.model.newTitleScreen(),
-				}
-			}
+			s.model.screen = s.model.newTitleScreen()
+			return s.model, nil
 		}
 		if keys.Submit.TriggeredBy(msg.String()) {
 			if len(s.model.gameCodeInput.Value()) == 7 {
@@ -65,7 +55,7 @@ func (s *joinScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 					return s.model, nil
 				}
 
-				return s.model, func() tea.Msg { return messages.SwitchToBoardMsg{Game: game} }
+				return s.model, func() tea.Msg { return SwitchToBoardMsg{Game: game} }
 			}
 		}
 

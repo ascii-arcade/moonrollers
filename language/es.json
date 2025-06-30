@@ -31,7 +31,9 @@
       "disconnected_player": "%s se ha desconectado. Esperando a que se reconecte...",
       "no_faction": "sin facción",
       "used": "usado",
-      "choose_faction": "Presiona %s para elegir %s"
+      "choose_faction": "Presiona %s para elegir %s",
+      "game_over": "¡Juego terminado! ¡Gracias por jugar!",
+      "winner": "¡El ganador es %s!"
     },
     "dice": {
       "reactor": "reactor",

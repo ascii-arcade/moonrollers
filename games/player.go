@@ -15,7 +15,7 @@ type Player struct {
 	TurnOrder          int
 	LanguagePreference *language.LanguagePreference
 
-	UpdateChan chan struct{}
+	UpdateChan chan int
 
 	isHost    bool
 	connected bool
@@ -55,4 +55,11 @@ func (p *Player) HasFaction() bool {
 
 func (p *Player) OnDisconnect(fn func()) {
 	p.onDisconnect = append(p.onDisconnect, fn)
+}
+
+func (p *Player) update(code int) {
+	select {
+	case p.UpdateChan <- code:
+	default:
+	}
 }
