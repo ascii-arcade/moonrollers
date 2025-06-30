@@ -20,6 +20,7 @@ func (s *Game) Begin() error {
 			return err
 		}
 		s.Deck = deck.NewDeck()
+		s.dealStarterCards()
 		s.dealCrewForHire()
 		s.inProgress = true
 
@@ -28,6 +29,23 @@ func (s *Game) Begin() error {
 		}
 		return nil
 	})
+}
+
+func (s *Game) dealStarterCards() {
+	if !s.Settings.UseStarterCards {
+		return
+	}
+
+	for _, player := range s.players {
+		for _, crew := range s.Deck {
+			if crew.IsStarter && crew.Faction == *player.Faction {
+				index := slices.Index(s.Deck, crew)
+				s.Deck = slices.Delete(s.Deck, index, index+1)
+				player.Crew = append(player.Crew, crew)
+				break
+			}
+		}
+	}
 }
 
 func (s *Game) dealCrewForHire() {
