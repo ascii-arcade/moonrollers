@@ -3,6 +3,7 @@ package games
 import (
 	"context"
 
+	"github.com/ascii-arcade/moonrollers/deck"
 	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/charmbracelet/ssh"
@@ -12,6 +13,7 @@ type Player struct {
 	Name               string
 	Faction            *factions.Faction
 	Points             int
+	Crew               []*deck.Crew
 	TurnOrder          int
 	LanguagePreference *language.LanguagePreference
 

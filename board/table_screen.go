@@ -51,9 +51,15 @@ func (s *tableScreen) View() string {
 		cardRows = append(cardRows, row2)
 	}
 
+	playerCrewContent := ""
+	for _, crew := range s.model.Player.Crew {
+		playerCrewContent += "yours: " + newCard(s.model, crew).renderForHire() + "\n"
+	}
+
 	return lipgloss.JoinHorizontal(
 		lipgloss.Left,
 		scoreboard.render(),
 		lipgloss.JoinVertical(lipgloss.Left, cardRows...),
+		playerCrewContent,
 	)
 }
