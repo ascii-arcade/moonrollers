@@ -34,32 +34,17 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 }
 
 func (s *tableScreen) View() string {
+	forHire := newForHire(s.model)
+	playerHand := newPlayerHand(s.model)
 	scoreboard := newScoreboard(s.model)
 
-	cards := make([]string, 0)
-	for _, card := range s.model.Game.CrewForHire {
-		cards = append(cards, newCard(s.model, card).renderForHire())
-	}
-
-	var cardRows []string
-	if len(cards) > 0 {
-		row1 := lipgloss.JoinHorizontal(lipgloss.Left, cards[:min(3, len(cards))]...)
-		cardRows = append(cardRows, row1)
-	}
-	if len(cards) > 3 {
-		row2 := lipgloss.JoinHorizontal(lipgloss.Left, cards[3:min(6, len(cards))]...)
-		cardRows = append(cardRows, row2)
-	}
-
-	playerCrewContent := ""
-	for _, crew := range s.model.Player.Crew {
-		playerCrewContent += "yours: " + newCard(s.model, crew).renderForHire() + "\n"
-	}
-
-	return lipgloss.JoinHorizontal(
+	return lipgloss.JoinVertical(
 		lipgloss.Left,
-		scoreboard.render(),
-		lipgloss.JoinVertical(lipgloss.Left, cardRows...),
-		playerCrewContent,
+		lipgloss.JoinHorizontal(
+			lipgloss.Left,
+			scoreboard.render(),
+			forHire.render(),
+		),
+		playerHand.render(),
 	)
 }
