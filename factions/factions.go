@@ -8,9 +8,10 @@ import (
 )
 
 type Faction struct {
-	Name  string
-	Icon  string
-	Color lipgloss.Color
+	Name      string
+	Icon      string
+	Color     lipgloss.Color
+	SortOrder int
 }
 
 var icons = map[string]string{
@@ -56,11 +57,11 @@ var icons = map[string]string{
 }
 
 var (
-	Blue   = Faction{Name: "Komek", Color: colors.DieReactor, Icon: icons["komek"]}
-	Green  = Faction{Name: "Henko", Color: colors.DieShield, Icon: icons["henko"]}
-	Orange = Faction{Name: "Magnomi", Color: colors.DieDamage, Icon: icons["magnomi"]}
-	Purple = Faction{Name: "Sorelia", Color: colors.DieExtra, Icon: icons["sorelia"]}
-	Yellow = Faction{Name: "Ventus", Color: colors.DieThruster, Icon: icons["ventus"]}
+	Blue   = Faction{Name: "Komek", Color: colors.DieReactor, Icon: icons["komek"], SortOrder: 1}
+	Green  = Faction{Name: "Henko", Color: colors.DieShield, Icon: icons["henko"], SortOrder: 2}
+	Orange = Faction{Name: "Magnomi", Color: colors.DieDamage, Icon: icons["magnomi"], SortOrder: 3}
+	Purple = Faction{Name: "Sorelia", Color: colors.DieExtra, Icon: icons["sorelia"], SortOrder: 4}
+	Yellow = Faction{Name: "Ventus", Color: colors.DieThruster, Icon: icons["ventus"], SortOrder: 5}
 )
 
 func All() []Faction {

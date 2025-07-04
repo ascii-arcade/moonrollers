@@ -13,7 +13,8 @@ type Player struct {
 	Name               string
 	Faction            *factions.Faction
 	Points             int
-	Crew               []*deck.Crew
+	Crew               map[string]*deck.Crew
+	CrewCount          map[string]int
 	TurnOrder          int
 	LanguagePreference *language.LanguagePreference
 
@@ -57,6 +58,13 @@ func (p *Player) HasFaction() bool {
 
 func (p *Player) OnDisconnect(fn func()) {
 	p.onDisconnect = append(p.onDisconnect, fn)
+}
+
+func (p *Player) AddCrew(crew *deck.Crew, active bool) {
+	if active {
+		p.Crew[crew.Faction.Name] = crew
+	}
+	p.CrewCount[crew.Faction.Name]++
 }
 
 func (p *Player) update(code int) {
