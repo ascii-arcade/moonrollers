@@ -41,7 +41,7 @@ func (s *Game) dealStarterCards() {
 			if crew.IsStarter && crew.Faction == *player.Faction {
 				index := slices.Index(s.Deck, crew)
 				s.Deck = slices.Delete(s.Deck, index, index+1)
-				player.Crew = append(player.Crew, crew)
+				player.AddCrew(crew, true)
 				break
 			}
 		}
