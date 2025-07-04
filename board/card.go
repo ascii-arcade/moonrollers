@@ -53,29 +53,6 @@ func newCard(model *Model, crew *deck.Crew) *card {
 	return c
 }
 
-func (c *card) renderForHand() string {
-	width := 20
-	height := 9
-	descriptionWidth := width - 2
-
-	style := c.style.
-		Border(lipgloss.NormalBorder()).
-		BorderForeground(c.Crew.Faction.Color).
-		Width(width).
-		Height(height)
-
-	name := c.style.Foreground(c.Crew.Faction.Color).Bold(true).Render(c.Crew.Name)
-
-	return style.Render(lipgloss.JoinHorizontal(
-		lipgloss.Left,
-		lipgloss.JoinVertical(
-			lipgloss.Top,
-			c.style.MarginLeft(1).Render(name),
-			c.style.MarginLeft(1).MarginTop(1).Width(descriptionWidth).Render(c.description),
-		),
-	))
-}
-
 func (c *card) renderForHire() string {
 	width := 20
 	height := 14
