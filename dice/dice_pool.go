@@ -43,7 +43,7 @@ func (dp *DicePool) Render(style lipgloss.Style) string {
 
 	bottomDice := make([]string, 0)
 	for i := range bottomCount {
-		bottomDice = append(bottomDice, dp.Dice[i].Render(style))
+		bottomDice = append(bottomDice, dp.Dice[i+topCount].Render(style))
 	}
 
 	return containerStyle.Render(
