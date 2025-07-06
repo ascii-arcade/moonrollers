@@ -1,6 +1,25 @@
 package games
 
-func (s *Game) IsEndGame() bool {
+import "github.com/ascii-arcade/moonrollers/messages"
+
+func (s *Game) NextTurn() {
+	s.withLock(func() {
+		if len(s.players) > s.CurrentTurnIndex+1 {
+			s.CurrentTurnIndex++
+		} else {
+			s.CurrentTurnIndex = 0
+		}
+
+		if s.isEndGame() {
+			for _, player := range s.players {
+				player.update(messages.WinnerScreen)
+			}
+			return
+		}
+	})
+}
+
+func (s *Game) isEndGame() bool {
 	for _, player := range s.players {
 		oneOfEach := true
 		for _, count := range player.CrewCount {

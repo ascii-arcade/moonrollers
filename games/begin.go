@@ -22,6 +22,7 @@ func (s *Game) Begin() error {
 		s.Deck = deck.NewDeck()
 		s.dealStarterCards()
 		s.dealCrewForHire()
+		s.CurrentTurnIndex = 0
 		s.inProgress = true
 
 		for _, p := range s.players {

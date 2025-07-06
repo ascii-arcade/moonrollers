@@ -25,8 +25,15 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		return s.model, nil
 
 	case tea.KeyMsg:
-		if keys.GameIncrementPoint.TriggeredBy(msg.String()) {
+		if s.model.Game.GetCurrentPlayer() != s.model.Player {
+			return s.model, nil
+		}
+
+		switch {
+		case keys.GameIncrementPoint.TriggeredBy(msg.String()):
 			_ = s.model.Game.AddPoints(s.model.Player, 1)
+		case keys.GameEndTurn.TriggeredBy(msg.String()):
+			s.model.Game.NextTurn()
 		}
 	}
 

@@ -16,10 +16,11 @@ type Game struct {
 	CrewForHire []*deck.Crew
 	Deck        deck.Deck
 
-	Settings   Settings
-	inProgress bool
-	mu         sync.Mutex
-	players    []*Player
+	Settings         Settings
+	CurrentTurnIndex int
+	inProgress       bool
+	mu               sync.Mutex
+	players          []*Player
 }
 
 func (s *Game) InProgress() bool {
@@ -154,6 +155,10 @@ func (s *Game) GetPlayerCount(includeDisconnected bool) int {
 		}
 	}
 	return count
+}
+
+func (s *Game) GetCurrentPlayer() *Player {
+	return s.players[s.CurrentTurnIndex]
 }
 
 func (s *Game) GetWinner() *Player {
