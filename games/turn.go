@@ -1,6 +1,9 @@
 package games
 
-import "github.com/ascii-arcade/moonrollers/messages"
+import (
+	"github.com/ascii-arcade/moonrollers/dice"
+	"github.com/ascii-arcade/moonrollers/messages"
+)
 
 func (s *Game) NextTurn() {
 	s.withLock(func() {
@@ -16,7 +19,14 @@ func (s *Game) NextTurn() {
 			}
 			return
 		}
+
+		s.initRollingPools()
 	})
+}
+
+func (s *Game) initRollingPools() {
+	s.RollingPool = dice.NewDicePool(5)
+	s.SupplyPool = dice.NewDicePool(7)
 }
 
 func (s *Game) isEndGame() bool {

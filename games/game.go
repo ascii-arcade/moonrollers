@@ -6,15 +6,19 @@ import (
 	"sync"
 
 	"github.com/ascii-arcade/moonrollers/deck"
+	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/messages"
 	"github.com/charmbracelet/ssh"
 )
 
 type Game struct {
-	Code        string
+	Code string
+
 	CrewForHire []*deck.Crew
 	Deck        deck.Deck
+	RollingPool dice.DicePool
+	SupplyPool  dice.DicePool
 
 	Settings         Settings
 	CurrentTurnIndex int

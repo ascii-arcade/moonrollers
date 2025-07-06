@@ -41,9 +41,17 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 }
 
 func (s *tableScreen) View() string {
+	rollingPoolComponent := newDiceComponent(s.model, s.model.Game.RollingPool)
+	supplyPoolComponent := newDiceComponent(s.model, s.model.Game.SupplyPool)
 	forHireComponent := newForHireComponent(s.model)
 	playerHandComponent := newPlayerHandComponent(s.model)
 	scoreboardComponent := newScoreboardComponent(s.model)
+
+	dicePools := lipgloss.JoinVertical(
+		lipgloss.Left,
+		supplyPoolComponent.render(),
+		rollingPoolComponent.render(),
+	)
 
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
@@ -51,6 +59,7 @@ func (s *tableScreen) View() string {
 			lipgloss.Left,
 			scoreboardComponent.render(),
 			forHireComponent.render(),
+			dicePools,
 		),
 		playerHandComponent.render(),
 	)
