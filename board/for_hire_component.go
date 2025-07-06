@@ -1,6 +1,7 @@
 package board
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/ascii-arcade/moonrollers/colors"
@@ -42,7 +43,7 @@ func (fh *forHireComponent) renderCard(c *card) string {
 	width := 20
 	height := 14
 	iconWidth := 8
-	objectivesWidth := 7
+	objectivesWidth := 9
 	descriptionWidth := width - 2
 
 	style := c.style.
@@ -69,6 +70,10 @@ func (fh *forHireComponent) renderCard(c *card) string {
 		for range objective.Amount {
 			line.WriteString(emptyPip)
 		}
+		for range 5 - objective.Amount {
+			line.WriteString(" ")
+		}
+		line.WriteString(strconv.Itoa(objective.Points()))
 		objectives.WriteString(line.String())
 	}
 
@@ -80,7 +85,7 @@ func (fh *forHireComponent) renderCard(c *card) string {
 			lipgloss.JoinHorizontal(
 				lipgloss.Left,
 				c.style.MarginLeft(1).MarginTop(1).Width(objectivesWidth).Render(objectives.String()),
-				c.style.MarginLeft(3).Width(iconWidth).Foreground(c.Crew.Faction.Color).Render(c.Crew.Faction.Icon),
+				c.style.MarginLeft(1).Width(iconWidth).Foreground(c.Crew.Faction.Color).Render(c.Crew.Faction.Icon),
 			),
 			c.style.MarginLeft(1).MarginTop(1).Width(descriptionWidth).Render(c.description),
 		),

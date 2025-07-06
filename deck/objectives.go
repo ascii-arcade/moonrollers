@@ -7,3 +7,11 @@ type objective struct {
 	Amount int
 	Hazard bool
 }
+
+func (o *objective) Points() int {
+	if o.Type == dice.DieWild {
+		return 2 * o.Amount
+	}
+
+	return o.Amount
+}

@@ -16,11 +16,11 @@ type Faction struct {
 
 var icons = map[string]string{
 	"magnomi": strings.Join([]string{
-		"█▀▀▀▀▀█",
-		"█ ███ █",
-		"█ ▀▀▀ █",
-		"█ ███ █",
-		"▀▀▀▀▀▀▀",
+		"█▀▀▀▀▀▀█",
+		"█ ████ █",
+		"█ ▀▀▀▀ █",
+		"█ ████ █",
+		"▀▀▀▀▀▀▀▀",
 	}, "\n"),
 
 	"ventus": strings.Join([]string{
