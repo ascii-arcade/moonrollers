@@ -7,17 +7,17 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-type playerHand struct {
+type playerHandComponent struct {
 	model *Model
 }
 
-func newPlayerHand(model *Model) playerHand {
-	return playerHand{
+func newPlayerHandComponent(model *Model) playerHandComponent {
+	return playerHandComponent{
 		model: model,
 	}
 }
 
-func (ph *playerHand) render() string {
+func (ph *playerHandComponent) render() string {
 	content := make([]string, 0)
 
 	for _, crew := range ph.crew() {
@@ -28,7 +28,7 @@ func (ph *playerHand) render() string {
 	return lipgloss.JoinHorizontal(lipgloss.Left, content...)
 }
 
-func (ph *playerHand) crew() []*deck.Crew {
+func (ph *playerHandComponent) crew() []*deck.Crew {
 	sortedCrew := make([]*deck.Crew, 0)
 	for _, crew := range ph.model.Player.Crew {
 		sortedCrew = append(sortedCrew, crew)
@@ -40,7 +40,7 @@ func (ph *playerHand) crew() []*deck.Crew {
 	return sortedCrew
 }
 
-func (ph *playerHand) renderCard(c *card) string {
+func (ph *playerHandComponent) renderCard(c *card) string {
 	width := 20
 	height := 9
 	descriptionWidth := width - 2

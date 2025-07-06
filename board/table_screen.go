@@ -34,17 +34,17 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 }
 
 func (s *tableScreen) View() string {
-	forHire := newForHire(s.model)
-	playerHand := newPlayerHand(s.model)
-	scoreboard := newScoreboard(s.model)
+	forHireComponent := newForHireComponent(s.model)
+	playerHandComponent := newPlayerHandComponent(s.model)
+	scoreboardComponent := newScoreboardComponent(s.model)
 
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
 		lipgloss.JoinHorizontal(
 			lipgloss.Left,
-			scoreboard.render(),
-			forHire.render(),
+			scoreboardComponent.render(),
+			forHireComponent.render(),
 		),
-		playerHand.render(),
+		playerHandComponent.render(),
 	)
 }
