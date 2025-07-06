@@ -18,6 +18,7 @@ type Game struct {
 	CrewForHire []*deck.Crew
 	Deck        deck.Deck
 	RollingPool dice.DicePool
+	IsRolled    bool
 	SupplyPool  dice.DicePool
 
 	Settings         Settings

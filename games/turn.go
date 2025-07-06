@@ -20,6 +20,7 @@ func (s *Game) NextTurn() {
 			return
 		}
 
+		s.IsRolled = false
 		s.initRollingPools()
 	})
 }

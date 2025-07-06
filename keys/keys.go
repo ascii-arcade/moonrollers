@@ -40,4 +40,5 @@ var (
 
 	GameIncrementPoint = Keys{"a"}
 	GameEndTurn        = Keys{"z"}
+	GameRollDice       = Keys{"r"}
 )

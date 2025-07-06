@@ -1,6 +1,8 @@
 package board
 
 import (
+	"time"
+
 	"github.com/ascii-arcade/moonrollers/keys"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -9,7 +11,12 @@ import (
 type tableScreen struct {
 	model *Model
 	style lipgloss.Style
+
+	rollTickCount int
+	isRolling     bool
 }
+
+type rollMsg struct{}
 
 func (m *Model) newTableScreen() *tableScreen {
 	return &tableScreen{
@@ -24,6 +31,17 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		s.model.height, s.model.width = msg.Height, msg.Width
 		return s.model, nil
 
+	case rollMsg:
+		if s.rollTickCount < rollFrames {
+			s.rollTickCount++
+			s.model.Game.Roll(s.isRolling)
+			return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
+				return rollMsg{}
+			})
+		}
+		s.isRolling = false
+		s.model.Game.Roll(s.isRolling)
+
 	case tea.KeyMsg:
 		if s.model.Game.GetCurrentPlayer() != s.model.Player {
 			return s.model, nil
@@ -34,6 +52,14 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 			_ = s.model.Game.AddPoints(s.model.Player, 1)
 		case keys.GameEndTurn.TriggeredBy(msg.String()):
 			s.model.Game.NextTurn()
+		case keys.GameRollDice.TriggeredBy(msg.String()):
+			if !s.model.Game.IsRolled && !s.isRolling {
+				s.rollTickCount = 0
+				s.isRolling = true
+				return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
+					return rollMsg{}
+				})
+			}
 		}
 	}
 
