@@ -8,6 +8,7 @@ const (
 	Hazard = lipgloss.Color("#ff0000")
 	Logo   = lipgloss.Color("#eb5761")
 
+	DieUnrolled = lipgloss.Color("#009688")
 	DieReactor  = lipgloss.Color("#2677fe")
 	DieShield   = lipgloss.Color("#23741e")
 	DieDamage   = lipgloss.Color("#CC5500")

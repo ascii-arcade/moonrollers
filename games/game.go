@@ -6,20 +6,26 @@ import (
 	"sync"
 
 	"github.com/ascii-arcade/moonrollers/deck"
+	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/messages"
 	"github.com/charmbracelet/ssh"
 )
 
 type Game struct {
-	Code        string
+	Code string
+
 	CrewForHire []*deck.Crew
 	Deck        deck.Deck
+	RollingPool dice.DicePool
+	IsRolled    bool
+	SupplyPool  dice.DicePool
 
-	Settings   Settings
-	inProgress bool
-	mu         sync.Mutex
-	players    []*Player
+	Settings         Settings
+	CurrentTurnIndex int
+	inProgress       bool
+	mu               sync.Mutex
+	players          []*Player
 }
 
 func (s *Game) InProgress() bool {
@@ -154,6 +160,10 @@ func (s *Game) GetPlayerCount(includeDisconnected bool) int {
 		}
 	}
 	return count
+}
+
+func (s *Game) GetCurrentPlayer() *Player {
+	return s.players[s.CurrentTurnIndex]
 }
 
 func (s *Game) GetWinner() *Player {

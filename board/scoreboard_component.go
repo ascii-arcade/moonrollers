@@ -13,15 +13,15 @@ const (
 	scoreboardPip = "■"
 )
 
-type scoreboard struct {
+type scoreboardComponent struct {
 	model   *Model
 	players []*games.Player
 	short   bool
 	style   lipgloss.Style
 }
 
-func newScoreboard(model *Model) scoreboard {
-	return scoreboard{
+func newScoreboardComponent(model *Model) scoreboardComponent {
+	return scoreboardComponent{
 		model:   model,
 		players: model.Game.OrderedPlayers(),
 		short:   false,
@@ -29,7 +29,7 @@ func newScoreboard(model *Model) scoreboard {
 	}
 }
 
-func (s *scoreboard) render() string {
+func (s *scoreboardComponent) render() string {
 	if s.short {
 		out := make([]string, 0)
 		for _, p := range s.players {
@@ -60,7 +60,7 @@ func (s *scoreboard) render() string {
 	return s.style.Render(strings.Join(rows, "\n"))
 }
 
-func (s *scoreboard) additionalPointsCell(playerIndex int) string {
+func (s *scoreboardComponent) additionalPointsCell(playerIndex int) string {
 	if playerIndex >= len(s.players) {
 		return s.emptyCellStyle().Render("")
 	}
@@ -80,7 +80,7 @@ func (s *scoreboard) additionalPointsCell(playerIndex int) string {
 	return s.populatedCellStyle().Render(strings.Join(output, " "))
 }
 
-func (s *scoreboard) pointCell(row int, col int) string {
+func (s *scoreboardComponent) pointCell(row int, col int) string {
 	points := (row)*5 + col + 1
 	var pips []string
 	for _, player := range s.players {
@@ -95,7 +95,7 @@ func (s *scoreboard) pointCell(row int, col int) string {
 	return s.populatedCellStyle().Render(strings.Join(pips, ""))
 }
 
-func (s *scoreboard) populatedCellStyle() lipgloss.Style {
+func (s *scoreboardComponent) populatedCellStyle() lipgloss.Style {
 	return s.style.
 		Border(lipgloss.NormalBorder(), true).
 		BorderForeground(colors.Border).
@@ -104,6 +104,6 @@ func (s *scoreboard) populatedCellStyle() lipgloss.Style {
 		Align(lipgloss.Center)
 }
 
-func (s *scoreboard) emptyCellStyle() lipgloss.Style {
+func (s *scoreboardComponent) emptyCellStyle() lipgloss.Style {
 	return s.populatedCellStyle().Foreground(colors.Border)
 }

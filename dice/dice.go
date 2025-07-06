@@ -12,6 +12,8 @@ type Die struct {
 }
 
 var (
+	DieUnrolled = Die{Symbol: "?", Color: colors.DieUnrolled, ID: "unrolled"}
+
 	DieDamage   = Die{Symbol: "X", Color: colors.DieDamage, ID: "damage"}
 	DieShield   = Die{Symbol: "#", Color: colors.DieShield, ID: "shield"}
 	DieThruster = Die{Symbol: "↟", Color: colors.DieThruster, ID: "thruster"}

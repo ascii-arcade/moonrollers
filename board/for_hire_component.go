@@ -7,17 +7,17 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-type forHire struct {
+type forHireComponent struct {
 	model *Model
 }
 
-func newForHire(model *Model) forHire {
-	return forHire{
+func newForHireComponent(model *Model) forHireComponent {
+	return forHireComponent{
 		model: model,
 	}
 }
 
-func (fh *forHire) render() string {
+func (fh *forHireComponent) render() string {
 	content := make([]string, 0)
 	var rows []string
 
@@ -38,7 +38,7 @@ func (fh *forHire) render() string {
 	return lipgloss.JoinVertical(lipgloss.Left, rows...)
 }
 
-func (fh *forHire) renderCard(c *card) string {
+func (fh *forHireComponent) renderCard(c *card) string {
 	width := 20
 	height := 14
 	iconWidth := 8

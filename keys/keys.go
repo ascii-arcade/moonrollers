@@ -39,4 +39,6 @@ var (
 	LobbySettings    = Keys{"c"}
 
 	GameIncrementPoint = Keys{"a"}
+	GameEndTurn        = Keys{"z"}
+	GameRollDice       = Keys{"r"}
 )

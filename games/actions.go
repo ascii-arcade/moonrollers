@@ -27,3 +27,10 @@ func (s *Game) AddPoints(player *Player, amount int) error {
 		return nil
 	})
 }
+
+func (s *Game) Roll(isRolling bool) {
+	s.withLock(func() {
+		s.IsRolled = true
+		s.RollingPool.Roll()
+	})
+}
