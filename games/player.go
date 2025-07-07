@@ -48,10 +48,6 @@ func (p *Player) IsHost() bool {
 	return p.isHost
 }
 
-func (p *Player) incrementPoints(amount int) {
-	p.Points += amount
-}
-
 func (p *Player) HasFaction() bool {
 	return p.Faction != nil
 }

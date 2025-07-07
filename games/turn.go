@@ -31,6 +31,10 @@ func (s *Game) initRollingPools() {
 }
 
 func (s *Game) isEndGame() bool {
+	if len(s.Deck) == 0 {
+		return true
+	}
+
 	for _, player := range s.players {
 		oneOfEach := true
 		for _, count := range player.CrewCount {

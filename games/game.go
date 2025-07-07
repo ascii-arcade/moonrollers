@@ -167,5 +167,9 @@ func (s *Game) GetCurrentPlayer() *Player {
 }
 
 func (s *Game) GetWinner() *Player {
-	return nil
+	players := s.players
+	sort.Slice(players, func(i, j int) bool {
+		return players[i].Points > players[j].Points
+	})
+	return players[0]
 }
