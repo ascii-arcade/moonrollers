@@ -3,6 +3,7 @@ package board
 import (
 	"time"
 
+	"github.com/ascii-arcade/moonrollers/config"
 	"github.com/ascii-arcade/moonrollers/keys"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -57,6 +58,23 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
 					return rollMsg{}
 				})
+			}
+		}
+
+		if config.Debug {
+			switch {
+			case msg.String() == "a":
+				_ = s.model.Game.HireCrewMember(0, s.model.Player)
+			case msg.String() == "r":
+				_ = s.model.Game.HireCrewMember(1, s.model.Player)
+			case msg.String() == "s":
+				_ = s.model.Game.HireCrewMember(2, s.model.Player)
+			case msg.String() == "t":
+				_ = s.model.Game.HireCrewMember(3, s.model.Player)
+			case msg.String() == "d":
+				_ = s.model.Game.HireCrewMember(4, s.model.Player)
+			case msg.String() == "h":
+				_ = s.model.Game.HireCrewMember(5, s.model.Player)
 			}
 		}
 	}
