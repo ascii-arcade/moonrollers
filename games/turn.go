@@ -26,8 +26,12 @@ func (s *Game) NextTurn() {
 }
 
 func (s *Game) initRollingPools() {
-	s.RollingPool = dice.NewDicePool(5)
-	s.SupplyPool = dice.NewDicePool(7)
+	rollingPoolSize := 5
+	if s.GetCurrentPlayer().hasCrew("kal") {
+		rollingPoolSize = 6
+	}
+	s.RollingPool = dice.NewDicePool(rollingPoolSize)
+	s.SupplyPool = dice.NewDicePool(12 - rollingPoolSize)
 }
 
 func (s *Game) isEndGame() bool {

@@ -52,6 +52,15 @@ func (p *Player) HasFaction() bool {
 	return p.Faction != nil
 }
 
+func (p *Player) hasCrew(id string) bool {
+	for _, crew := range p.Crew {
+		if crew.ID == id {
+			return true
+		}
+	}
+	return false
+}
+
 func (p *Player) OnDisconnect(fn func()) {
 	p.onDisconnect = append(p.onDisconnect, fn)
 }
