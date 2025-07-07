@@ -3,6 +3,7 @@ package games
 import (
 	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/ascii-arcade/moonrollers/messages"
+	"github.com/ascii-arcade/moonrollers/rules"
 )
 
 func (s *Game) NextTurn() {
@@ -20,16 +21,14 @@ func (s *Game) NextTurn() {
 			return
 		}
 
+		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].crewIDs())
+
 		s.IsRolled = false
-		s.initRollingPools()
+		s.initRollingPools(startTurn.RollingPoolSize)
 	})
 }
 
-func (s *Game) initRollingPools() {
-	rollingPoolSize := 5
-	if s.GetCurrentPlayer().hasCrew("kal") {
-		rollingPoolSize = 6
-	}
+func (s *Game) initRollingPools(rollingPoolSize int) {
 	s.RollingPool = dice.NewDicePool(rollingPoolSize)
 	s.SupplyPool = dice.NewDicePool(12 - rollingPoolSize)
 }
