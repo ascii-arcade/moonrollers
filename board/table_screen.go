@@ -48,8 +48,6 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		}
 
 		switch {
-		case keys.GameIncrementPoint.TriggeredBy(msg.String()):
-			_ = s.model.Game.AddPoints(s.model.Player, 1)
 		case keys.GameEndTurn.TriggeredBy(msg.String()):
 			s.model.Game.NextTurn()
 		case keys.GameRollDice.TriggeredBy(msg.String()):
