@@ -52,15 +52,6 @@ func (p *Player) HasFaction() bool {
 	return p.Faction != nil
 }
 
-func (p *Player) hasCrew(id string) bool {
-	for _, crew := range p.Crew {
-		if crew.ID == id {
-			return true
-		}
-	}
-	return false
-}
-
 func (p *Player) OnDisconnect(fn func()) {
 	p.onDisconnect = append(p.onDisconnect, fn)
 }
@@ -70,6 +61,14 @@ func (p *Player) AddCrew(crew *deck.Crew, active bool) {
 		p.Crew[crew.Faction.Name] = crew
 	}
 	p.CrewCount[crew.Faction.Name]++
+}
+
+func (p *Player) crewIDs() []string {
+	ids := make([]string, 0)
+	for _, crew := range p.Crew {
+		ids = append(ids, crew.ID)
+	}
+	return ids
 }
 
 func (p *Player) update(code int) {

@@ -7,6 +7,7 @@ import (
 	"github.com/ascii-arcade/moonrollers/deck"
 	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/messages"
+	"github.com/ascii-arcade/moonrollers/rules"
 )
 
 const (
@@ -22,9 +23,11 @@ func (s *Game) Begin() error {
 		s.Deck = deck.NewDeck()
 		s.dealStarterCards()
 		s.dealCrewForHire()
-		s.initRollingPools()
 		s.CurrentTurnIndex = 0
 		s.inProgress = true
+
+		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].crewIDs())
+		s.initRollingPools(startTurn.RollingPoolSize)
 
 		for _, p := range s.players {
 			p.update(messages.TableScreen)
