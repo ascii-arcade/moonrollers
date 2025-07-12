@@ -15,7 +15,6 @@ type Player struct {
 	Points             int
 	Crew               map[string]*deck.Crew
 	CrewCount          map[string]int
-	TurnOrder          int
 	LanguagePreference *language.LanguagePreference
 
 	UpdateChan chan int
@@ -31,11 +30,6 @@ type Player struct {
 
 func (p *Player) SetName(name string) *Player {
 	p.Name = name
-	return p
-}
-
-func (p *Player) SetTurnOrder(order int) *Player {
-	p.TurnOrder = order
 	return p
 }
 

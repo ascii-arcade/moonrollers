@@ -26,6 +26,7 @@ type Game struct {
 	inProgress       bool
 	mu               sync.Mutex
 	players          []*Player
+	playerStates     []*PlayerState
 }
 
 func (s *Game) InProgress() bool {
@@ -36,7 +37,7 @@ func (s *Game) OrderedPlayers() []*Player {
 	var players []*Player
 	players = append(players, s.players...)
 	sort.Slice(players, func(i, j int) bool {
-		return players[i].TurnOrder < players[j].TurnOrder
+		return s.playerStates[i].turnOrder < s.playerStates[j].turnOrder
 	})
 
 	return players
@@ -76,14 +77,16 @@ func (s *Game) AddPlayer(player *Player, isHost bool) error {
 			return ErrGameInProgress
 		}
 
+		playerState := &PlayerState{}
+
 		maxTurnOrder := 0
-		for _, p := range s.players {
-			if p.TurnOrder > maxTurnOrder {
-				maxTurnOrder = p.TurnOrder
+		for _, p := range s.playerStates {
+			if p.turnOrder > maxTurnOrder {
+				maxTurnOrder = p.turnOrder
 			}
 		}
 
-		player.SetTurnOrder(maxTurnOrder + 1)
+		playerState.setTurnOrder(maxTurnOrder + 1)
 		player.Faction = nil
 		if isHost {
 			player.MakeHost()
@@ -96,6 +99,7 @@ func (s *Game) AddPlayer(player *Player, isHost bool) error {
 		})
 
 		s.players = append(s.players, player)
+		s.playerStates = append(s.playerStates, playerState)
 		return nil
 	})
 }
