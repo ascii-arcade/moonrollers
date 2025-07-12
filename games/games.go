@@ -15,9 +15,10 @@ var games = make(map[string]*Game)
 
 func New() *Game {
 	game := &Game{
-		Code:     generaterandom.Code(),
-		Settings: NewSettings(),
-		players:  make([]*Player, 0),
+		Code:        generaterandom.Code(),
+		Settings:    NewSettings(),
+		players:     make([]*Player, 0),
+		playerState: make(map[string]*PlayerState),
 	}
 	games[game.Code] = game
 
