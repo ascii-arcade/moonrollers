@@ -28,13 +28,16 @@ func NewPlayer(ctx context.Context, sess ssh.Session, langPref *language.Languag
 
 		player = &Player{
 			Name:               generaterandom.Name(langPref.Lang),
+			Faction:            nil,
+			Points:             0,
 			Crew:               crew,
 			CrewCount:          crewCount,
-			Points:             0,
-			UpdateChan:         make(chan int),
+			TurnOrder:          0,
 			LanguagePreference: langPref,
-			Sess:               sess,
+			UpdateChan:         make(chan int),
+			isHost:             false,
 			connected:          true,
+			Sess:               sess,
 			ctx:                ctx,
 		}
 		players[sess.User()] = player
