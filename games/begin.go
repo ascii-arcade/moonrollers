@@ -28,6 +28,7 @@ func (s *Game) Begin() error {
 
 		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].crewIDs())
 		s.initRollingPools(startTurn.RollingPoolSize)
+		s.InputState = InputStateRoll
 
 		for _, p := range s.players {
 			p.update(messages.TableScreen)

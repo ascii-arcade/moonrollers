@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ascii-arcade/moonrollers/config"
+	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/keys"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -52,7 +53,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		case keys.GameEndTurn.TriggeredBy(msg.String()):
 			s.model.Game.NextTurn()
 		case keys.GameRollDice.TriggeredBy(msg.String()):
-			if !s.model.Game.IsRolled && !s.isRolling {
+			if s.model.Game.InputState == games.InputStateRoll && !s.isRolling {
 				s.rollTickCount = 0
 				s.isRolling = true
 				return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
