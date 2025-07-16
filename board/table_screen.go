@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ascii-arcade/moonrollers/config"
+	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/keys"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -52,7 +53,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		case keys.GameEndTurn.TriggeredBy(msg.String()):
 			s.model.Game.NextTurn()
 		case keys.GameRollDice.TriggeredBy(msg.String()):
-			if !s.model.Game.IsRolled && !s.isRolling {
+			if s.model.Game.InputState == games.InputStateRoll && !s.isRolling {
 				s.rollTickCount = 0
 				s.isRolling = true
 				return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
@@ -89,10 +90,20 @@ func (s *tableScreen) View() string {
 	playerHandComponent := newPlayerHandComponent(s.model)
 	scoreboardComponent := newScoreboardComponent(s.model)
 
-	dicePools := lipgloss.JoinVertical(
+	var inputStageComponent inputStageComponent
+	inputStageComponent = newInputStageEmptyComponent()
+
+	if s.model.Game.GetCurrentPlayer() == s.model.Player {
+		if s.model.Game.InputState == games.InputStateRoll && !s.isRolling {
+			inputStageComponent = newInputStageRollComponent(s.model)
+		}
+	}
+
+	rightSplit := lipgloss.JoinVertical(
 		lipgloss.Left,
 		supplyPoolComponent.render(),
 		rollingPoolComponent.render(),
+		inputStageComponent.render(),
 	)
 
 	return lipgloss.JoinVertical(
@@ -101,7 +112,7 @@ func (s *tableScreen) View() string {
 			lipgloss.Left,
 			scoreboardComponent.render(),
 			forHireComponent.render(),
-			dicePools,
+			rightSplit,
 		),
 		playerHandComponent.render(),
 	)
