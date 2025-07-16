@@ -90,10 +90,20 @@ func (s *tableScreen) View() string {
 	playerHandComponent := newPlayerHandComponent(s.model)
 	scoreboardComponent := newScoreboardComponent(s.model)
 
-	dicePools := lipgloss.JoinVertical(
+	var inputStageComponent inputStageComponent
+	inputStageComponent = newInputStageEmptyComponent()
+
+	if s.model.Game.GetCurrentPlayer() == s.model.Player {
+		if s.model.Game.InputState == games.InputStateRoll && !s.isRolling {
+			inputStageComponent = newInputStageRollComponent(s.model)
+		}
+	}
+
+	rightSplit := lipgloss.JoinVertical(
 		lipgloss.Left,
 		supplyPoolComponent.render(),
 		rollingPoolComponent.render(),
+		inputStageComponent.render(),
 	)
 
 	return lipgloss.JoinVertical(
@@ -102,7 +112,7 @@ func (s *tableScreen) View() string {
 			lipgloss.Left,
 			scoreboardComponent.render(),
 			forHireComponent.render(),
-			dicePools,
+			rightSplit,
 		),
 		playerHandComponent.render(),
 	)
