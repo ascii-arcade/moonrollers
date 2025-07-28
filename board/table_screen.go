@@ -19,13 +19,10 @@ type tableScreen struct {
 type rollMsg struct{}
 
 func (m *Model) newTableScreen() *tableScreen {
-	tableScreen := &tableScreen{
+	return &tableScreen{
 		model: m,
 		style: m.style,
 	}
-
-	tableScreen.setInputStageComponent()
-	return tableScreen
 }
 
 func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
