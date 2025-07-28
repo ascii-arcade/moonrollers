@@ -11,17 +11,21 @@ import (
 )
 
 type tableScreen struct {
-	model *Model
-	style lipgloss.Style
+	model               *Model
+	style               lipgloss.Style
+	inputStageComponent inputStageComponent
 }
 
 type rollMsg struct{}
 
 func (m *Model) newTableScreen() *tableScreen {
-	return &tableScreen{
+	tableScreen := &tableScreen{
 		model: m,
 		style: m.style,
 	}
+
+	tableScreen.setInputStageComponent()
+	return tableScreen
 }
 
 func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
@@ -71,30 +75,24 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		}
 	}
 
-	return s.model, nil
+	newModel, cmd := s.inputStageComponent.update(msg)
+	return newModel, cmd
 }
 
 func (s *tableScreen) View() string {
+	s.setInputStageComponent()
+
 	rollingPoolComponent := newDiceComponent(s.model, s.model.Game.RollingPool)
 	supplyPoolComponent := newDiceComponent(s.model, s.model.Game.SupplyPool)
 	forHireComponent := newForHireComponent(s.model)
 	playerHandComponent := newPlayerHandComponent(s.model)
 	scoreboardComponent := newScoreboardComponent(s.model)
 
-	var inputStageComponent inputStageComponent
-	inputStageComponent = newInputStageEmptyComponent(s.model)
-
-	if s.model.Game.GetCurrentPlayer() == s.model.Player {
-		if s.model.Game.InputState == games.InputStateRoll && !s.model.Game.IsRolling {
-			inputStageComponent = newInputStageRollComponent(s.model)
-		}
-	}
-
 	rightSplit := lipgloss.JoinVertical(
 		lipgloss.Left,
 		supplyPoolComponent.render(),
 		rollingPoolComponent.render(),
-		inputStageComponent.render(),
+		s.inputStageComponent.render(),
 	)
 
 	return lipgloss.JoinVertical(
@@ -107,4 +105,20 @@ func (s *tableScreen) View() string {
 		),
 		playerHandComponent.render(),
 	)
+}
+
+func (s *tableScreen) setInputStageComponent() {
+	if s.model.Game.GetCurrentPlayer() != s.model.Player {
+		s.inputStageComponent = newInputStageEmptyComponent(s.model)
+		return
+	}
+
+	switch s.model.Game.InputState {
+	case games.InputStateRoll:
+		if s.model.Game.IsRolling {
+			s.inputStageComponent = newInputStageEmptyComponent(s.model)
+		} else {
+			s.inputStageComponent = newInputStageRollComponent(s.model)
+		}
+	}
 }
