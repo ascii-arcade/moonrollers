@@ -49,32 +49,34 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 			return s.model, nil
 		}
 
-		switch {
-		case keys.GameEndTurn.TriggeredBy(msg.String()):
-			s.model.Game.NextTurn()
-		case keys.GameRollDice.TriggeredBy(msg.String()):
-			if s.model.Game.InputState == games.InputStateRoll && !s.isRolling {
-				s.rollTickCount = 0
-				s.isRolling = true
-				return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
-					return rollMsg{}
-				})
+		switch s.model.Game.InputState {
+		case games.InputStateRoll:
+			if keys.GameRollDice.TriggeredBy(msg.String()) {
+				if !s.isRolling {
+					s.rollTickCount = 0
+					s.isRolling = true
+					return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
+						return rollMsg{}
+					})
+				}
 			}
 		}
 
 		if config.Debug {
 			switch {
-			case msg.String() == "a":
+			case keys.GameEndTurn.TriggeredBy(msg.String()):
+				s.model.Game.NextTurn()
+			case msg.String() == "!":
 				_ = s.model.Game.HireCrewMember(0, s.model.Player)
-			case msg.String() == "r":
+			case msg.String() == "@":
 				_ = s.model.Game.HireCrewMember(1, s.model.Player)
-			case msg.String() == "s":
+			case msg.String() == "#":
 				_ = s.model.Game.HireCrewMember(2, s.model.Player)
-			case msg.String() == "t":
+			case msg.String() == "$":
 				_ = s.model.Game.HireCrewMember(3, s.model.Player)
-			case msg.String() == "d":
+			case msg.String() == "%":
 				_ = s.model.Game.HireCrewMember(4, s.model.Player)
-			case msg.String() == "h":
+			case msg.String() == "^":
 				_ = s.model.Game.HireCrewMember(5, s.model.Player)
 			}
 		}
