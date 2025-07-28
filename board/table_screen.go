@@ -13,9 +13,6 @@ import (
 type tableScreen struct {
 	model *Model
 	style lipgloss.Style
-
-	rollTickCount int
-	isRolling     bool
 }
 
 type rollMsg struct{}
@@ -34,15 +31,15 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		return s.model, nil
 
 	case rollMsg:
-		if s.rollTickCount < rollFrames {
-			s.rollTickCount++
-			s.model.Game.Roll(s.isRolling)
+		if s.model.Game.RollTick < rollFrames {
+			s.model.Game.RollTick++
+			s.model.Game.Roll(s.model.Game.IsRolling)
 			return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
 				return rollMsg{}
 			})
 		}
-		s.isRolling = false
-		s.model.Game.Roll(s.isRolling)
+		s.model.Game.IsRolling = false
+		s.model.Game.Roll(s.model.Game.IsRolling)
 
 	case tea.KeyMsg:
 		if s.model.Game.GetCurrentPlayer() != s.model.Player {
@@ -52,14 +49,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		switch {
 		case keys.GameEndTurn.TriggeredBy(msg.String()):
 			s.model.Game.NextTurn()
-		case keys.GameRollDice.TriggeredBy(msg.String()):
-			if s.model.Game.InputState == games.InputStateRoll && !s.isRolling {
-				s.rollTickCount = 0
-				s.isRolling = true
-				return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
-					return rollMsg{}
-				})
-			}
+			return s.model, nil
 		}
 
 		if config.Debug {
@@ -77,6 +67,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 			case msg.String() == "h":
 				_ = s.model.Game.HireCrewMember(5, s.model.Player)
 			}
+			return s.model, nil
 		}
 	}
 
@@ -91,10 +82,10 @@ func (s *tableScreen) View() string {
 	scoreboardComponent := newScoreboardComponent(s.model)
 
 	var inputStageComponent inputStageComponent
-	inputStageComponent = newInputStageEmptyComponent()
+	inputStageComponent = newInputStageEmptyComponent(s.model)
 
 	if s.model.Game.GetCurrentPlayer() == s.model.Player {
-		if s.model.Game.InputState == games.InputStateRoll && !s.isRolling {
+		if s.model.Game.InputState == games.InputStateRoll && !s.model.Game.IsRolling {
 			inputStageComponent = newInputStageRollComponent(s.model)
 		}
 	}

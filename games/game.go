@@ -21,6 +21,9 @@ type Game struct {
 	SupplyPool  dice.DicePool
 	InputState  int
 
+	IsRolling bool
+	RollTick  int
+
 	Settings         Settings
 	CurrentTurnIndex int
 	inProgress       bool
