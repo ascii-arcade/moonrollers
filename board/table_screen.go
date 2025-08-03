@@ -96,8 +96,11 @@ func (s *tableScreen) View() string {
 	inputStageComponent = newInputStageEmptyComponent()
 
 	if s.model.Game.GetCurrentPlayer() == s.model.Player {
-		if s.model.Game.InputState == games.InputStateRoll && !s.isRolling {
-			inputStageComponent = newInputStageRollComponent(s.model)
+		switch s.model.Game.InputState {
+		case games.InputStateRoll:
+			if !s.isRolling {
+				inputStageComponent = newInputStageRollComponent(s.model)
+			}
 		}
 	}
 
