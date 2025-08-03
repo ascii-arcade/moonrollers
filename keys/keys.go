@@ -41,4 +41,6 @@ var (
 	GameIncrementPoint = Keys{"a"}
 	GameEndTurn        = Keys{"z"}
 	GameRollDice       = Keys{"r"}
+	GameChooseCrew     = Keys{"1", "2", "3", "4", "5", "6"}
+	GameChooseConfirm  = Keys{"enter"}
 )

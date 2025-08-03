@@ -22,8 +22,27 @@ func (s *Game) Roll(isRolling bool) {
 	s.withLock(func() {
 		s.RollingPool.Roll()
 		if !isRolling {
-			s.nextInputState()
+			s.InputState = InputStateChooseCrew
 		}
+	})
+}
+
+func (s *Game) ChooseCrewMember(index int) {
+	s.withLock(func() {
+		if index < 0 || index >= len(s.CrewForHire) {
+			return
+		}
+
+		s.InputCrew = s.CrewForHire[index]
+	})
+}
+
+func (s *Game) ConfirmCrewMember() {
+	s.withLock(func() {
+		if s.InputCrew == nil {
+			return
+		}
+		s.InputState = InputStateChooseRequirement
 	})
 }
 
