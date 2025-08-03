@@ -19,12 +19,17 @@ func (c inputStageEmptyComponent) render() string {
 	return ""
 }
 
-func inputComponentStyle() lipgloss.Style {
+func inputComponentStyle(isCenter bool) lipgloss.Style {
+	align := lipgloss.Left
+	if isCenter {
+		align = lipgloss.Center
+	}
+
 	return lipgloss.NewStyle().
 		Width(30).
 		Height(14).
 		Padding(1).
-		Align(lipgloss.Center).
+		Align(align).
 		BorderStyle(lipgloss.NormalBorder()).
 		BorderForeground(colors.InputStageBorder)
 }

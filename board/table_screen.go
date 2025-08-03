@@ -1,6 +1,7 @@
 package board
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/ascii-arcade/moonrollers/config"
@@ -60,6 +61,19 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 					})
 				}
 			}
+		case games.InputStateChooseCrew:
+			switch {
+			case keys.GameChooseCrew.TriggeredBy(msg.String()):
+				i, err := strconv.Atoi(msg.String())
+				if err != nil {
+					return s.model, nil
+				}
+
+				s.model.Game.ChooseCrewMember(i - 1)
+				return s.model, nil
+			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
+				s.model.Game.ConfirmCrewMember()
+			}
 		}
 
 		if config.Debug {
@@ -101,6 +115,8 @@ func (s *tableScreen) View() string {
 			if !s.isRolling {
 				inputStageComponent = newInputStageRollComponent(s.model)
 			}
+		case games.InputStateChooseCrew:
+			inputStageComponent = newInputStageChooseCrewComponent(s.model)
 		}
 	}
 

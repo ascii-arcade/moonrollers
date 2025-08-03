@@ -17,7 +17,7 @@ func newInputStageRollComponent(model *Model) inputStageRollComponent {
 }
 
 func (c inputStageRollComponent) render() string {
-	return inputComponentStyle().Render(
+	return inputComponentStyle(true).Render(
 		fmt.Sprintf("Press %s to roll!", keys.GameRollDice.String(c.model.style)),
 	)
 }

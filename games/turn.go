@@ -23,6 +23,7 @@ func (s *Game) NextTurn() {
 
 		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].crewIDs())
 		s.InputState = InputStateRoll
+		s.InputCrew = nil
 
 		s.initRollingPools(startTurn.RollingPoolSize)
 	})
@@ -53,8 +54,4 @@ func (s *Game) isEndGame() bool {
 		}
 	}
 	return false
-}
-
-func (s *Game) nextInputState() {
-	s.InputState = InputStateChooseCrew
 }
