@@ -1,10 +1,8 @@
 package board
 
 import (
-	"strconv"
 	"strings"
 
-	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -60,20 +58,7 @@ func (fh *forHireComponent) renderCard(c *card) string {
 		if i > 0 {
 			line.WriteString("\n")
 		}
-		line.WriteString(c.style.Foreground(objective.Type.Color).Render(objective.Type.Symbol))
-		line.WriteString(" ")
-		if objective.Hazard {
-			line.WriteString(c.style.Foreground(colors.Hazard).Render(hazard))
-		} else {
-			line.WriteString(" ")
-		}
-		for range objective.Amount {
-			line.WriteString(emptyPip)
-		}
-		for range 5 - objective.Amount {
-			line.WriteString(" ")
-		}
-		line.WriteString(strconv.Itoa(objective.Points()))
+		line.WriteString(objective.Render(c.style))
 		objectives.WriteString(line.String())
 	}
 

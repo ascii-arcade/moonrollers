@@ -42,7 +42,26 @@ func (s *Game) ConfirmCrewMember() {
 		if s.InputCrew == nil {
 			return
 		}
-		s.InputState = InputStateChooseRequirement
+		s.InputState = InputStateChooseObjective
+	})
+}
+
+func (s *Game) ChooseObjective(index int) {
+	s.withLock(func() {
+		if index < 0 || index >= len(s.InputCrew.Objectives) {
+			return
+		}
+
+		s.InputObjective = &s.InputCrew.Objectives[index]
+	})
+}
+
+func (s *Game) ConfirmObjective() {
+	s.withLock(func() {
+		if s.InputObjective == nil {
+			return
+		}
+		s.InputState = InputStateCommitDice
 	})
 }
 

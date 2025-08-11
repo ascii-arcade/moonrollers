@@ -20,8 +20,9 @@ type Game struct {
 	RollingPool dice.DicePool
 	SupplyPool  dice.DicePool
 
-	InputState int
-	InputCrew  *deck.Crew
+	InputState     int
+	InputCrew      *deck.Crew
+	InputObjective *deck.Objective
 
 	Settings         Settings
 	CurrentTurnIndex int
