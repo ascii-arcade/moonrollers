@@ -42,7 +42,7 @@ func (s *Game) ConfirmCrewMember() {
 		if s.InputCrew == nil {
 			return
 		}
-		s.InputState = InputStateChooseRequirement
+		s.InputState = InputStateChooseObjective
 	})
 }
 

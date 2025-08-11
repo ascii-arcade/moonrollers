@@ -3,7 +3,7 @@ package games
 const (
 	InputStateRoll = iota
 	InputStateChooseCrew
-	InputStateChooseRequirement
+	InputStateChooseObjective
 	InputStateCommitDice
 	InputStateChooseHazard
 )
