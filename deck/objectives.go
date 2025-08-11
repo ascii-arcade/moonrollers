@@ -12,7 +12,7 @@ import (
 const (
 	emptyPip = "◇"
 	fullPip  = "◆"
-	hazard   = "!"
+	Hazard   = "!"
 )
 
 type Objective struct {
@@ -34,7 +34,7 @@ func (o *Objective) Render(style lipgloss.Style) string {
 	line.WriteString(style.Foreground(o.Type.Color).Render(o.Type.Symbol))
 	line.WriteString(" ")
 	if o.Hazard {
-		line.WriteString(style.Foreground(colors.Hazard).Render(hazard))
+		line.WriteString(style.Foreground(colors.Hazard).Render(Hazard))
 	} else {
 		line.WriteString(" ")
 	}

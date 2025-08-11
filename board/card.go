@@ -11,10 +11,6 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-const (
-	hazard = "!"
-)
-
 type card struct {
 	model       *Model
 	Crew        *deck.Crew
@@ -45,7 +41,7 @@ func newCard(model *Model, crew *deck.Crew) *card {
 		c.description = strings.ReplaceAll(c.description, "%"+findPlural+"%", pluralValue)
 	}
 	hazardStyle := c.style.Foreground(colors.Hazard).Bold(true).Italic(true)
-	hazardValue := hazardStyle.Render(fmt.Sprintf("%s %s", hazard, "hazard"))
+	hazardValue := hazardStyle.Render(fmt.Sprintf("%s %s", deck.Hazard, "hazard"))
 	c.description = strings.ReplaceAll(c.description, "%hazard%", hazardValue)
 
 	return c
