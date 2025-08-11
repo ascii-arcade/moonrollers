@@ -38,9 +38,10 @@ var (
 	LobbyJoinFaction = Keys{"1", "2", "3", "4", "5"}
 	LobbySettings    = Keys{"c"}
 
-	GameIncrementPoint = Keys{"a"}
-	GameEndTurn        = Keys{"z"}
-	GameRollDice       = Keys{"r"}
-	GameChooseCrew     = Keys{"1", "2", "3", "4", "5", "6"}
-	GameChooseConfirm  = Keys{"enter"}
+	GameIncrementPoint  = Keys{"a"}
+	GameEndTurn         = Keys{"z"}
+	GameRollDice        = Keys{"r"}
+	GameChooseCrew      = Keys{"1", "2", "3", "4", "5", "6"}
+	GameChooseObjective = Keys{"1", "2", "3", "4"}
+	GameChooseConfirm   = Keys{"enter"}
 )

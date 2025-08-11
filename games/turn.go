@@ -24,6 +24,7 @@ func (s *Game) NextTurn() {
 		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].crewIDs())
 		s.InputState = InputStateRoll
 		s.InputCrew = nil
+		s.InputObjective = nil
 
 		s.initRollingPools(startTurn.RollingPoolSize)
 	})

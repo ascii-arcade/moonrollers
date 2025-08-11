@@ -46,6 +46,25 @@ func (s *Game) ConfirmCrewMember() {
 	})
 }
 
+func (s *Game) ChooseObjective(index int) {
+	s.withLock(func() {
+		if index < 0 || index >= len(s.InputCrew.Objectives) {
+			return
+		}
+
+		s.InputObjective = &s.InputCrew.Objectives[index]
+	})
+}
+
+func (s *Game) ConfirmObjective() {
+	s.withLock(func() {
+		if s.InputObjective == nil {
+			return
+		}
+		s.InputState = InputStateCommitDice
+	})
+}
+
 func (s *Game) HireCrewMember(index int, player *Player) error {
 	return s.withErrLock(func() error {
 		if index < 0 || index >= len(s.CrewForHire) {

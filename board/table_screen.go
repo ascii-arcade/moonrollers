@@ -74,6 +74,20 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
 				s.model.Game.ConfirmCrewMember()
 			}
+
+		case games.InputStateChooseObjective:
+			switch {
+			case keys.GameChooseObjective.TriggeredBy(msg.String()):
+				i, err := strconv.Atoi(msg.String())
+				if err != nil {
+					return s.model, nil
+				}
+
+				s.model.Game.ChooseObjective(i - 1)
+				return s.model, nil
+			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
+				s.model.Game.ConfirmObjective()
+			}
 		}
 
 		if config.Debug {
@@ -117,6 +131,8 @@ func (s *tableScreen) View() string {
 			}
 		case games.InputStateChooseCrew:
 			inputStageComponent = newInputStageChooseCrewComponent(s.model)
+		case games.InputStateChooseObjective:
+			inputStageComponent = newInputStageChooseObjectiveComponent(s.model)
 		}
 	}
 
