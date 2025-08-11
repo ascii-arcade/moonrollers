@@ -12,9 +12,7 @@ import (
 )
 
 const (
-	emptyPip = "◇"
-	fullPip  = "◆"
-	hazard   = "!"
+	hazard = "!"
 )
 
 type card struct {
