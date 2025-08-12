@@ -36,5 +36,7 @@ func (c inputStageChooseObjectiveComponent) render() string {
 		output.WriteString(fmt.Sprintf("\n\n%s to confirm", keys.GameChooseConfirm.String(c.model.style)))
 	}
 
+	output.WriteString(fmt.Sprintf("\n%s to go back", keys.GamePreviousInputStage.String(c.model.style)))
+
 	return inputComponentStyle(false).Render(output.String())
 }

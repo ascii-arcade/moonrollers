@@ -66,6 +66,16 @@ func (s *Game) ConfirmObjective() {
 	})
 }
 
+func (s *Game) PreviousInputStage() {
+	s.withLock(func() {
+		switch s.InputState {
+		case InputStateChooseObjective:
+			s.InputObjective = nil
+			s.InputState = InputStateChooseCrew
+		}
+	})
+}
+
 func (s *Game) HireCrewMember(index int, player *Player) error {
 	return s.withErrLock(func() error {
 		if index < 0 || index >= len(s.CrewForHire) {
