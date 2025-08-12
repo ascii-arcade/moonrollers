@@ -19,6 +19,7 @@ type Game struct {
 	Deck        deck.Deck
 	RollingPool dice.DicePool
 	SupplyPool  dice.DicePool
+	RollCount   int
 
 	InputState     int
 	InputCrew      *deck.Crew

@@ -20,6 +20,7 @@ func (s *Game) SetFaction(player *Player, faction *factions.Faction) error {
 
 func (s *Game) Roll(isRolling bool) {
 	s.withLock(func() {
+		s.RollCount++
 		s.RollingPool.Roll()
 		if !isRolling {
 			s.InputState = InputStateChooseCrew
