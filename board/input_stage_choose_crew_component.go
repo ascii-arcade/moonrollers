@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/ascii-arcade/moonrollers/keys"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type inputStageChooseCrewComponent struct {
@@ -26,10 +27,12 @@ func (c inputStageChooseCrewComponent) render() string {
 	}
 	output.WriteString("\n\n")
 
+	crewList := make([]string, 0)
 	for index, crew := range c.model.Game.CrewForHire {
-		text := fmt.Sprintf("[%d] %s\n", index+1, crew.Name)
-		output.WriteString(c.model.style.Foreground(crew.Faction.Color).Render(text))
+		text := fmt.Sprintf("[%d] %s", index+1, crew.Name)
+		crewList = append(crewList, c.model.style.Foreground(crew.Faction.Color).Render(text))
 	}
+	output.WriteString(lipgloss.JoinVertical(lipgloss.Top, crewList...))
 
 	if c.model.Game.InputCrew != nil {
 		output.WriteString(fmt.Sprintf("\n\n%s to confirm", keys.GameChooseConfirm.String(c.model.style)))
