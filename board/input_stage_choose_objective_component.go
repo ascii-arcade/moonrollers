@@ -33,7 +33,7 @@ func (c inputStageChooseObjectiveComponent) render() string {
 	}
 
 	if c.model.Game.InputObjective != nil {
-		output.WriteString(fmt.Sprintf("\n\n%s to confirm", keys.GameChooseConfirm.String(c.model.style)))
+		output.WriteString(fmt.Sprintf("\n%s to confirm", keys.GameChooseConfirm.String(c.model.style)))
 	}
 
 	output.WriteString(fmt.Sprintf("\n%s to go back", keys.GamePreviousInputStage.String(c.model.style)))
