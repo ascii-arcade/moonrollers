@@ -21,7 +21,7 @@ func (s *Game) NextTurn() {
 			return
 		}
 
-		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].crewIDs())
+		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].CrewIDs())
 		s.InputState = InputStateRoll
 		s.RollCount = 0
 		s.InputCrew = nil
