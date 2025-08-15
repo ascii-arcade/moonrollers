@@ -5,6 +5,7 @@ import (
 	"slices"
 
 	"github.com/ascii-arcade/moonrollers/factions"
+	"github.com/ascii-arcade/moonrollers/rules"
 )
 
 func (s *Game) SetFaction(player *Player, faction *factions.Faction) error {
@@ -30,11 +31,17 @@ func (s *Game) Roll(isRolling bool) {
 
 func (s *Game) ChooseCrewMember(index int) {
 	s.withLock(func() {
-		if index < 0 || index >= len(s.CrewForHire) {
+		player := s.GetCurrentPlayer()
+		commitableToCrew := rules.CommitableToCrew(
+			player.CrewIDs(),
+			s.CrewForHire,
+			s.RollingPool,
+		)
+		if index < 0 || index >= len(commitableToCrew) {
 			return
 		}
 
-		s.InputCrew = s.CrewForHire[index]
+		s.InputCrew = commitableToCrew[index]
 	})
 }
 

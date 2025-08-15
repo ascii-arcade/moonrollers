@@ -63,7 +63,7 @@ func (p *Player) AddCrew(crew *deck.Crew, active bool) {
 	p.CrewCount[crew.Faction.Name]++
 }
 
-func (p *Player) crewIDs() []string {
+func (p *Player) CrewIDs() []string {
 	ids := make([]string, 0)
 	for _, crew := range p.Crew {
 		ids = append(ids, crew.ID)

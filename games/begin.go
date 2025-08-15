@@ -26,7 +26,7 @@ func (s *Game) Begin() error {
 		s.CurrentTurnIndex = 0
 		s.inProgress = true
 
-		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].crewIDs())
+		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].CrewIDs())
 		s.initRollingPools(startTurn.RollingPoolSize)
 		s.InputState = InputStateRoll
 		s.RollCount = 0

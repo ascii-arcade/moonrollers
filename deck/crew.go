@@ -13,6 +13,10 @@ type Crew struct {
 	Objectives []Objective
 }
 
+func (c *Crew) AvailableObjectives() []Objective {
+	return c.Objectives
+}
+
 var allCrew = []Crew{
 	{
 		Name:    "Aponi",
