@@ -19,6 +19,7 @@ type Game struct {
 	Deck        deck.Deck
 	RollingPool dice.DicePool
 	SupplyPool  dice.DicePool
+	StagedDice  []dice.Die
 	RollCount   int
 
 	InputState     int
