@@ -21,14 +21,18 @@ func (s *Game) NextTurn() {
 			return
 		}
 
-		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].CrewIDs())
-		s.InputState = InputStateRoll
-		s.RollCount = 0
-		s.InputCrew = nil
-		s.InputObjective = nil
-
-		s.initRollingPools(startTurn.RollingPoolSize)
+		s.prepareTurn()
 	})
+}
+
+func (s *Game) prepareTurn() {
+	startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].CrewIDs())
+	s.initRollingPools(startTurn.RollingPoolSize)
+	s.InputState = InputStateRoll
+	s.RollCount = 0
+	s.InputCrew = nil
+	s.InputObjective = nil
+	s.StagedDice = make([]dice.Die, 0)
 }
 
 func (s *Game) initRollingPools(rollingPoolSize int) {

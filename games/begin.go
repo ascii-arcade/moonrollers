@@ -7,7 +7,6 @@ import (
 	"github.com/ascii-arcade/moonrollers/deck"
 	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/messages"
-	"github.com/ascii-arcade/moonrollers/rules"
 )
 
 const (
@@ -26,10 +25,7 @@ func (s *Game) Begin() error {
 		s.CurrentTurnIndex = 0
 		s.inProgress = true
 
-		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].CrewIDs())
-		s.initRollingPools(startTurn.RollingPoolSize)
-		s.InputState = InputStateRoll
-		s.RollCount = 0
+		s.prepareTurn()
 
 		for _, p := range s.players {
 			p.update(messages.TableScreen)
