@@ -2,6 +2,7 @@ package dice
 
 import (
 	"math/rand"
+	"slices"
 
 	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/charmbracelet/lipgloss"
@@ -60,4 +61,24 @@ func (dp DicePool) Roll() {
 	for i := range dp.Dice {
 		dp.Dice[i] = all[rand.Intn(len(all))]
 	}
+}
+
+func (dp *DicePool) Remove(die Die, count int) {
+	i := 0
+	dp.Dice = slices.DeleteFunc(dp.Dice, func(d Die) bool {
+		if d == die {
+			i++
+		}
+		return i <= count && d == die
+	})
+}
+
+func (dp DicePool) NumberOf(die Die) int {
+	count := 0
+	for _, d := range dp.Dice {
+		if d == die {
+			count++
+		}
+	}
+	return count
 }

@@ -29,14 +29,14 @@ func (c inputStageChooseObjectiveComponent) render() string {
 	output.WriteString("\n\n")
 
 	for index, objective := range c.model.Game.InputCrew.Objectives {
-		output.WriteString(fmt.Sprintf("[%d] %s\n", index+1, objective.Render(c.model.style)))
+		fmt.Fprintf(&output, "[%d] %s\n", index+1, objective.Render(c.model.style))
 	}
 
 	if c.model.Game.InputObjective != nil {
-		output.WriteString(fmt.Sprintf("\n%s to confirm", keys.GameChooseConfirm.String(c.model.style)))
+		fmt.Fprintf(&output, "\n%s to confirm", keys.GameChooseConfirm.String(c.model.style))
 	}
 
-	output.WriteString(fmt.Sprintf("\n%s to go back", keys.GamePreviousInputStage.String(c.model.style)))
+	fmt.Fprintf(&output, "\n%s to go back", keys.GamePreviousInputStage.String(c.model.style))
 
 	return inputComponentStyle(false).Render(output.String())
 }

@@ -70,7 +70,6 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				}
 
 				s.model.Game.ChooseCrewMember(i - 1)
-				return s.model, nil
 			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
 				s.model.Game.ConfirmCrewMember()
 			}
@@ -78,17 +77,39 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		case games.InputStateChooseObjective:
 			switch {
 			case keys.GameChooseObjective.TriggeredBy(msg.String()):
-				i, err := strconv.Atoi(msg.String())
-				if err != nil {
-					return s.model, nil
-				}
-
+				i, _ := strconv.Atoi(msg.String())
 				s.model.Game.ChooseObjective(i - 1)
-				return s.model, nil
 			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
 				s.model.Game.ConfirmObjective()
 			case keys.GamePreviousInputStage.TriggeredBy(msg.String()):
 				s.model.Game.PreviousInputStage()
+			}
+
+		case games.InputStateCommitDice:
+			switch {
+			case keys.GameCommitDie.TriggeredBy(msg.String()):
+				i, _ := strconv.Atoi(msg.String())
+				if s.model.Game.RollingPool.NumberOf(s.model.Game.InputObjective.Type) < i {
+					i = s.model.Game.RollingPool.NumberOf(s.model.Game.InputObjective.Type)
+				}
+				s.model.Game.InputObjective.CommittingAmount = i
+			case keys.GameUncommitDie.TriggeredBy(msg.String()):
+				s.model.Game.InputObjective.CommittingAmount -= 1
+				if s.model.Game.InputObjective.CommittingAmount < 0 {
+					s.model.Game.InputObjective.CommittingAmount = 0
+				}
+			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
+				s.model.Game.CommitDice()
+			case keys.GameEndTurn.TriggeredBy(msg.String()):
+				s.model.Game.LockIn()
+				s.model.Game.NextTurn()
+			case keys.GamePreviousInputStage.TriggeredBy(msg.String()):
+				s.model.Game.PreviousInputStage()
+			}
+
+		case games.Busted:
+			if keys.GameEndTurn.TriggeredBy(msg.String()) {
+				s.model.Game.NextTurn()
 			}
 		}
 
@@ -135,6 +156,10 @@ func (s *tableScreen) View() string {
 			inputStageComponent = newInputStageChooseCrewComponent(s.model)
 		case games.InputStateChooseObjective:
 			inputStageComponent = newInputStageChooseObjectiveComponent(s.model)
+		case games.InputStateCommitDice:
+			inputStageComponent = newInputStageCommitDiceComponent(s.model)
+		case games.Busted:
+			inputStageComponent = newBustedComponent(s.model)
 		}
 	}
 

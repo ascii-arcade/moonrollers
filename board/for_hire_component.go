@@ -21,6 +21,10 @@ func (fh *forHireComponent) render() string {
 	var rows []string
 
 	for _, card := range fh.model.Game.CrewForHire {
+		if fh.model.Game.InputCrew != nil && card.ID == fh.model.Game.InputCrew.ID {
+			content = append(content, fh.renderCard(newCard(fh.model, fh.model.Game.InputCrew)))
+			continue
+		}
 		content = append(content, fh.renderCard(newCard(fh.model, card)))
 	}
 
@@ -51,6 +55,7 @@ func (fh *forHireComponent) renderCard(c *card) string {
 		Height(height)
 
 	name := c.style.Foreground(c.Crew.Faction.Color).Bold(true).Render(c.Crew.Name)
+	nameWidth, _ := lipgloss.Size(name)
 
 	var objectives strings.Builder
 	for i, objective := range c.Crew.Objectives {
@@ -62,11 +67,22 @@ func (fh *forHireComponent) renderCard(c *card) string {
 		objectives.WriteString(line.String())
 	}
 
+	nameBar := lipgloss.JoinHorizontal(
+		lipgloss.Left,
+		c.style.MarginLeft(1).Render(name),
+		func() string {
+			if c.model.Game.InputCrew != c.Crew {
+				return ""
+			}
+			return c.style.AlignHorizontal(lipgloss.Right).Width(width - nameWidth - 2).Render("*")
+		}(),
+	)
+
 	return style.Render(lipgloss.JoinHorizontal(
 		lipgloss.Left,
 		lipgloss.JoinVertical(
 			lipgloss.Top,
-			c.style.MarginLeft(1).Render(name),
+			nameBar,
 			lipgloss.JoinHorizontal(
 				lipgloss.Left,
 				c.style.MarginLeft(1).MarginTop(1).Width(objectivesWidth).Render(objectives.String()),

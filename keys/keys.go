@@ -45,4 +45,6 @@ var (
 	GameChooseObjective    = Keys{"1", "2", "3", "4"}
 	GameChooseConfirm      = Keys{"enter"}
 	GamePreviousInputStage = Keys{"esc"}
+	GameCommitDie          = Keys{"1", "2", "3", "4", "5"}
+	GameUncommitDie        = Keys{"backspace", "delete"}
 )

@@ -17,6 +17,18 @@ func (c *Crew) AvailableObjectives() []Objective {
 	return c.Objectives
 }
 
+func (c *Crew) Copy() Crew {
+	objectives := make([]Objective, len(c.Objectives))
+	copy(objectives, c.Objectives)
+	return Crew{
+		Faction:    c.Faction,
+		ID:         c.ID,
+		IsStarter:  c.IsStarter,
+		Name:       c.Name,
+		Objectives: objectives,
+	}
+}
+
 var allCrew = []Crew{
 	{
 		Name:    "Aponi",

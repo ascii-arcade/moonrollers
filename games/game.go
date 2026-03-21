@@ -177,3 +177,23 @@ func (s *Game) GetWinner() *Player {
 	})
 	return players[0]
 }
+
+func (s *Game) CommitDice() {
+	s.withLock(func() {
+		s.RollingPool.Remove(s.InputObjective.Type, s.InputObjective.CommittingAmount)
+		s.InputObjective.CompletedAmount += s.InputObjective.CommittingAmount
+		s.InputObjective.CommittingAmount = 0
+		s.InputState = InputStateRoll
+	})
+}
+
+func (s *Game) LockIn() {
+	s.withLock(func() {
+		for _, crew := range s.CrewForHire {
+			if crew.ID == s.InputCrew.ID {
+				crew = new(s.InputCrew.Copy())
+				break
+			}
+		}
+	})
+}

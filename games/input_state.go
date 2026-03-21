@@ -8,4 +8,5 @@ const (
 	InputStateRollFromSupply
 	InputStateCommitDice
 	InputStateChooseHazard
+	Busted
 )

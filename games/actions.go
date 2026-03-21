@@ -25,6 +25,18 @@ func (s *Game) Roll(isRolling bool) {
 		s.RollingPool.Roll()
 		if !isRolling {
 			s.InputState = InputStateChooseCrew
+
+			if s.InputCrew != nil {
+				s.InputState = InputStateChooseObjective
+
+				if s.InputObjective != nil && s.InputObjective.CompletedAmount < s.InputObjective.Amount {
+					s.InputState = InputStateCommitDice
+
+					if s.RollingPool.NumberOf(s.InputObjective.Type) == 0 {
+						s.InputState = Busted
+					}
+				}
+			}
 		}
 	})
 }
@@ -41,7 +53,8 @@ func (s *Game) ChooseCrewMember(index int) {
 			return
 		}
 
-		s.InputCrew = commitableToCrew[index]
+		inputCrew := commitableToCrew[index].Copy()
+		s.InputCrew = &inputCrew
 	})
 }
 
