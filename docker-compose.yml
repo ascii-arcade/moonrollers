@@ -6,12 +6,12 @@ services:
         - GIT_TAG=${GIT_TAG:-dev}
     image: ascii-arcade/moonrollers:${GIT_TAG:-dev}
     ports:
-      - "23234:23234"
-    environment:
-      - ASCII_ARCADE_LANG="EN"
+      - ${SSH_PORT:-2222}:${ASCII_ARCADE_SSH_PORT:-2222}
+      - ${WEB_PORT:-8080}:${ASCII_ARCADE_WEB_PORT:-8080}
+    env_file:
+      - .env
     restart: always
     volumes:
-      - ssh:/app/.ssh
-
+      - moonrollers_ssh:/app/.ssh
 volumes:
-  ssh:
+  moonrollers_ssh:
