@@ -63,22 +63,47 @@ func (dp DicePool) Roll() {
 	}
 }
 
+func (dp *DicePool) Add(count int) {
+	for range count {
+		dp.Dice = append(dp.Dice, DieUnrolled)
+	}
+}
+
+func (dp *DicePool) RemoveExtra() {
+	removedOne := false
+	dp.Dice = slices.DeleteFunc(dp.Dice, func(d Die) bool {
+		if d == DieUnrolled && !removedOne {
+			removedOne = true
+			return true
+		}
+		return false
+	})
+}
+
 func (dp *DicePool) Remove(die Die, count int) {
 	i := 0
 	dp.Dice = slices.DeleteFunc(dp.Dice, func(d Die) bool {
-		if d == die {
+		if d == die || d == DieWild {
 			i++
 		}
-		return i <= count && d == die
+		return i <= count && (d == die || d == DieWild)
 	})
 }
 
 func (dp DicePool) NumberOf(die Die) int {
 	count := 0
 	for _, d := range dp.Dice {
-		if d == die {
+		if d == die || d == DieWild {
 			count++
 		}
 	}
 	return count
+}
+
+func (dp DicePool) Has(die Die) bool {
+	return slices.Contains(dp.Dice, die)
+}
+
+func (dp DicePool) HasExtra() bool {
+	return slices.Contains(dp.Dice, DieExtra)
 }

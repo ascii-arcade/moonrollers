@@ -21,5 +21,5 @@ func (c bustedComponent) render() string {
 	var output strings.Builder
 	output.WriteString("Busted!\n\n")
 	fmt.Fprintf(&output, "\n%s to continue", keys.GameEndTurn.String(c.model.style))
-	return output.String()
+	return inputComponentStyle(true).Render(output.String())
 }

@@ -1,6 +1,7 @@
 package games
 
 import (
+	"math/rand/v2"
 	"slices"
 	"sort"
 	"sync"
@@ -24,6 +25,7 @@ type Game struct {
 	InputState     int
 	InputCrew      *deck.Crew
 	InputObjective *deck.Objective
+	InputHazards   []Hazard
 
 	Settings         Settings
 	CurrentTurnIndex int
@@ -183,7 +185,8 @@ func (s *Game) CommitDice() {
 		s.RollingPool.Remove(s.InputObjective.Type, s.InputObjective.CommittingAmount)
 		s.InputObjective.CompletedAmount += s.InputObjective.CommittingAmount
 		s.InputObjective.CommittingAmount = 0
-		s.InputState = InputStateRoll
+		s.InputObjective.StartedBy = s.GetCurrentPlayer().Name
+		s.InputObjective.StartedByColor = s.GetCurrentPlayer().Faction.Color
 	})
 }
 
@@ -191,9 +194,23 @@ func (s *Game) LockIn() {
 	s.withLock(func() {
 		for _, crew := range s.CrewForHire {
 			if crew.ID == s.InputCrew.ID {
-				crew = new(s.InputCrew.Copy())
+				for _, inputObjective := range s.InputCrew.Objectives {
+					if !inputObjective.IsCompleted() {
+						inputObjective.StartedBy = ""
+						inputObjective.StartedByColor = ""
+						inputObjective.CompletedAmount = 0
+						inputObjective.CommittingAmount = 0
+					}
+				}
+				crew.Objectives = s.InputCrew.Objectives
 				break
 			}
 		}
 	})
+}
+
+func (s *Game) PullHazards() {
+	s.InputHazards = s.InputHazards[:0]
+	s.InputHazards = append(s.InputHazards, hazards[rand.IntN(2)])
+	s.InputHazards = append(s.InputHazards, hazards[rand.IntN(2)])
 }

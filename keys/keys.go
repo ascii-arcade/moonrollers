@@ -42,7 +42,9 @@ var (
 	GameEndTurn            = Keys{"z"}
 	GameRollDice           = Keys{"r"}
 	GameChooseCrew         = Keys{"1", "2", "3", "4", "5", "6"}
+	GameChooseExtraDice    = Keys{"a"}
 	GameChooseObjective    = Keys{"1", "2", "3", "4"}
+	GameChooseHazard       = Keys{"1", "2"}
 	GameChooseConfirm      = Keys{"enter"}
 	GamePreviousInputStage = Keys{"esc"}
 	GameCommitDie          = Keys{"1", "2", "3", "4", "5"}

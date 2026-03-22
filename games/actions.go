@@ -5,7 +5,6 @@ import (
 	"slices"
 
 	"github.com/ascii-arcade/moonrollers/factions"
-	"github.com/ascii-arcade/moonrollers/rules"
 )
 
 func (s *Game) SetFaction(player *Player, faction *factions.Faction) error {
@@ -43,17 +42,10 @@ func (s *Game) Roll(isRolling bool) {
 
 func (s *Game) ChooseCrewMember(index int) {
 	s.withLock(func() {
-		player := s.GetCurrentPlayer()
-		commitableToCrew := rules.CommitableToCrew(
-			player.CrewIDs(),
-			s.CrewForHire,
-			s.RollingPool,
-		)
-		if index < 0 || index >= len(commitableToCrew) {
+		if len(s.CrewForHire) <= index || !s.CrewForHire[index].CanCommit(s.RollingPool, s.GetCurrentPlayer().Name) {
 			return
 		}
-
-		inputCrew := commitableToCrew[index].Copy()
+		inputCrew := s.CrewForHire[index].Copy()
 		s.InputCrew = &inputCrew
 	})
 }
@@ -69,11 +61,16 @@ func (s *Game) ConfirmCrewMember() {
 
 func (s *Game) ChooseObjective(index int) {
 	s.withLock(func() {
-		if index < 0 || index >= len(s.InputCrew.Objectives) {
+		switch {
+		case index < 0,
+			index >= len(s.InputCrew.Objectives),
+			s.RollingPool.NumberOf(s.InputCrew.Objectives[index].Type) == 0,
+			s.InputCrew.Objectives[index].IsCompleted(),
+			s.InputCrew.Objectives[index].StartedBy != "" && s.InputCrew.Objectives[index].StartedBy != s.GetCurrentPlayer().Name:
 			return
 		}
 
-		s.InputObjective = &s.InputCrew.Objectives[index]
+		s.InputObjective = s.InputCrew.Objectives[index]
 	})
 }
 
@@ -92,6 +89,9 @@ func (s *Game) PreviousInputStage() {
 		case InputStateChooseObjective:
 			s.InputObjective = nil
 			s.InputState = InputStateChooseCrew
+		case InputStateCommitDice:
+			s.InputObjective.CommittingAmount = 0
+			s.InputState = InputStateChooseObjective
 		}
 	})
 }

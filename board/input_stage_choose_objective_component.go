@@ -29,6 +29,12 @@ func (c inputStageChooseObjectiveComponent) render() string {
 	output.WriteString("\n\n")
 
 	for index, objective := range c.model.Game.InputCrew.Objectives {
+		switch {
+		case objective.IsCompleted(),
+			objective.StartedBy != "" && objective.StartedBy != c.model.Game.GetCurrentPlayer().Name,
+			c.model.Game.RollingPool.NumberOf(objective.Type) == 0:
+			continue
+		}
 		fmt.Fprintf(&output, "[%d] %s\n", index+1, objective.Render(c.model.style))
 	}
 

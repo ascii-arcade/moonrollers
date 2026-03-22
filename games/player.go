@@ -17,6 +17,7 @@ type Player struct {
 	CrewCount          map[string]int
 	TurnOrder          int
 	LanguagePreference *language.LanguagePreference
+	Hazards            []Hazard
 
 	UpdateChan chan int
 

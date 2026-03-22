@@ -59,7 +59,15 @@ func (s *joinScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 			}
 		}
 
-		s.model.clearError()
+		if msg.Type == tea.KeyCtrlQuestionMark {
+			if len(s.model.gameCodeInput.Value()) == 4 {
+				s.model.gameCodeInput.SetValue(s.model.gameCodeInput.Value()[:len(s.model.gameCodeInput.Value())-1])
+			}
+		}
+
+		if msg.Type == tea.KeyEnter {
+			s.model.clearError()
+		}
 	}
 
 	s.model.gameCodeInput, cmd = s.model.gameCodeInput.Update(msg)
