@@ -35,7 +35,7 @@ var (
 	Submit         = Keys{"enter"}
 
 	LobbyStartGame   = Keys{"s"}
-	LobbyJoinFaction = Keys{"1", "2", "3", "4", "5"}
+	LobbyJoinFaction = Keys{"1", "2", "3", "4", "5", "0"}
 	LobbySettings    = Keys{"c"}
 
 	GameIncrementPoint     = Keys{"a"}

@@ -55,6 +55,9 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		case games.InputStateRoll:
 			switch {
 			case keys.GameRollDice.TriggeredBy(msg.String()):
+				if s.model.Game.InputObjective != nil && s.model.Game.InputObjective.IsCompleted() {
+					s.model.Game.InputObjective = nil
+				}
 				if !s.isRolling {
 					s.rollTickCount = 0
 					s.isRolling = true
@@ -63,8 +66,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 					})
 				}
 			case keys.GameEndTurn.TriggeredBy(msg.String()):
-				s.model.Game.LockIn()
-				s.model.Game.NextTurn()
+				s.model.Game.NextTurn(false)
 				return s.model, nil
 			}
 		case games.InputStateChooseCrew:
@@ -123,8 +125,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 					s.model.Game.InputState = games.InputStateChooseHazard
 				}
 			case keys.GameEndTurn.TriggeredBy(msg.String()):
-				s.model.Game.LockIn()
-				s.model.Game.NextTurn()
+				s.model.Game.NextTurn(false)
 			case keys.GamePreviousInputStage.TriggeredBy(msg.String()):
 				s.model.Game.PreviousInputStage()
 			}
@@ -163,14 +164,14 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 
 		case games.Busted:
 			if keys.GameEndTurn.TriggeredBy(msg.String()) {
-				s.model.Game.NextTurn()
+				s.model.Game.NextTurn(true)
 			}
 		}
 
 		if config.Debug {
 			switch {
 			case keys.GameEndTurn.TriggeredBy(msg.String()):
-				s.model.Game.NextTurn()
+				s.model.Game.NextTurn(false)
 			case msg.String() == "!":
 				_ = s.model.Game.HireCrewMember(0, s.model.Player)
 			case msg.String() == "@":

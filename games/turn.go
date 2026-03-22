@@ -6,7 +6,7 @@ import (
 	"github.com/ascii-arcade/moonrollers/rules"
 )
 
-func (s *Game) NextTurn() {
+func (s *Game) NextTurn(busted bool) {
 	s.withLock(func() {
 		s.CurrentTurnIndex++
 		if len(s.players) <= s.CurrentTurnIndex {
@@ -18,6 +18,23 @@ func (s *Game) NextTurn() {
 				player.update(messages.WinnerScreen)
 			}
 			return
+		}
+
+		if !busted {
+			for _, crew := range s.CrewForHire {
+				if crew.ID == s.InputCrew.ID {
+					for _, inputObjective := range s.InputCrew.Objectives {
+						if !inputObjective.IsCompleted() {
+							inputObjective.StartedBy = ""
+							inputObjective.StartedByColor = ""
+							inputObjective.CompletedAmount = 0
+							inputObjective.CommittingAmount = 0
+						}
+					}
+					crew.Objectives = s.InputCrew.Objectives
+					break
+				}
+			}
 		}
 
 		startTurn := rules.NewStartTurn(s.players[s.CurrentTurnIndex].CrewIDs())

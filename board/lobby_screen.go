@@ -44,14 +44,16 @@ func (s *lobbyScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				_ = s.model.Game.Begin()
 			}
 		case keys.LobbyJoinFaction.TriggeredBy(msg.String()):
-			i, err := strconv.Atoi(msg.String())
-			if err != nil {
+			i, _ := strconv.Atoi(msg.String())
+
+			if i == 0 {
+				_ = s.model.Game.SetFaction(s.model.Player, nil)
 				return s.model, nil
-			} else {
-				faction := factions.All()[i-1]
-				if !s.model.Game.IsFactionUsed(faction) {
-					_ = s.model.Game.SetFaction(s.model.Player, &faction)
-				}
+			}
+
+			faction := factions.All()[i-1]
+			if !s.model.Game.IsFactionUsed(faction) {
+				_ = s.model.Game.SetFaction(s.model.Player, &faction)
 			}
 		case keys.LobbySettings.TriggeredBy(msg.String()):
 			if s.model.Player.IsHost() {
@@ -70,12 +72,14 @@ func (s *lobbyScreen) View() string {
 
 	header := s.model.Game.Code
 	playerList := s.style.Render(s.playerList())
+	spectators := s.style.Render(s.spectators())
 	footer := s.style.Render(s.footer())
 
 	content := lipgloss.JoinVertical(
 		lipgloss.Left,
 		style.Align(lipgloss.Center).MarginBottom(2).Render(header),
 		style.Render(playerList),
+		spectators,
 		style.Render(footer),
 	)
 
@@ -93,29 +97,48 @@ func (s *lobbyScreen) View() string {
 	)
 }
 
+func (s *lobbyScreen) spectators() string {
+	style := s.style
+	numberOfSpectators := 0
+	for _, p := range s.model.Game.OrderedPlayers() {
+		if !p.HasFaction() {
+			numberOfSpectators++
+		}
+	}
+	return style.Render(fmt.Sprintf("%d spectator%s\n", numberOfSpectators, func() string {
+		if numberOfSpectators != 1 {
+			return "s"
+		}
+		return ""
+	}()))
+}
+
 func (s *lobbyScreen) playerList() string {
 	var playerList strings.Builder
 	style := s.style
 
-	for _, p := range s.model.Game.OrderedPlayers() {
+	players := s.model.Game.OrderedPlayers()
+	for i := range 5 {
 		var listItem strings.Builder
+		if len(players) >= i+1 {
+			p := players[i]
 
-		listItem.WriteString("* " + p.Name)
-		if p.Name == s.model.Player.Name {
-			listItem.WriteString(fmt.Sprintf(" (%s)", s.model.lang().Get("board", "player_list_you")))
-		}
-		if p.IsHost() {
-			listItem.WriteString(fmt.Sprintf(" (%s)", s.model.lang().Get("board", "player_list_host")))
-		}
-		if !p.HasFaction() {
-			listItem.WriteString(fmt.Sprintf(" (%s)", s.model.lang().Get("board", "no_faction")))
-		}
+			if !p.HasFaction() {
+				goto SPECTATING
+			}
 
-		if p.HasFaction() {
+			listItem.WriteString("* " + p.Name)
+			if p.Name == s.model.Player.Name {
+				fmt.Fprintf(&listItem, " (%s)", s.model.lang().Get("board", "player_list_you"))
+			}
+			if p.IsHost() {
+				fmt.Fprintf(&listItem, " (%s)", s.model.lang().Get("board", "player_list_host"))
+			}
 			playerList.WriteString(style.Foreground(p.Faction.Color).Render(listItem.String()) + "\n")
-		} else {
-			playerList.WriteString(listItem.String() + "\n")
+			continue
 		}
+	SPECTATING:
+		playerList.WriteString(style.Foreground(lipgloss.Color("#ffffff")).Render("* "+s.model.lang().Get("board", "no_player")) + "\n")
 	}
 
 	return playerList.String()
@@ -140,11 +163,14 @@ func (s *lobbyScreen) footer() string {
 
 	sb.WriteString(lipgloss.JoinVertical(lipgloss.Left, colorList...))
 
-	sb.WriteString("\n")
+	sb.WriteString("\n\n")
+	sb.WriteString("Press '0' to spectate")
+	sb.WriteString("\n\n")
+
 	if s.model.Player.IsHost() {
 		err := s.model.Game.IsPlayerCountOk()
 		if err == nil {
-			sb.WriteString(fmt.Sprintf(s.model.lang().Get("board", "press_to_start"), keys.LobbyStartGame.String(s.style)))
+			fmt.Fprintf(&sb, s.model.lang().Get("board", "press_to_start"), keys.LobbyStartGame.String(s.style))
 		} else {
 			errorMessage := s.model.lang().Get("error", err.Error())
 			sb.WriteString(s.style.Foreground(colors.Error).Render(errorMessage))
