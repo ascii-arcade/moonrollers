@@ -118,7 +118,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				s.model.Game.CommitDice()
 				s.model.Game.InputState = games.InputStateRoll
 				switch {
-				case s.model.Game.RollingPool.HasExtra():
+				case s.model.Game.RollingPool.HasExtra() && len(s.model.Game.SupplyPool.Dice) > 0:
 					s.model.Game.InputState = games.InputStateChooseExtraDice
 				case s.model.Game.InputObjective.Hazard && s.model.Game.InputObjective.IsCompleted():
 					s.model.Game.PullHazards()

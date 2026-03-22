@@ -32,7 +32,7 @@ func (dp *DicePool) Render(style lipgloss.Style) string {
 
 	diceCount := len(dp.Dice)
 	if diceCount == 0 {
-		return ""
+		return containerStyle.Render("")
 	}
 	topCount := (diceCount + 1) / 2
 	bottomCount := diceCount / 2
