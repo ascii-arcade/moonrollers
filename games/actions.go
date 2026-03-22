@@ -19,18 +19,16 @@ func (s *Game) Roll(isRolling bool) {
 		s.RollCount++
 		s.RollingPool.Roll()
 		if !isRolling {
-			s.InputState = InputStateChooseCrew
-
-			if s.InputCrew != nil {
+			switch {
+			case s.InputCrew != nil && !s.InputCrew.CanCommit(s.RollingPool, s.GetCurrentPlayer().Sess.User()),
+				s.InputObjective != nil && s.RollingPool.NumberOf(s.InputObjective.Type) == 0:
+				s.InputState = Busted
+			case s.InputObjective != nil && s.InputObjective.CompletedAmount < s.InputObjective.Amount:
+				s.InputState = InputStateCommitDice
+			case s.InputCrew != nil && !s.InputCrew.IsComplete():
 				s.InputState = InputStateChooseObjective
-
-				if s.InputObjective != nil && s.InputObjective.CompletedAmount < s.InputObjective.Amount {
-					s.InputState = InputStateCommitDice
-
-					if s.RollingPool.NumberOf(s.InputObjective.Type) == 0 {
-						s.InputState = Busted
-					}
-				}
+			default:
+				s.InputState = InputStateChooseCrew
 			}
 		}
 	})

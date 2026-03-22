@@ -19,7 +19,9 @@ func (c *Crew) AvailableObjectives() []*Objective {
 
 func (c *Crew) Copy() Crew {
 	objectives := make([]*Objective, len(c.Objectives))
-	copy(objectives, c.Objectives)
+	for i, objective := range c.Objectives {
+		objectives[i] = new(*objective)
+	}
 	return Crew{
 		Faction:    c.Faction,
 		ID:         c.ID,
@@ -38,6 +40,15 @@ func (c *Crew) CanCommit(pool dice.DicePool, playerName string) bool {
 		}
 	}
 	return false
+}
+
+func (c *Crew) IsComplete() bool {
+	for _, objective := range c.Objectives {
+		if !objective.IsCompleted() {
+			return false
+		}
+	}
+	return true
 }
 
 var allCrew = []Crew{

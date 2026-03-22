@@ -1,7 +1,9 @@
 package board
 
 import (
+	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/ascii-arcade/moonrollers/config"
@@ -118,6 +120,9 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				s.model.Game.CommitDice()
 				s.model.Game.InputState = games.InputStateRoll
 				switch {
+				case s.model.Game.InputCrew.IsComplete():
+					s.model.Game.CompleteCard(s.model.Game.InputCrew, s.model.Game.GetCurrentPlayer())
+					s.model.Game.NextTurn(false)
 				case s.model.Game.RollingPool.HasExtra() && len(s.model.Game.SupplyPool.Dice) > 0:
 					s.model.Game.InputState = games.InputStateChooseExtraDice
 				case s.model.Game.InputObjective.Hazard && s.model.Game.InputObjective.IsCompleted():
@@ -235,6 +240,12 @@ func (s *tableScreen) View() string {
 		playerName,
 	)
 
+	var footer strings.Builder
+	fmt.Fprintf(&footer, "%s", s.model.Player.Name)
+	if s.model.Player.Points > 0 {
+		fmt.Fprintf(&footer, " | %d points", s.model.Player.Points)
+	}
+
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
 		lipgloss.JoinHorizontal(
@@ -244,5 +255,6 @@ func (s *tableScreen) View() string {
 			rightSplit,
 		),
 		playerHandComponent.render(),
+		s.style.Padding(0, 1).Render(footer.String()),
 	)
 }

@@ -185,7 +185,7 @@ func (s *Game) CommitDice() {
 		s.RollingPool.Remove(s.InputObjective.Type, s.InputObjective.CommittingAmount)
 		s.InputObjective.CompletedAmount += s.InputObjective.CommittingAmount
 		s.InputObjective.CommittingAmount = 0
-		s.InputObjective.StartedBy = s.GetCurrentPlayer().Name
+		s.InputObjective.StartedBy = s.GetCurrentPlayer().Sess.User()
 		s.InputObjective.StartedByColor = s.GetCurrentPlayer().Faction.Color
 	})
 }
@@ -194,4 +194,17 @@ func (s *Game) PullHazards() {
 	s.InputHazards = s.InputHazards[:0]
 	s.InputHazards = append(s.InputHazards, hazards[rand.IntN(2)])
 	s.InputHazards = append(s.InputHazards, hazards[rand.IntN(2)])
+}
+
+func (s *Game) CompleteCard(crew *deck.Crew, whoCompleted *Player) {
+	s.withLock(func() {
+		for _, objective := range crew.Objectives {
+			players[objective.StartedBy].Points += objective.Points()
+		}
+		whoCompleted.AddCrew(crew, false)
+		s.CrewForHire = slices.DeleteFunc(s.CrewForHire, func(c *deck.Crew) bool {
+			return c.ID == crew.ID
+		})
+		s.dealCrewForHire()
+	})
 }

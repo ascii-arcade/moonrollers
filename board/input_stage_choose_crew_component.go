@@ -19,6 +19,10 @@ func newInputStageChooseCrewComponent(model *Model) inputStageChooseCrewComponen
 }
 
 func (c inputStageChooseCrewComponent) render() string {
+	if c.model.Game.GetCurrentPlayer().Name != c.model.Player.Name {
+		return inputComponentStyle(false).Render(fmt.Sprintf("%s is choosing a crew card...\n", c.model.Game.GetCurrentPlayer().Name))
+	}
+
 	var output strings.Builder
 	if c.model.Game.InputCrew == nil {
 		output.WriteString("Choose Crew")
