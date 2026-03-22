@@ -33,10 +33,14 @@ func (o *Objective) Points() int {
 	return o.Amount
 }
 
-func (o *Objective) Render(style lipgloss.Style) string {
+func (o *Objective) Render(style lipgloss.Style, selected bool) string {
 	var line strings.Builder
 	line.WriteString(style.Foreground(o.Type.Color).Render(o.Type.Symbol))
-	line.WriteString(" ")
+	arrow := " "
+	if selected {
+		arrow = ">"
+	}
+	line.WriteString(arrow)
 	line.WriteString(o.getHazard(style))
 	for range o.CompletedAmount {
 		line.WriteString(style.Foreground(o.StartedByColor).Render(fullPip))

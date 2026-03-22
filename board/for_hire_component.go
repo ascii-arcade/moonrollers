@@ -67,7 +67,7 @@ func (fh *forHireComponent) renderCard(c *card) string {
 		if i > 0 {
 			line.WriteString("\n")
 		}
-		line.WriteString(objective.Render(c.style))
+		line.WriteString(objective.Render(c.style, fh.model.Game.InputObjective != nil && fh.model.Game.InputObjective == objective))
 		objectivesString.WriteString(line.String())
 	}
 

@@ -18,13 +18,17 @@ func newInputStageChooseObjectiveComponent(model *Model) inputStageChooseObjecti
 }
 
 func (c inputStageChooseObjectiveComponent) render() string {
+	if c.model.Game.GetCurrentPlayer().Name != c.model.Player.Name {
+		return inputComponentStyle(false).Render(fmt.Sprintf("%s is choosing an objective...\n", c.model.Game.GetCurrentPlayer().Name))
+	}
+
 	var output strings.Builder
 	output.WriteString(c.model.style.Bold(true).Foreground(c.model.Game.InputCrew.Faction.Color).Render(c.model.Game.InputCrew.Name))
 	output.WriteString("\n")
 	if c.model.Game.InputObjective == nil {
 		output.WriteString("Choose Objective")
 	} else {
-		output.WriteString(c.model.Game.InputObjective.Render(c.model.style))
+		output.WriteString(c.model.Game.InputObjective.Render(c.model.style, false))
 	}
 	output.WriteString("\n\n")
 
@@ -35,7 +39,7 @@ func (c inputStageChooseObjectiveComponent) render() string {
 			c.model.Game.RollingPool.NumberOf(objective.Type) == 0:
 			continue
 		}
-		fmt.Fprintf(&output, "[%d] %s\n", index+1, objective.Render(c.model.style))
+		fmt.Fprintf(&output, "[%d] %s\n", index+1, objective.Render(c.model.style, c.model.Game.InputObjective != nil && c.model.Game.InputObjective == objective))
 	}
 
 	if c.model.Game.InputObjective != nil {

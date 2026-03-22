@@ -18,6 +18,9 @@ func newBustedComponent(model *Model) bustedComponent {
 }
 
 func (c bustedComponent) render() string {
+	if c.model.Game.GetCurrentPlayer().Name != c.model.Player.Name {
+		return inputComponentStyle(false).Render(fmt.Sprintf("%s busted!\n", c.model.Game.GetCurrentPlayer().Name))
+	}
 	var output strings.Builder
 	output.WriteString("Busted!\n\n")
 	fmt.Fprintf(&output, "\n%s to continue", keys.GameEndTurn.String(c.model.style))

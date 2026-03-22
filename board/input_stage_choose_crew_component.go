@@ -36,7 +36,7 @@ func (c inputStageChooseCrewComponent) render() string {
 	}
 	output.WriteString(lipgloss.JoinVertical(lipgloss.Top, crewList...))
 
-	if c.model.Game.InputCrew != nil {
+	if c.model.Game.InputCrew != nil && c.model.Game.GetCurrentPlayer().Name == c.model.Player.Name {
 		fmt.Fprintf(&output, "\n\n%s to confirm", keys.GameChooseConfirm.String(c.model.style))
 	}
 
