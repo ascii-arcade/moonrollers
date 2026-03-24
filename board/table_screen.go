@@ -100,7 +100,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 			switch {
 			case keys.GameCommitDie.TriggeredBy(msg.String()):
 				for _, die := range game.RollingPool.Dice {
-					if die == game.InputObjective.Type {
+					if die.ID == game.InputObjective.Type.ID || die.ID == dice.DieWild.ID {
 						game.InputObjective.Committing.Add(die)
 						game.RollingPool.Remove(die, 1)
 						break
@@ -108,7 +108,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				}
 			case keys.GameCommitSpecialDie.TriggeredBy(msg.String()):
 				for _, die := range game.RollingPool.Dice {
-					if die.Mimics != nil && *die.Mimics == game.InputObjective.Type {
+					if die.Mimics != nil && die.Mimics.ID == game.InputObjective.Type.ID {
 						game.InputObjective.Committing.Add(die)
 						game.RollingPool.Remove(die, 1)
 						break
@@ -116,7 +116,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				}
 			case keys.GameUncommitDie.TriggeredBy(msg.String()):
 				for _, die := range game.InputObjective.Committing.Dice {
-					if (die == game.InputObjective.Type || die == dice.DieWild) && (die.Mimics == nil || len(game.InputObjective.Committing.Dice) == 1) {
+					if die.ID == game.InputObjective.Type.ID || die.ID == dice.DieWild.ID {
 						game.InputObjective.Committing.Remove(die, 1)
 						game.RollingPool.Add(die)
 						break
@@ -124,13 +124,16 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				}
 			case keys.GameUncommitSpecialDie.TriggeredBy(msg.String()):
 				for _, die := range game.InputObjective.Committing.Dice {
-					if die.Mimics != nil && *die.Mimics == game.InputObjective.Type {
+					if die.Mimics != nil && die.Mimics.ID == game.InputObjective.Type.ID {
 						game.InputObjective.Committing.Remove(die, 1)
 						game.RollingPool.Add(die)
 						break
 					}
 				}
 			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
+				if game.InputObjective.Committing.Length() == 0 {
+					return s.model, nil
+				}
 				game.CommitDice()
 				game.InputState = games.InputStateRoll
 				switch {
@@ -152,12 +155,12 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		case games.InputStateChooseExtraDice:
 			switch {
 			case keys.GameChooseExtraDice.TriggeredBy(msg.String()):
-				if game.RollingPool.NumberOf(dice.DieUnrolled) < game.RollingPool.NumberOf(dice.DieExtra) && game.SupplyPool.Has(dice.DieUnrolled) {
+				if game.RollingPool.NumberOf(dice.DieUnrolled) < game.RollingPool.NumberOf(dice.DieExtra) && game.SupplyPool.Length() > 0 {
 					game.RollingPool.AddUnrolled(1)
 					game.SupplyPool.RemoveExtra()
 				}
 			case keys.GameUncommitDie.TriggeredBy(msg.String()):
-				if game.RollingPool.Has(dice.DieUnrolled) {
+				if game.RollingPool.HasType(dice.DieUnrolled) {
 					game.RollingPool.RemoveExtra()
 					game.SupplyPool.AddUnrolled(1)
 				}

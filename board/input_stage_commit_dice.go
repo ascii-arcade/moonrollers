@@ -31,22 +31,19 @@ func (c inputStageCommitDiceComponent) render() string {
 	output.WriteString("\n")
 	output.WriteString(game.InputObjective.RenderCommitting(style))
 	output.WriteString("\n")
-	output.WriteString("How many dice do you want to commit?\n")
 
 	containerStyle := style.
 		Align(lipgloss.Center)
 
-	diceCount := game.InputObjective.Committing.Length()
-
 	topDice := make([]string, 0)
 	bottomDice := make([]string, 0)
-	for i := range diceCount {
+	for i, die := range game.InputObjective.Committing.Dice {
 		if i <= 3 {
-			topDice = append(topDice, game.InputObjective.Type.Render(style))
+			topDice = append(topDice, die.Render(style))
 			continue
 		}
 
-		bottomDice = append(bottomDice, game.InputObjective.Type.Render(style))
+		bottomDice = append(bottomDice, die.Render(style))
 	}
 
 	output.WriteString(containerStyle.Render(
@@ -57,10 +54,8 @@ func (c inputStageCommitDiceComponent) render() string {
 		),
 	))
 
-	fmt.Fprintf(&output, "\n%s to commit a die", keys.GameCommitDie.String(style))
-	fmt.Fprintf(&output, "\n%s to remove a die", keys.GameUncommitDie.String(style))
-	fmt.Fprintf(&output, "\n%s to commit a special die", keys.GameCommitSpecialDie.String(style))
-	fmt.Fprintf(&output, "\n%s to remove a special die", keys.GameUncommitSpecialDie.String(style))
+	fmt.Fprintf(&output, "\n%s/%s to add/remove a die", keys.GameCommitDie.String(style), keys.GameUncommitDie.String(style))
+	fmt.Fprintf(&output, "\n%s/%s to add/remove a special die", keys.GameCommitSpecialDie.String(style), keys.GameUncommitSpecialDie.String(style))
 	fmt.Fprintf(&output, "\n%s to confirm", keys.GameChooseConfirm.String(style))
 	fmt.Fprintf(&output, "\n%s to end turn", keys.GameEndTurn.String(style))
 	fmt.Fprintf(&output, "\n%s to go back", keys.GamePreviousInputStage.String(style))

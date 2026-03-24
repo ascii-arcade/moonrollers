@@ -80,7 +80,7 @@ func (dp *DicePool) AddUnrolled(count int) {
 func (dp *DicePool) RemoveExtra() {
 	removedOne := false
 	dp.Dice = slices.DeleteFunc(dp.Dice, func(d Die) bool {
-		if d == DieUnrolled && !removedOne {
+		if d.ID == DieUnrolled.ID && !removedOne {
 			removedOne = true
 			return true
 		}
@@ -101,23 +101,28 @@ func (dp *DicePool) Remove(die Die, count int) {
 func (dp DicePool) NumberOf(die Die) int {
 	count := 0
 	for _, d := range dp.Dice {
-		if d.Mimics != nil && *d.Mimics == die {
+		if d.Mimics != nil && d.Mimics.ID == die.ID {
 			count += d.Value
 			continue
 		}
-		if d == die || d == DieWild {
+		if d.ID == die.ID || d.ID == DieWild.ID {
 			count++
 		}
 	}
 	return count
 }
 
-func (dp DicePool) Has(die Die) bool {
-	return dp.NumberOf(die) > 0
+func (dp DicePool) HasType(die Die) bool {
+	for _, d := range dp.Dice {
+		if (d.ID == die.ID || d.Mimics != nil && d.Mimics.ID == die.ID) && d.ID != DieUnrolled.ID {
+			return true
+		}
+	}
+	return false
 }
 
 func (dp DicePool) HasExtra() bool {
-	return dp.Has(DieExtra)
+	return dp.HasType(DieExtra)
 }
 
 func (dp *DicePool) Clear() {
