@@ -27,7 +27,7 @@ func inputComponentStyle(isCenter bool) lipgloss.Style {
 
 	return lipgloss.NewStyle().
 		Width(30).
-		Height(13).
+		Height(15).
 		PaddingLeft(1).PaddingRight(1).
 		Align(align).
 		BorderStyle(lipgloss.NormalBorder()).

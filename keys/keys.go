@@ -47,8 +47,8 @@ var (
 	GameChooseHazard       = Keys{"1", "2"}
 	GameChooseConfirm      = Keys{"enter"}
 	GamePreviousInputStage = Keys{"esc"}
+	GameChooseLeft         = Keys{"h", "left"}
+	GameChooseRight        = Keys{"l", "right"}
 	GameCommitDie          = Keys{"a"}
-	GameCommitSpecialDie   = Keys{"A"}
 	GameUncommitDie        = Keys{"r"}
-	GameUncommitSpecialDie = Keys{"R"}
 )

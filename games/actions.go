@@ -23,7 +23,7 @@ func (s *Game) Roll(isRolling bool) {
 		if !isRolling {
 			switch {
 			case s.InputCrew != nil && !s.InputCrew.CanCommit(s.RollingPool, s.GetCurrentPlayer().Sess.User()),
-				s.InputObjective != nil && s.RollingPool.NumberOf(s.InputObjective.Type) == 0:
+				s.InputObjective != nil && s.RollingPool.NumberOf(s.InputObjective.Type.ID) == 0:
 				s.InputState = Busted
 			case s.InputObjective != nil && s.InputObjective.CompletedAmount < s.InputObjective.Amount:
 				s.InputState = InputStateCommitDice
@@ -35,7 +35,7 @@ func (s *Game) Roll(isRolling bool) {
 
 			s.ApplyModifiers(&s.RollingPool, s.GetCurrentPlayer().Crew)
 
-			slices.SortFunc(s.RollingPool.Dice, func(a, b dice.Die) int {
+			slices.SortFunc(s.RollingPool.Dice, func(a, b *dice.Die) int {
 				if a.ID == dice.DieExtra.ID && b.ID != dice.DieExtra.ID {
 					return -1
 				}
@@ -80,7 +80,7 @@ func (s *Game) ChooseObjective(index int) {
 		switch {
 		case index < 0,
 			index >= len(s.InputCrew.Objectives),
-			s.RollingPool.NumberOf(s.InputCrew.Objectives[index].Type) == 0,
+			s.RollingPool.NumberOf(s.InputCrew.Objectives[index].Type.ID) == 0,
 			s.InputCrew.Objectives[index].IsCompleted(),
 			s.InputCrew.Objectives[index].StartedBy != "" && s.InputCrew.Objectives[index].StartedBy != s.GetCurrentPlayer().Name:
 			return

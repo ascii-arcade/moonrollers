@@ -33,29 +33,58 @@ func (c inputStageCommitDiceComponent) render() string {
 	output.WriteString("\n")
 
 	containerStyle := style.
+		Width(28).
 		Align(lipgloss.Center)
+
+	validDice := game.RollingPool.GetValidDice(game.InputObjective.Type.ID)
 
 	topDice := make([]string, 0)
 	bottomDice := make([]string, 0)
-	for i, die := range game.InputObjective.Committing.Dice {
-		if i <= 3 {
-			topDice = append(topDice, die.Render(style))
+	for i, die := range validDice {
+		if i < 4 {
+			topDice = append(topDice, die.Render(style, !die.Selected))
 			continue
 		}
 
-		bottomDice = append(bottomDice, die.Render(style))
+		bottomDice = append(bottomDice, die.Render(style, !die.Selected))
+	}
+
+	var topSelected strings.Builder
+	for i := range min(len(validDice), 4) {
+		topSelected.WriteString("  ")
+		if game.Index == i {
+			topSelected.WriteString("⬇")
+		} else {
+			topSelected.WriteString(" ")
+		}
+		topSelected.WriteString("  ")
+	}
+
+	var bottomSelected strings.Builder
+	for i := range max(0, len(validDice)-4) {
+		bottomSelected.WriteString("  ")
+		if game.Index == i+4 {
+			bottomSelected.WriteString("⬆")
+		} else {
+			bottomSelected.WriteString(" ")
+		}
+		bottomSelected.WriteString("  ")
 	}
 
 	output.WriteString(containerStyle.Render(
-		lipgloss.JoinVertical(
-			lipgloss.Center,
-			lipgloss.JoinHorizontal(lipgloss.Top, topDice...),
-			lipgloss.JoinHorizontal(lipgloss.Top, bottomDice...),
+		style.AlignHorizontal(lipgloss.Center).Render(
+			lipgloss.JoinVertical(
+				lipgloss.Center,
+				topSelected.String(),
+				lipgloss.JoinHorizontal(lipgloss.Top, topDice...),
+				lipgloss.JoinHorizontal(lipgloss.Top, bottomDice...),
+				bottomSelected.String(),
+			),
 		),
 	))
 
+	fmt.Fprintf(&output, "\n%s/%s to select a die", keys.GameChooseLeft.String(style), keys.GameChooseRight.String(style))
 	fmt.Fprintf(&output, "\n%s/%s to add/remove a die", keys.GameCommitDie.String(style), keys.GameUncommitDie.String(style))
-	fmt.Fprintf(&output, "\n%s/%s to add/remove a special die", keys.GameCommitSpecialDie.String(style), keys.GameUncommitSpecialDie.String(style))
 	fmt.Fprintf(&output, "\n%s to confirm", keys.GameChooseConfirm.String(style))
 	fmt.Fprintf(&output, "\n%s to end turn", keys.GameEndTurn.String(style))
 	fmt.Fprintf(&output, "\n%s to go back", keys.GamePreviousInputStage.String(style))

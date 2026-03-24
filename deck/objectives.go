@@ -60,10 +60,10 @@ func (o *Objective) RenderCommitting(style lipgloss.Style) string {
 	line.WriteString(style.Foreground(o.Type.Color).Render(o.Type.Symbol))
 	line.WriteString(" ")
 	line.WriteString(o.getHazard(style))
-	for range o.Committing.NumberOf(o.Type) {
+	for range o.Committing.NumberOf(o.Type.ID) {
 		line.WriteString(style.Foreground(o.StartedByColor).Render(fullPip))
 	}
-	for i := range o.Amount - o.Committing.NumberOf(o.Type) {
+	for i := range o.Amount - o.Committing.NumberOf(o.Type.ID) {
 		if o.CompletedAmount > i {
 			line.WriteString(style.Foreground(o.StartedByColor).Render(fullPip))
 			continue
@@ -85,8 +85,8 @@ func (o *Objective) IsCompleted() bool {
 	return o.CompletedAmount == o.Amount
 }
 
-func (o *Objective) IsType(die dice.Die) bool {
-	return o.Type == die || die == dice.DieWild
+func (o *Objective) IsType(dieType string) bool {
+	return o.Type.ID == dieType || dieType == dice.DieWild.ID
 }
 
 func (o *Objective) getHazard(style lipgloss.Style) string {
@@ -94,4 +94,8 @@ func (o *Objective) getHazard(style lipgloss.Style) string {
 		return style.Foreground(colors.Hazard).Render(Hazard)
 	}
 	return " "
+}
+
+func (o *Objective) ValidDie(die dice.Die) bool {
+	return o.IsType(die.ID) || o.IsType(dice.DieWild.ID) || (die.Mimics != nil && o.IsType(die.Mimics.ID))
 }

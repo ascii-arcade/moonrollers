@@ -26,6 +26,7 @@ type Game struct {
 	InputCrew      *deck.Crew
 	InputObjective *deck.Objective
 	InputHazards   []Hazard
+	Index          int
 
 	Settings         Settings
 	CurrentTurnIndex int
@@ -186,7 +187,7 @@ func (s *Game) CommitDice() {
 		// for _, commitingDie := range s.InputObjective.Committing.Dice {
 		// 	s.RollingPool.Remove(commitingDie, 1)
 		// }
-		s.InputObjective.CompletedAmount += s.InputObjective.Committing.NumberOf(s.InputObjective.Type)
+		s.InputObjective.CompletedAmount += s.InputObjective.Committing.NumberOf(s.InputObjective.Type.ID)
 		s.InputObjective.Committing.Clear()
 		s.InputObjective.StartedBy = s.GetCurrentPlayer().Sess.User()
 		s.InputObjective.StartedByColor = s.GetCurrentPlayer().Faction.Color

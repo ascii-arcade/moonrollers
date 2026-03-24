@@ -36,7 +36,7 @@ func (c *Crew) Copy() Crew {
 func (c *Crew) CanCommit(pool dice.DicePool, playerName string) bool {
 	for _, objective := range c.AvailableObjectives() {
 		for _, die := range pool.Dice {
-			if objective.IsType(die) && objective.CanCommitBy(playerName) && !objective.IsCompleted() {
+			if objective.IsType(die.ID) && objective.CanCommitBy(playerName) && !objective.IsCompleted() {
 				return true
 			}
 		}
@@ -98,10 +98,10 @@ var allCrew = []Crew{
 		},
 		IsStarter: true,
 		Modifier: func(pool *dice.DicePool) {
-			newPool := make([]dice.Die, 0, len(pool.Dice))
+			newPool := make([]*dice.Die, 0, len(pool.Dice))
 			for _, die := range pool.Dice {
-				if die == dice.DieExtra {
-					replace := dice.Die{
+				if die.ID == dice.DieExtra.ID {
+					replace := &dice.Die{
 						Symbol: die.Symbol,
 						Color:  die.Color,
 						ID:     die.ID,
@@ -182,10 +182,10 @@ var allCrew = []Crew{
 		},
 		IsStarter: true,
 		Modifier: func(pool *dice.DicePool) {
-			newPool := make([]dice.Die, 0, len(pool.Dice))
+			newPool := make([]*dice.Die, 0, len(pool.Dice))
 			for _, die := range pool.Dice {
-				if die == dice.DieExtra {
-					replace := dice.Die{
+				if die.ID == dice.DieExtra.ID {
+					replace := &dice.Die{
 						Symbol: die.Symbol,
 						Color:  die.Color,
 						ID:     die.ID,
@@ -266,10 +266,10 @@ var allCrew = []Crew{
 		},
 		IsStarter: true,
 		Modifier: func(pool *dice.DicePool) {
-			newPool := make([]dice.Die, 0, len(pool.Dice))
+			newPool := make([]*dice.Die, 0, len(pool.Dice))
 			for _, die := range pool.Dice {
-				if die == dice.DieExtra {
-					replace := dice.Die{
+				if die.ID == dice.DieExtra.ID {
+					replace := &dice.Die{
 						Symbol: die.Symbol,
 						Color:  die.Color,
 						ID:     die.ID,
@@ -350,11 +350,11 @@ var allCrew = []Crew{
 		},
 		IsStarter: true,
 		Modifier: func(pool *dice.DicePool) {
-			newPool := make([]dice.Die, 0, len(pool.Dice))
-			if pool.NumberOf(dice.DieExtra) == 1 {
+			newPool := make([]*dice.Die, 0, len(pool.Dice))
+			if pool.NumberOf(dice.DieExtra.ID) == 1 {
 				for _, die := range pool.Dice {
-					if die == dice.DieExtra {
-						replace := dice.Die{
+					if die.ID == dice.DieExtra.ID {
+						replace := &dice.Die{
 							Symbol: die.Symbol,
 							Color:  die.Color,
 							ID:     die.ID,
@@ -436,10 +436,10 @@ var allCrew = []Crew{
 		},
 		IsStarter: true,
 		Modifier: func(pool *dice.DicePool) {
-			newPool := make([]dice.Die, 0, len(pool.Dice))
+			newPool := make([]*dice.Die, 0, len(pool.Dice))
 			for _, die := range pool.Dice {
-				if die == dice.DieExtra {
-					replace := dice.Die{
+				if die.ID == dice.DieExtra.ID {
+					replace := &dice.Die{
 						Symbol: die.Symbol,
 						Color:  die.Color,
 						ID:     die.ID,

@@ -98,38 +98,25 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 
 		case games.InputStateCommitDice:
 			switch {
+			case keys.GameChooseLeft.TriggeredBy(msg.String()):
+				game.Index--
+				if game.Index < 0 {
+					game.Index = len(game.RollingPool.GetValidDice(game.InputObjective.Type.ID)) - 1
+				}
+			case keys.GameChooseRight.TriggeredBy(msg.String()):
+				game.Index++
+				if game.Index >= len(game.RollingPool.GetValidDice(game.InputObjective.Type.ID)) {
+					game.Index = 0
+				}
 			case keys.GameCommitDie.TriggeredBy(msg.String()):
-				for _, die := range game.RollingPool.Dice {
-					if die.ID == game.InputObjective.Type.ID || die.ID == dice.DieWild.ID {
-						game.InputObjective.Committing.Add(die)
-						game.RollingPool.Remove(die, 1)
-						break
-					}
-				}
-			case keys.GameCommitSpecialDie.TriggeredBy(msg.String()):
-				for _, die := range game.RollingPool.Dice {
-					if die.Mimics != nil && die.Mimics.ID == game.InputObjective.Type.ID {
-						game.InputObjective.Committing.Add(die)
-						game.RollingPool.Remove(die, 1)
-						break
-					}
-				}
+				game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected = true
 			case keys.GameUncommitDie.TriggeredBy(msg.String()):
-				for _, die := range game.InputObjective.Committing.Dice {
-					if die.ID == game.InputObjective.Type.ID || die.ID == dice.DieWild.ID {
-						game.InputObjective.Committing.Remove(die, 1)
-						game.RollingPool.Add(die)
-						break
-					}
-				}
-			case keys.GameUncommitSpecialDie.TriggeredBy(msg.String()):
-				for _, die := range game.InputObjective.Committing.Dice {
-					if die.Mimics != nil && die.Mimics.ID == game.InputObjective.Type.ID {
-						game.InputObjective.Committing.Remove(die, 1)
-						game.RollingPool.Add(die)
-						break
-					}
-				}
+				game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected = false
+				// game.InputObjective.Committing.Remove(removed, 1)
+				// game.RollingPool.Add(removed)
+				// if game.Index >= len(game.RollingPool.Dice) {
+				// 	game.Index = 0
+				// }
 			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
 				if game.InputObjective.Committing.Length() == 0 {
 					return s.model, nil
@@ -155,12 +142,12 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		case games.InputStateChooseExtraDice:
 			switch {
 			case keys.GameChooseExtraDice.TriggeredBy(msg.String()):
-				if game.RollingPool.NumberOf(dice.DieUnrolled) < game.RollingPool.NumberOf(dice.DieExtra) && game.SupplyPool.Length() > 0 {
+				if game.RollingPool.NumberOf(dice.DieUnrolled.ID) < game.RollingPool.NumberOf(dice.DieExtra.ID) && game.SupplyPool.Length() > 0 {
 					game.RollingPool.AddUnrolled(1)
 					game.SupplyPool.RemoveExtra()
 				}
 			case keys.GameUncommitDie.TriggeredBy(msg.String()):
-				if game.RollingPool.HasType(dice.DieUnrolled) {
+				if game.RollingPool.HasType(dice.DieUnrolled.ID) {
 					game.RollingPool.RemoveExtra()
 					game.SupplyPool.AddUnrolled(1)
 				}
@@ -244,17 +231,11 @@ func (s *tableScreen) View() string {
 		inputStageComponent = newBustedComponent(s.model)
 	}
 
-	playerName := s.style.PaddingLeft(1).Render(s.model.Game.GetCurrentPlayer().Name + "'s turn")
-	if s.model.Game.GetCurrentPlayer() == s.model.Player {
-		playerName = s.style.PaddingLeft(1).Render("Your turn")
-	}
-
 	rightSplit := lipgloss.JoinVertical(
 		lipgloss.Left,
 		supplyPoolComponent.render(),
 		rollingPoolComponent.render(),
 		inputStageComponent.render(),
-		playerName,
 	)
 
 	var footer strings.Builder
@@ -262,6 +243,14 @@ func (s *tableScreen) View() string {
 	if s.model.Player.Points > 0 {
 		fmt.Fprintf(&footer, " | %d points", s.model.Player.Points)
 	}
+
+	playerName := s.style.PaddingLeft(1).Render(s.model.Game.GetCurrentPlayer().Name + "'s turn")
+	if s.model.Game.GetCurrentPlayer() == s.model.Player {
+		playerName = s.style.PaddingLeft(1).Render("Your turn")
+	}
+
+	footer.WriteString(" - ")
+	footer.WriteString(s.style.Render(playerName))
 
 	return lipgloss.JoinVertical(
 		lipgloss.Left,

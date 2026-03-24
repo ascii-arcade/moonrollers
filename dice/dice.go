@@ -6,11 +6,12 @@ import (
 )
 
 type Die struct {
-	Color  lipgloss.Color
-	ID     string
-	Symbol string
-	Value  int
-	Mimics *Die
+	Color    lipgloss.Color
+	ID       string
+	Symbol   string
+	Selected bool
+	Value    int
+	Mimics   *Die
 }
 
 var (
@@ -24,11 +25,18 @@ var (
 	DieExtra    = Die{Symbol: "+", Color: colors.DieExtra, ID: "extra", Value: 1}
 )
 
-func All() []Die {
-	return []Die{DieDamage, DieShield, DieThruster, DieReactor, DieWild, DieExtra}
+func All() []*Die {
+	return []*Die{
+		new(DieDamage),
+		new(DieShield),
+		new(DieThruster),
+		new(DieReactor),
+		new(DieWild),
+		new(DieExtra),
+	}
 }
 
-func (d *Die) Render(style lipgloss.Style) string {
+func (d *Die) Render(style lipgloss.Style, dark bool) string {
 	s := style.
 		Height(1).
 		Border(lipgloss.RoundedBorder()).
@@ -38,8 +46,8 @@ func (d *Die) Render(style lipgloss.Style) string {
 		BorderForeground(d.Color).
 		Foreground(d.Color)
 
-	if d.Mimics != nil {
-		s = s.BorderStyle(lipgloss.ASCIIBorder())
+	if dark {
+		s = s.Foreground(colors.GetDark(d.ID)).BorderForeground(colors.GetDark(d.ID))
 	}
 
 	return s.Render(d.Symbol)
