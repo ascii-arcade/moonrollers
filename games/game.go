@@ -182,9 +182,12 @@ func (s *Game) GetWinner() *Player {
 
 func (s *Game) CommitDice() {
 	s.withLock(func() {
-		s.RollingPool.Remove(s.InputObjective.Type, s.InputObjective.CommittingAmount)
-		s.InputObjective.CompletedAmount += s.InputObjective.CommittingAmount
-		s.InputObjective.CommittingAmount = 0
+		// s.RollingPool.Remove(s.InputObjective.Type, s.InputObjective.CommittingAmount)
+		// for _, commitingDie := range s.InputObjective.Committing.Dice {
+		// 	s.RollingPool.Remove(commitingDie, 1)
+		// }
+		s.InputObjective.CompletedAmount += s.InputObjective.Committing.NumberOf(s.InputObjective.Type)
+		s.InputObjective.Committing.Clear()
 		s.InputObjective.StartedBy = s.GetCurrentPlayer().Sess.User()
 		s.InputObjective.StartedByColor = s.GetCurrentPlayer().Faction.Color
 	})

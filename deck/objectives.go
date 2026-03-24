@@ -16,13 +16,13 @@ const (
 )
 
 type Objective struct {
-	Type             dice.Die
-	Amount           int
-	Hazard           bool
-	CommittingAmount int
-	CompletedAmount  int
-	StartedBy        string
-	StartedByColor   lipgloss.Color
+	Type            dice.Die
+	Amount          int
+	Hazard          bool
+	Committing      *dice.DicePool
+	CompletedAmount int
+	StartedBy       string
+	StartedByColor  lipgloss.Color
 }
 
 func (o *Objective) Points() int {
@@ -60,10 +60,10 @@ func (o *Objective) RenderCommitting(style lipgloss.Style) string {
 	line.WriteString(style.Foreground(o.Type.Color).Render(o.Type.Symbol))
 	line.WriteString(" ")
 	line.WriteString(o.getHazard(style))
-	for range o.CommittingAmount {
+	for range o.Committing.NumberOf(o.Type) {
 		line.WriteString(style.Foreground(o.StartedByColor).Render(fullPip))
 	}
-	for i := range o.Amount - o.CommittingAmount {
+	for i := range o.Amount - o.Committing.NumberOf(o.Type) {
 		if o.CompletedAmount > i {
 			line.WriteString(style.Foreground(o.StartedByColor).Render(fullPip))
 			continue

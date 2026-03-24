@@ -9,17 +9,19 @@ type Die struct {
 	Color  lipgloss.Color
 	ID     string
 	Symbol string
+	Value  int
+	Mimics *Die
 }
 
 var (
-	DieUnrolled = Die{Symbol: "?", Color: colors.DieUnrolled, ID: "unrolled"}
+	DieUnrolled = Die{Symbol: "?", Color: colors.DieUnrolled, ID: "unrolled", Value: 1}
 
-	DieDamage   = Die{Symbol: "X", Color: colors.DieDamage, ID: "damage"}
-	DieShield   = Die{Symbol: "#", Color: colors.DieShield, ID: "shield"}
-	DieThruster = Die{Symbol: "↟", Color: colors.DieThruster, ID: "thruster"}
-	DieReactor  = Die{Symbol: "@", Color: colors.DieReactor, ID: "reactor"}
-	DieWild     = Die{Symbol: "%", Color: colors.DieWild, ID: "wild"}
-	DieExtra    = Die{Symbol: "+", Color: colors.DieExtra, ID: "extra"}
+	DieDamage   = Die{Symbol: "X", Color: colors.DieDamage, ID: "damage", Value: 1}
+	DieShield   = Die{Symbol: "#", Color: colors.DieShield, ID: "shield", Value: 1}
+	DieThruster = Die{Symbol: "↟", Color: colors.DieThruster, ID: "thruster", Value: 1}
+	DieReactor  = Die{Symbol: "@", Color: colors.DieReactor, ID: "reactor", Value: 1}
+	DieWild     = Die{Symbol: "%", Color: colors.DieWild, ID: "wild", Value: 1}
+	DieExtra    = Die{Symbol: "+", Color: colors.DieExtra, ID: "extra", Value: 1}
 )
 
 func All() []Die {
@@ -27,13 +29,18 @@ func All() []Die {
 }
 
 func (d *Die) Render(style lipgloss.Style) string {
-	return style.
+	s := style.
 		Height(1).
 		Border(lipgloss.RoundedBorder()).
 		Padding(0, 1).
 		Align(lipgloss.Center).
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(d.Color).
-		Foreground(d.Color).
-		Render(d.Symbol)
+		Foreground(d.Color)
+
+	if d.Mimics != nil {
+		s = s.BorderStyle(lipgloss.ASCIIBorder())
+	}
+
+	return s.Render(d.Symbol)
 }

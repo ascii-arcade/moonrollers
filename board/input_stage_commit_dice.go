@@ -19,31 +19,34 @@ func newInputStageCommitDiceComponent(model *Model) inputStageCommitDiceComponen
 }
 
 func (c inputStageCommitDiceComponent) render() string {
-	if c.model.Game.GetCurrentPlayer().Name != c.model.Player.Name {
-		return inputComponentStyle(false).Render(fmt.Sprintf("%s is committing dice...\n", c.model.Game.GetCurrentPlayer().Name))
+	game := c.model.Game
+	style := c.model.style
+
+	if game.GetCurrentPlayer().Name != c.model.Player.Name {
+		return inputComponentStyle(false).Render(fmt.Sprintf("%s is committing dice...\n", game.GetCurrentPlayer().Name))
 	}
 
 	var output strings.Builder
-	output.WriteString(c.model.style.Bold(true).Foreground(c.model.Game.InputCrew.Faction.Color).Render(c.model.Game.InputCrew.Name))
+	output.WriteString(style.Bold(true).Foreground(game.InputCrew.Faction.Color).Render(game.InputCrew.Name))
 	output.WriteString("\n")
-	output.WriteString(c.model.Game.InputObjective.RenderCommitting(c.model.style))
+	output.WriteString(game.InputObjective.RenderCommitting(style))
 	output.WriteString("\n")
 	output.WriteString("How many dice do you want to commit?\n")
 
-	containerStyle := c.model.style.
+	containerStyle := style.
 		Align(lipgloss.Center)
 
-	diceCount := c.model.Game.InputObjective.CommittingAmount
+	diceCount := game.InputObjective.Committing.Length()
 
 	topDice := make([]string, 0)
 	bottomDice := make([]string, 0)
 	for i := range diceCount {
 		if i <= 3 {
-			topDice = append(topDice, c.model.Game.InputObjective.Type.Render(c.model.style))
+			topDice = append(topDice, game.InputObjective.Type.Render(style))
 			continue
 		}
 
-		bottomDice = append(bottomDice, c.model.Game.InputObjective.Type.Render(c.model.style))
+		bottomDice = append(bottomDice, game.InputObjective.Type.Render(style))
 	}
 
 	output.WriteString(containerStyle.Render(
@@ -54,11 +57,13 @@ func (c inputStageCommitDiceComponent) render() string {
 		),
 	))
 
-	fmt.Fprintf(&output, "\n'1-%d' to commit a die", min(c.model.Game.RollingPool.NumberOf(c.model.Game.InputObjective.Type), c.model.Game.InputObjective.Amount-c.model.Game.InputObjective.CompletedAmount))
-	fmt.Fprintf(&output, "\n%s to remove a die", keys.GameUncommitDie.String(c.model.style))
-	fmt.Fprintf(&output, "\n%s to confirm", keys.GameChooseConfirm.String(c.model.style))
-	fmt.Fprintf(&output, "\n%s to end turn", keys.GameEndTurn.String(c.model.style))
-	fmt.Fprintf(&output, "\n%s to go back", keys.GamePreviousInputStage.String(c.model.style))
+	fmt.Fprintf(&output, "\n%s to commit a die", keys.GameCommitDie.String(style))
+	fmt.Fprintf(&output, "\n%s to remove a die", keys.GameUncommitDie.String(style))
+	fmt.Fprintf(&output, "\n%s to commit a special die", keys.GameCommitSpecialDie.String(style))
+	fmt.Fprintf(&output, "\n%s to remove a special die", keys.GameUncommitSpecialDie.String(style))
+	fmt.Fprintf(&output, "\n%s to confirm", keys.GameChooseConfirm.String(style))
+	fmt.Fprintf(&output, "\n%s to end turn", keys.GameEndTurn.String(style))
+	fmt.Fprintf(&output, "\n%s to go back", keys.GamePreviousInputStage.String(style))
 
 	return inputComponentStyle(false).Render(output.String())
 }

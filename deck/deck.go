@@ -15,6 +15,7 @@ func NewDeck() Deck {
 			IsStarter:  c.IsStarter,
 			Name:       c.Name,
 			Objectives: c.Objectives,
+			Modifier:   c.Modifier,
 		}
 	}
 	copiedDeck.Shuffle()

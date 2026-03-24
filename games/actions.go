@@ -4,6 +4,8 @@ import (
 	"errors"
 	"slices"
 
+	"github.com/ascii-arcade/moonrollers/deck"
+	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/ascii-arcade/moonrollers/factions"
 )
 
@@ -30,8 +32,28 @@ func (s *Game) Roll(isRolling bool) {
 			default:
 				s.InputState = InputStateChooseCrew
 			}
+
+			s.ApplyModifiers(&s.RollingPool, s.GetCurrentPlayer().Crew)
+
+			slices.SortFunc(s.RollingPool.Dice, func(a, b dice.Die) int {
+				if a.ID == dice.DieExtra.ID && b.ID != dice.DieExtra.ID {
+					return -1
+				}
+				if b.ID == dice.DieExtra.ID && a.ID != dice.DieExtra.ID {
+					return 1
+				}
+				return 0
+			})
 		}
 	})
+}
+
+func (s *Game) ApplyModifiers(pool *dice.DicePool, crew map[string]*deck.Crew) {
+	for _, c := range crew {
+		if c.Modifier != nil {
+			c.Modifier(pool)
+		}
+	}
 }
 
 func (s *Game) ChooseCrewMember(index int) {
@@ -84,7 +106,7 @@ func (s *Game) PreviousInputStage() {
 			s.InputObjective = nil
 			s.InputState = InputStateChooseCrew
 		case InputStateCommitDice:
-			s.InputObjective.CommittingAmount = 0
+			s.InputObjective.Committing.Clear()
 			s.InputState = InputStateChooseObjective
 		}
 	})

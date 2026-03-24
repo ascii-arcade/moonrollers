@@ -63,9 +63,17 @@ func (dp DicePool) Roll() {
 	}
 }
 
-func (dp *DicePool) Add(count int) {
+func (dp DicePool) Length() int {
+	return len(dp.Dice)
+}
+
+func (dp *DicePool) Add(die Die) {
+	dp.Dice = append(dp.Dice, die)
+}
+
+func (dp *DicePool) AddUnrolled(count int) {
 	for range count {
-		dp.Dice = append(dp.Dice, DieUnrolled)
+		dp.Add(DieUnrolled)
 	}
 }
 
@@ -93,6 +101,10 @@ func (dp *DicePool) Remove(die Die, count int) {
 func (dp DicePool) NumberOf(die Die) int {
 	count := 0
 	for _, d := range dp.Dice {
+		if d.Mimics != nil && *d.Mimics == die {
+			count += d.Value
+			continue
+		}
 		if d == die || d == DieWild {
 			count++
 		}
@@ -101,9 +113,13 @@ func (dp DicePool) NumberOf(die Die) int {
 }
 
 func (dp DicePool) Has(die Die) bool {
-	return slices.Contains(dp.Dice, die)
+	return dp.NumberOf(die) > 0
 }
 
 func (dp DicePool) HasExtra() bool {
-	return slices.Contains(dp.Dice, DieExtra)
+	return dp.Has(DieExtra)
+}
+
+func (dp *DicePool) Clear() {
+	dp.Dice = []Die{}
 }
