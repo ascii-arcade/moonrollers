@@ -59,10 +59,10 @@ var allCrew = []Crew{
 		ID:      "aponi",
 		Faction: factions.Blue,
 		Objectives: []*Objective{
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 4, Hazard: true},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieWild, Committing: new(dice.DicePool), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 4, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 3, Hazard: true},
+			{Type: new(dice.DieWild), Amount: 2},
 		},
 	},
 	{
@@ -70,10 +70,10 @@ var allCrew = []Crew{
 		ID:      "vila",
 		Faction: factions.Blue,
 		Objectives: []*Objective{
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 4},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 4},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -81,10 +81,10 @@ var allCrew = []Crew{
 		ID:      "salatar",
 		Faction: factions.Blue,
 		Objectives: []*Objective{
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 4},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 4},
+			{Type: new(dice.DieThruster), Amount: 3, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -92,9 +92,9 @@ var allCrew = []Crew{
 		ID:      "ada",
 		Faction: factions.Blue,
 		Objectives: []*Objective{
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 1, Hazard: true},
 		},
 		IsStarter: true,
 		Modifier: func(pool *dice.DicePool) {
@@ -121,10 +121,10 @@ var allCrew = []Crew{
 		ID:      "lee",
 		Faction: factions.Blue,
 		Objectives: []*Objective{
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 2, Hazard: true},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 2, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 2},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -132,10 +132,10 @@ var allCrew = []Crew{
 		ID:      "lila",
 		Faction: factions.Blue,
 		Objectives: []*Objective{
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 3, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 2},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -143,10 +143,10 @@ var allCrew = []Crew{
 		ID:      "redacted",
 		Faction: factions.Green,
 		Objectives: []*Objective{
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 4, Hazard: true},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieWild, Committing: new(dice.DicePool), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 4, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 3},
+			{Type: new(dice.DieWild), Amount: 2},
 		},
 	},
 	{
@@ -154,10 +154,10 @@ var allCrew = []Crew{
 		ID:      "imdar",
 		Faction: factions.Green,
 		Objectives: []*Objective{
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 4},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 4},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -165,10 +165,10 @@ var allCrew = []Crew{
 		ID:      "namari",
 		Faction: factions.Green,
 		Objectives: []*Objective{
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 4},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 4},
+			{Type: new(dice.DieDamage), Amount: 3, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -176,9 +176,9 @@ var allCrew = []Crew{
 		ID:      "ryle",
 		Faction: factions.Green,
 		Objectives: []*Objective{
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 1},
+			{Type: new(dice.DieShield), Amount: 2},
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 1},
 		},
 		IsStarter: true,
 		Modifier: func(pool *dice.DicePool) {
@@ -205,10 +205,10 @@ var allCrew = []Crew{
 		ID:      "bill",
 		Faction: factions.Green,
 		Objectives: []*Objective{
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 2, Hazard: true},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 2, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -216,10 +216,10 @@ var allCrew = []Crew{
 		ID:      "at-ok",
 		Faction: factions.Green,
 		Objectives: []*Objective{
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 3, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -227,10 +227,10 @@ var allCrew = []Crew{
 		ID:      "drumbrage",
 		Faction: factions.Orange,
 		Objectives: []*Objective{
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 4, Hazard: true},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieWild, Committing: new(dice.DicePool), Amount: 2},
+			{Type: new(dice.DieDamage), Amount: 4, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieWild), Amount: 2},
 		},
 	},
 	{
@@ -238,10 +238,10 @@ var allCrew = []Crew{
 		ID:      "saghari",
 		Faction: factions.Orange,
 		Objectives: []*Objective{
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 4},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 4},
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -249,10 +249,10 @@ var allCrew = []Crew{
 		ID:      "kary",
 		Faction: factions.Orange,
 		Objectives: []*Objective{
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 4},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 4},
+			{Type: new(dice.DieShield), Amount: 3, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -260,9 +260,9 @@ var allCrew = []Crew{
 		ID:      "dana",
 		Faction: factions.Orange,
 		Objectives: []*Objective{
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
 		},
 		IsStarter: true,
 		Modifier: func(pool *dice.DicePool) {
@@ -289,10 +289,10 @@ var allCrew = []Crew{
 		ID:      "tantin",
 		Faction: factions.Orange,
 		Objectives: []*Objective{
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 2, Hazard: true},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 2, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -300,10 +300,10 @@ var allCrew = []Crew{
 		ID:      "ryan",
 		Faction: factions.Orange,
 		Objectives: []*Objective{
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 3, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -311,10 +311,10 @@ var allCrew = []Crew{
 		ID:      "moro",
 		Faction: factions.Purple,
 		Objectives: []*Objective{
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 4},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 2, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 4},
+			{Type: new(dice.DieDamage), Amount: 3, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 2, Hazard: true},
 		},
 	},
 	{
@@ -322,10 +322,10 @@ var allCrew = []Crew{
 		ID:      "vanta",
 		Faction: factions.Purple,
 		Objectives: []*Objective{
-			{Type: dice.DieWild, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieWild, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieWild, Committing: new(dice.DicePool), Amount: 1},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieWild), Amount: 3},
+			{Type: new(dice.DieWild), Amount: 2},
+			{Type: new(dice.DieWild), Amount: 1},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -333,10 +333,10 @@ var allCrew = []Crew{
 		ID:      "meg",
 		Faction: factions.Purple,
 		Objectives: []*Objective{
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 4, Hazard: true},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 4, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -344,9 +344,9 @@ var allCrew = []Crew{
 		ID:      "sella",
 		Faction: factions.Purple,
 		Objectives: []*Objective{
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 1},
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 1},
 		},
 		IsStarter: true,
 		Modifier: func(pool *dice.DicePool) {
@@ -375,10 +375,10 @@ var allCrew = []Crew{
 		ID:      "ft1000",
 		Faction: factions.Purple,
 		Objectives: []*Objective{
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 2, Hazard: true},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 2, Hazard: true},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 2, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 2, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 2},
 		},
 	},
 	{
@@ -386,10 +386,10 @@ var allCrew = []Crew{
 		ID:      "avari",
 		Faction: factions.Purple,
 		Objectives: []*Objective{
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 2, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 3, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 2, Hazard: true},
 		},
 	},
 	{
@@ -397,10 +397,10 @@ var allCrew = []Crew{
 		ID:      "sol",
 		Faction: factions.Yellow,
 		Objectives: []*Objective{
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 4, Hazard: true},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieWild, Committing: new(dice.DicePool), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 4, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieDamage), Amount: 3, Hazard: true},
+			{Type: new(dice.DieWild), Amount: 2},
 		},
 	},
 	{
@@ -408,10 +408,10 @@ var allCrew = []Crew{
 		ID:      "b3ar",
 		Faction: factions.Yellow,
 		Objectives: []*Objective{
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 4},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 4},
+			{Type: new(dice.DieThruster), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -419,10 +419,10 @@ var allCrew = []Crew{
 		ID:      "kal",
 		Faction: factions.Yellow,
 		Objectives: []*Objective{
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 4},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 4},
+			{Type: new(dice.DieReactor), Amount: 3, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -430,9 +430,9 @@ var allCrew = []Crew{
 		ID:      "nella",
 		Faction: factions.Yellow,
 		Objectives: []*Objective{
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
 		},
 		IsStarter: true,
 		Modifier: func(pool *dice.DicePool) {
@@ -459,10 +459,10 @@ var allCrew = []Crew{
 		ID:      "zek",
 		Faction: factions.Yellow,
 		Objectives: []*Objective{
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 2, Hazard: true},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 2, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 1, Hazard: true},
 		},
 	},
 	{
@@ -470,10 +470,10 @@ var allCrew = []Crew{
 		ID:      "myla",
 		Faction: factions.Yellow,
 		Objectives: []*Objective{
-			{Type: dice.DieThruster, Committing: new(dice.DicePool), Amount: 3, Hazard: true},
-			{Type: dice.DieReactor, Committing: new(dice.DicePool), Amount: 3},
-			{Type: dice.DieDamage, Committing: new(dice.DicePool), Amount: 2},
-			{Type: dice.DieShield, Committing: new(dice.DicePool), Amount: 1, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 3, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 1, Hazard: true},
 		},
 	},
 }

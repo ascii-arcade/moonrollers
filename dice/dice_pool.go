@@ -59,7 +59,7 @@ func (dp *DicePool) Render(style lipgloss.Style) string {
 func (dp DicePool) Roll() {
 	all := All()
 	for i := range dp.Dice {
-		dp.Dice[i] = all[rand.Intn(len(all))]
+		dp.Dice[i] = new(all[rand.Intn(len(all))])
 	}
 }
 
@@ -71,13 +71,11 @@ func (dp *DicePool) Add(die *Die) {
 	dp.Dice = append(dp.Dice, die)
 }
 
-func (dp *DicePool) AddUnrolled(count int) {
-	for range count {
-		dp.Add(new(DieUnrolled))
-	}
+func (dp *DicePool) AddUnrolled() {
+	dp.Add(new(DieUnrolled))
 }
 
-func (dp *DicePool) RemoveExtra() {
+func (dp *DicePool) RemoveUnrolled() {
 	removedOne := false
 	dp.Dice = slices.DeleteFunc(dp.Dice, func(d *Die) bool {
 		if d.ID == DieUnrolled.ID && !removedOne {
@@ -88,20 +86,26 @@ func (dp *DicePool) RemoveExtra() {
 	})
 }
 
-func (dp *DicePool) Remove(die *Die, count int) {
-	i := 0
+func (dp *DicePool) RemoveCommitted() {
 	dp.Dice = slices.DeleteFunc(dp.Dice, func(d *Die) bool {
-		if d == die || d.ID == DieWild.ID {
-			i++
-		}
-		return i <= count && (d == die || d.ID == DieWild.ID)
+		return d.Selected
 	})
+}
+
+func (dp *DicePool) NumberOfSelected() int {
+	count := 0
+	for _, d := range dp.Dice {
+		if d.Selected {
+			count += d.Value
+		}
+	}
+	return count
 }
 
 func (dp DicePool) NumberOf(dieType string) int {
 	count := 0
 	for _, d := range dp.Dice {
-		if d.Mimics != nil && d.Mimics.ID == dieType {
+		if d.MimicsType(dieType) {
 			count += d.Value
 			continue
 		}
@@ -112,9 +116,29 @@ func (dp DicePool) NumberOf(dieType string) int {
 	return count
 }
 
+func (dp DicePool) NumberOfUnrolled() int {
+	count := 0
+	for _, d := range dp.Dice {
+		if d.ID == DieUnrolled.ID {
+			count++
+		}
+	}
+	return count
+}
+
+func (dp DicePool) NumberOfExtra() int {
+	count := 0
+	for _, d := range dp.Dice {
+		if d.ID == DieExtra.ID {
+			count++
+		}
+	}
+	return count
+}
+
 func (dp DicePool) HasType(dieType string) bool {
 	for _, d := range dp.Dice {
-		if (d.ID == dieType || d.Mimics != nil && d.Mimics.ID == dieType) && d.ID != DieUnrolled.ID {
+		if (d.ID == dieType || d.MimicsType(dieType)) && d.ID != DieUnrolled.ID {
 			return true
 		}
 	}
@@ -136,7 +160,7 @@ func (dp *DicePool) Contains(die *Die) bool {
 func (dp *DicePool) GetValidDice(dieType string) []*Die {
 	valid := make([]*Die, 0)
 	for _, die := range dp.Dice {
-		if die.ID == dieType || (die.Mimics != nil && die.Mimics.ID == dieType) || die.ID == DieWild.ID {
+		if die.ID == dieType || die.MimicsType(dieType) || die.ID == DieWild.ID {
 			valid = append(valid, die)
 		}
 	}

@@ -29,7 +29,7 @@ func (c inputStageCommitDiceComponent) render() string {
 	var output strings.Builder
 	output.WriteString(style.Bold(true).Foreground(game.InputCrew.Faction.Color).Render(game.InputCrew.Name))
 	output.WriteString("\n")
-	output.WriteString(game.InputObjective.RenderCommitting(style))
+	output.WriteString(game.InputObjective.RenderCommitting(game.RollingPool, style))
 	output.WriteString("\n")
 
 	containerStyle := style.
@@ -84,7 +84,7 @@ func (c inputStageCommitDiceComponent) render() string {
 	))
 
 	fmt.Fprintf(&output, "\n%s/%s to select a die", keys.GameChooseLeft.String(style), keys.GameChooseRight.String(style))
-	fmt.Fprintf(&output, "\n%s/%s to add/remove a die", keys.GameCommitDie.String(style), keys.GameUncommitDie.String(style))
+	fmt.Fprintf(&output, "\n%s to add/remove a die", keys.GameToggle.String(style))
 	fmt.Fprintf(&output, "\n%s to confirm", keys.GameChooseConfirm.String(style))
 	fmt.Fprintf(&output, "\n%s to end turn", keys.GameEndTurn.String(style))
 	fmt.Fprintf(&output, "\n%s to go back", keys.GamePreviousInputStage.String(style))

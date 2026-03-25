@@ -183,15 +183,25 @@ func (s *Game) GetWinner() *Player {
 
 func (s *Game) CommitDice() {
 	s.withLock(func() {
-		// s.RollingPool.Remove(s.InputObjective.Type, s.InputObjective.CommittingAmount)
-		// for _, commitingDie := range s.InputObjective.Committing.Dice {
-		// 	s.RollingPool.Remove(commitingDie, 1)
-		// }
-		s.InputObjective.CompletedAmount += s.InputObjective.Committing.NumberOf(s.InputObjective.Type.ID)
-		s.InputObjective.Committing.Clear()
+		for _, die := range s.RollingPool.Dice {
+			if die.Selected {
+				s.InputObjective.CompletedAmount += die.Value
+			}
+		}
+		s.RollingPool.RemoveCommitted()
 		s.InputObjective.StartedBy = s.GetCurrentPlayer().Sess.User()
 		s.InputObjective.StartedByColor = s.GetCurrentPlayer().Faction.Color
 	})
+}
+
+func (s *Game) NumberOfCommittedDice() int {
+	count := 0
+	for _, die := range s.RollingPool.Dice {
+		if die.Selected {
+			count += die.Value
+		}
+	}
+	return count
 }
 
 func (s *Game) PullHazards() {

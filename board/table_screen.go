@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/ascii-arcade/moonrollers/config"
-	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/keys"
 	tea "github.com/charmbracelet/bubbletea"
@@ -108,17 +107,18 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				if game.Index >= len(game.RollingPool.GetValidDice(game.InputObjective.Type.ID)) {
 					game.Index = 0
 				}
-			case keys.GameCommitDie.TriggeredBy(msg.String()):
-				game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected = true
-			case keys.GameUncommitDie.TriggeredBy(msg.String()):
-				game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected = false
-				// game.InputObjective.Committing.Remove(removed, 1)
-				// game.RollingPool.Add(removed)
-				// if game.Index >= len(game.RollingPool.Dice) {
-				// 	game.Index = 0
-				// }
+			case keys.GameToggle.TriggeredBy(msg.String()):
+				if game.RollingPool.NumberOfSelected() >= game.InputObjective.Amount && !game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected {
+					return s.model, nil
+				}
+				game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected = !game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected
+				if game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected {
+					game.InputObjective.CommittingAmount += game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Value
+				} else {
+					game.InputObjective.CommittingAmount -= game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Value
+				}
 			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
-				if game.InputObjective.Committing.Length() == 0 {
+				if game.NumberOfCommittedDice() == 0 {
 					return s.model, nil
 				}
 				game.CommitDice()
@@ -142,14 +142,14 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		case games.InputStateChooseExtraDice:
 			switch {
 			case keys.GameChooseExtraDice.TriggeredBy(msg.String()):
-				if game.RollingPool.NumberOf(dice.DieUnrolled.ID) < game.RollingPool.NumberOf(dice.DieExtra.ID) && game.SupplyPool.Length() > 0 {
-					game.RollingPool.AddUnrolled(1)
-					game.SupplyPool.RemoveExtra()
+				if game.RollingPool.NumberOfUnrolled() < game.RollingPool.NumberOfExtra() && game.SupplyPool.Length() > 0 {
+					game.RollingPool.AddUnrolled()
+					game.SupplyPool.RemoveUnrolled()
 				}
-			case keys.GameUncommitDie.TriggeredBy(msg.String()):
-				if game.RollingPool.HasType(dice.DieUnrolled.ID) {
-					game.RollingPool.RemoveExtra()
-					game.SupplyPool.AddUnrolled(1)
+			case keys.GameRemove.TriggeredBy(msg.String()):
+				if game.RollingPool.NumberOfUnrolled() > 0 {
+					game.RollingPool.RemoveUnrolled()
+					game.SupplyPool.AddUnrolled()
 				}
 			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
 				game.InputState = games.InputStateRoll

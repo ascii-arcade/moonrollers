@@ -106,7 +106,6 @@ func (s *Game) PreviousInputStage() {
 			s.InputObjective = nil
 			s.InputState = InputStateChooseCrew
 		case InputStateCommitDice:
-			s.InputObjective.Committing.Clear()
 			s.InputState = InputStateChooseObjective
 		}
 	})

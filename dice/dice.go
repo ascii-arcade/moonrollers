@@ -25,14 +25,14 @@ var (
 	DieExtra    = Die{Symbol: "+", Color: colors.DieExtra, ID: "extra", Value: 1}
 )
 
-func All() []*Die {
-	return []*Die{
-		new(DieDamage),
-		new(DieShield),
-		new(DieThruster),
-		new(DieReactor),
-		new(DieWild),
-		new(DieExtra),
+func All() []Die {
+	return []Die{
+		DieDamage,
+		DieShield,
+		DieThruster,
+		DieReactor,
+		DieWild,
+		DieExtra,
 	}
 }
 
@@ -51,4 +51,8 @@ func (d *Die) Render(style lipgloss.Style, dark bool) string {
 	}
 
 	return s.Render(d.Symbol)
+}
+
+func (d *Die) MimicsType(dieId string) bool {
+	return d.ID == dieId || (d.Mimics != nil && d.Mimics.ID == dieId)
 }

@@ -28,7 +28,6 @@ func (s *Game) NextTurn(busted bool) {
 							inputObjective.StartedBy = ""
 							inputObjective.StartedByColor = ""
 							inputObjective.CompletedAmount = 0
-							inputObjective.Committing.Clear()
 						}
 					}
 					crew.Objectives = s.InputCrew.Objectives
