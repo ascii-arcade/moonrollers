@@ -133,6 +133,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 					game.PullHazards()
 					game.InputState = games.InputStateChooseHazard
 				}
+				game.Index = 0
 			case keys.GameEndTurn.TriggeredBy(msg.String()):
 				game.NextTurn(false)
 			case keys.GamePreviousInputStage.TriggeredBy(msg.String()):

@@ -27,8 +27,6 @@ func (c inputStageChooseObjectiveComponent) render() string {
 	output.WriteString("\n")
 	if c.model.Game.InputObjective == nil {
 		output.WriteString("Choose Objective")
-	} else {
-		output.WriteString(c.model.Game.InputObjective.Render(c.model.style, false))
 	}
 	output.WriteString("\n\n")
 
