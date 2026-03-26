@@ -2,13 +2,11 @@ package board
 
 import (
 	"time"
-
-	"github.com/ascii-arcade/moonrollers/dice"
 )
 
 type diceComponent struct {
 	model    *Model
-	dicePool dice.DicePool
+	dicePool DicePool
 }
 
 const (
@@ -16,7 +14,7 @@ const (
 	rollInterval = 200 * time.Millisecond
 )
 
-func newDiceComponent(model *Model, dp dice.DicePool) diceComponent {
+func newDiceComponent(model *Model, dp DicePool) diceComponent {
 	return diceComponent{
 		model:    model,
 		dicePool: dp,

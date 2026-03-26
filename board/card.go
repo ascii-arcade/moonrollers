@@ -5,20 +5,18 @@ import (
 	"strings"
 
 	"github.com/ascii-arcade/moonrollers/colors"
-	"github.com/ascii-arcade/moonrollers/deck"
-	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/charmbracelet/lipgloss"
 )
 
 type card struct {
 	model       *Model
-	Crew        *deck.Crew
+	Crew        *Crew
 	description string
 	style       lipgloss.Style
 }
 
-func newCard(model *Model, crew *deck.Crew) *card {
+func newCard(model *Model, crew *Crew) *card {
 	c := &card{
 		model: model,
 		Crew:  crew,
@@ -26,7 +24,7 @@ func newCard(model *Model, crew *deck.Crew) *card {
 	}
 
 	c.description = c.model.lang().Get("crew_abilities", crew.ID)
-	for _, die := range dice.All() {
+	for _, die := range AllDie() {
 		symbolStyle := c.style.Foreground(die.Color).Bold(true).Italic(true)
 		findSingular := language.Languages["EN"].Get("dice", die.ID)
 		findPlural := language.Languages["EN"].Get("dice_plural", die.ID)
@@ -41,7 +39,7 @@ func newCard(model *Model, crew *deck.Crew) *card {
 		c.description = strings.ReplaceAll(c.description, "%"+findPlural+"%", pluralValue)
 	}
 	hazardStyle := c.style.Foreground(colors.Hazard).Bold(true).Italic(true)
-	hazardValue := hazardStyle.Render(fmt.Sprintf("%s %s", deck.Hazard, "hazard"))
+	hazardValue := hazardStyle.Render(fmt.Sprintf("%s %s", symbolHazard, "hazard"))
 	c.description = strings.ReplaceAll(c.description, "%hazard%", hazardValue)
 
 	return c

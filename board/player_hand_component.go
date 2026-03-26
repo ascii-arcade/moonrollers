@@ -4,7 +4,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ascii-arcade/moonrollers/deck"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -48,8 +47,8 @@ func (ph *playerHandComponent) render() string {
 	)
 }
 
-func (ph *playerHandComponent) crew() []*deck.Crew {
-	sortedCrew := make([]*deck.Crew, 0)
+func (ph *playerHandComponent) crew() []*Crew {
+	sortedCrew := make([]*Crew, 0)
 	for _, crew := range ph.model.Player.Crew {
 		sortedCrew = append(sortedCrew, crew)
 	}

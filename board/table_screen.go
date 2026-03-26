@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/ascii-arcade/moonrollers/config"
-	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/keys"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -54,7 +53,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 		}
 
 		switch game.InputState {
-		case games.InputStateRoll:
+		case InputStateRoll:
 			switch {
 			case keys.GameRollDice.TriggeredBy(msg.String()):
 				if game.InputObjective != nil && game.InputObjective.IsCompleted() {
@@ -71,7 +70,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				game.NextTurn(false)
 				return s.model, nil
 			}
-		case games.InputStateChooseCrew:
+		case InputStateChooseCrew:
 			switch {
 			case keys.GameChooseCrew.TriggeredBy(msg.String()):
 				i, err := strconv.Atoi(msg.String())
@@ -84,7 +83,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				game.ConfirmCrewMember()
 			}
 
-		case games.InputStateChooseObjective:
+		case InputStateChooseObjective:
 			switch {
 			case keys.GameChooseObjective.TriggeredBy(msg.String()):
 				i, _ := strconv.Atoi(msg.String())
@@ -95,7 +94,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				game.PreviousInputStage()
 			}
 
-		case games.InputStateCommitDice:
+		case InputStateCommitDice:
 			switch {
 			case keys.GameChooseLeft.TriggeredBy(msg.String()):
 				game.Index--
@@ -122,16 +121,16 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 					return s.model, nil
 				}
 				game.CommitDice()
-				game.InputState = games.InputStateRoll
+				game.InputState = InputStateRoll
 				switch {
 				case game.InputCrew.IsComplete():
 					game.CompleteCard(game.InputCrew, game.GetCurrentPlayer())
 					game.NextTurn(false)
 				case game.RollingPool.HasExtra() && len(game.SupplyPool.Dice) > 0:
-					game.InputState = games.InputStateChooseExtraDice
+					game.InputState = InputStateChooseExtraDice
 				case game.InputObjective.Hazard && game.InputObjective.IsCompleted():
 					game.PullHazards()
-					game.InputState = games.InputStateChooseHazard
+					game.InputState = InputStateChooseHazard
 				}
 				game.Index = 0
 			case keys.GameEndTurn.TriggeredBy(msg.String()):
@@ -140,7 +139,7 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				game.PreviousInputStage()
 			}
 
-		case games.InputStateChooseExtraDice:
+		case InputStateChooseExtraDice:
 			switch {
 			case keys.GameChooseExtraDice.TriggeredBy(msg.String()):
 				if game.RollingPool.NumberOfUnrolled() < game.RollingPool.NumberOfExtra() && game.SupplyPool.Length() > 0 {
@@ -153,14 +152,14 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 					game.SupplyPool.AddUnrolled()
 				}
 			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
-				game.InputState = games.InputStateRoll
+				game.InputState = InputStateRoll
 				if game.InputObjective.Hazard && game.InputObjective.IsCompleted() {
 					game.PullHazards()
-					game.InputState = games.InputStateChooseHazard
+					game.InputState = InputStateChooseHazard
 				}
 			}
 
-		case games.InputStateChooseHazard:
+		case InputStateChooseHazard:
 			switch {
 			case keys.GameChooseHazard.TriggeredBy(msg.String()):
 				i, _ := strconv.Atoi(msg.String())
@@ -169,10 +168,10 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				}
 				chosenHazard := game.InputHazards[i-1]
 				game.GetCurrentPlayer().Hazards = append(game.GetCurrentPlayer().Hazards, chosenHazard)
-				game.InputState = games.InputStateRoll
+				game.InputState = InputStateRoll
 			}
 
-		case games.Busted:
+		case Busted:
 			if keys.GameEndTurn.TriggeredBy(msg.String()) {
 				game.NextTurn(true)
 			}
@@ -212,23 +211,23 @@ func (s *tableScreen) View() string {
 	inputStageComponent = newInputStageEmptyComponent()
 
 	switch s.model.Game.InputState {
-	case games.InputStateRoll:
+	case InputStateRoll:
 		if s.model.Game.GetCurrentPlayer() == s.model.Player && !s.isRolling {
 			inputStageComponent = newInputStageRollComponent(s.model)
 		}
-	case games.InputStateChooseCrew:
+	case InputStateChooseCrew:
 		inputStageComponent = newInputStageChooseCrewComponent(s.model)
-	case games.InputStateChooseObjective:
+	case InputStateChooseObjective:
 		inputStageComponent = newInputStageChooseObjectiveComponent(s.model)
-	case games.InputStateCommitDice:
+	case InputStateCommitDice:
 		inputStageComponent = newInputStageCommitDiceComponent(s.model)
-	case games.InputStateChooseExtraDice:
+	case InputStateChooseExtraDice:
 		inputStageComponent = newInputExtraDiceComponent(s.model)
-	case games.InputStateChooseHazard:
+	case InputStateChooseHazard:
 		if s.model.Game.GetCurrentPlayer() == s.model.Player {
 			inputStageComponent = newInputStageChooseHazardComponent(s.model)
 		}
-	case games.Busted:
+	case Busted:
 		inputStageComponent = newBustedComponent(s.model)
 	}
 

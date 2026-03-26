@@ -7,7 +7,6 @@ import (
 
 	"github.com/ascii-arcade/moonrollers/board"
 	"github.com/ascii-arcade/moonrollers/config"
-	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/ascii-arcade/moonrollers/menu"
 )
@@ -47,7 +46,7 @@ func TeaHandler(sess ssh.Session) (tea.Model, []tea.ProgramOption) {
 
 	languagePreference := language.LanguagePreference{Lang: config.Language}
 
-	player := games.NewPlayer(sess.Context(), sess, &languagePreference)
+	player := board.NewPlayer(sess.Context(), sess, &languagePreference)
 
 	m := Model{
 		board: board.NewModel(pty.Window.Width, pty.Window.Height, style, player),

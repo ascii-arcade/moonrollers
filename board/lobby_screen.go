@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/ascii-arcade/moonrollers/colors"
-	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/keys"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -51,7 +50,7 @@ func (s *lobbyScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 				return s.model, nil
 			}
 
-			faction := factions.All()[i-1]
+			faction := AllFactions()[i-1]
 			if !s.model.Game.IsFactionUsed(faction) {
 				_ = s.model.Game.SetFaction(s.model.Player, &faction)
 			}
@@ -148,7 +147,7 @@ func (s *lobbyScreen) footer() string {
 	var sb strings.Builder
 	colorList := make([]string, 0)
 
-	for i, faction := range factions.All() {
+	for i, faction := range AllFactions() {
 		style := s.style
 		word := style.Foreground(faction.Color).Render(faction.Name)
 

@@ -1,11 +1,9 @@
-package games
+package board
 
 import (
 	"errors"
 	"slices"
 
-	"github.com/ascii-arcade/moonrollers/deck"
-	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/messages"
 	"github.com/ascii-arcade/moonrollers/rules"
 )
@@ -20,7 +18,7 @@ func (s *Game) Begin() error {
 		if err := s.IsPlayerCountOk(); err != nil {
 			return err
 		}
-		s.Deck = deck.NewDeck()
+		s.Deck = NewDeck()
 		s.dealStarterCards()
 		s.dealCrewForHire()
 		s.CurrentTurnIndex = 0
@@ -58,7 +56,7 @@ func (s *Game) dealStarterCards() {
 func (s *Game) dealCrewForHire() {
 	draw := min(len(s.players)+2, 6)
 
-	skippedCrew := make([]*deck.Crew, 0)
+	skippedCrew := make([]*Crew, 0)
 	for len(s.CrewForHire) < draw {
 		card := s.Deck[0]
 		if s.hasFactionForHire(card.Faction) && len(s.CrewForHire) < 5 {
@@ -74,7 +72,7 @@ func (s *Game) dealCrewForHire() {
 	s.Deck.Shuffle()
 }
 
-func (s *Game) hasFactionForHire(faction factions.Faction) bool {
+func (s *Game) hasFactionForHire(faction Faction) bool {
 	for _, crew := range s.CrewForHire {
 		if crew.Faction == faction {
 			return true

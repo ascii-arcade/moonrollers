@@ -23,7 +23,7 @@ func (c inputStageCommitDiceComponent) render() string {
 	style := c.model.style
 
 	if game.GetCurrentPlayer().Name != c.model.Player.Name {
-		return inputComponentStyle(false).Render(fmt.Sprintf("%s is committing dice...\n", game.GetCurrentPlayer().Name))
+		return inputComponentStyle(false).Render(fmt.Sprintf("%s is committing ..\n", game.GetCurrentPlayer().Name))
 	}
 
 	var output strings.Builder

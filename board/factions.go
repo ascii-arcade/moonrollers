@@ -1,4 +1,4 @@
-package factions
+package board
 
 import (
 	"strings"
@@ -64,6 +64,6 @@ var (
 	Yellow = Faction{Name: "Ventus", Color: colors.DieThruster, Icon: icons["ventus"], SortOrder: 5}
 )
 
-func All() []Faction {
+func AllFactions() []Faction {
 	return []Faction{Blue, Green, Orange, Purple, Yellow}
 }

@@ -1,4 +1,4 @@
-package dice
+package board
 
 import (
 	"github.com/ascii-arcade/moonrollers/colors"
@@ -25,7 +25,7 @@ var (
 	DieExtra    = Die{Symbol: "+", Color: colors.DieExtra, ID: "extra", Value: 1}
 )
 
-func All() []Die {
+func AllDie() []Die {
 	return []Die{
 		DieDamage,
 		DieShield,

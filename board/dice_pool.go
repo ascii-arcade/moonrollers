@@ -1,4 +1,4 @@
-package dice
+package board
 
 import (
 	"math/rand"
@@ -57,7 +57,7 @@ func (dp *DicePool) Render(style lipgloss.Style) string {
 }
 
 func (dp DicePool) Roll() {
-	all := All()
+	all := AllDie()
 	for i := range dp.Dice {
 		dp.Dice[i] = new(all[rand.Intn(len(all))])
 	}

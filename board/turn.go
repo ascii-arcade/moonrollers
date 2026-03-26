@@ -1,7 +1,6 @@
-package games
+package board
 
 import (
-	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/ascii-arcade/moonrollers/messages"
 	"github.com/ascii-arcade/moonrollers/rules"
 )
@@ -47,8 +46,8 @@ func (s *Game) NextTurn(busted bool) {
 }
 
 func (s *Game) initRollingPools(rollingPoolSize int) {
-	s.RollingPool = dice.NewDicePool(rollingPoolSize)
-	s.SupplyPool = dice.NewDicePool(12 - rollingPoolSize)
+	s.RollingPool = NewDicePool(rollingPoolSize)
+	s.SupplyPool = NewDicePool(12 - rollingPoolSize)
 }
 
 func (s *Game) isEndGame() bool {

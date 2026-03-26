@@ -1,4 +1,4 @@
-package deck
+package board
 
 import (
 	"math/rand/v2"

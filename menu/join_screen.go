@@ -4,8 +4,8 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/ascii-arcade/moonrollers/board"
 	"github.com/ascii-arcade/moonrollers/colors"
-	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/keys"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -42,9 +42,9 @@ func (s *joinScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 			if len(s.model.gameCodeInput.Value()) == 7 {
 				code := strings.ToUpper(s.model.gameCodeInput.Value())
 
-				game, err := games.GetOpenGame(code)
+				game, err := board.GetOpenGame(code)
 				if err != nil {
-					if !errors.Is(err, games.ErrGameInProgress) && !game.HasPlayer(s.model.player) {
+					if !errors.Is(err, board.ErrGameInProgress) && !game.HasPlayer(s.model.player) {
 						s.model.setError(err.Error())
 						return s.model, nil
 					}

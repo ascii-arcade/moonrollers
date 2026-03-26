@@ -5,10 +5,9 @@ import (
 	"math/rand/v2"
 	"time"
 
+	"github.com/ascii-arcade/moonrollers/board"
 	"github.com/ascii-arcade/moonrollers/colors"
 	"github.com/ascii-arcade/moonrollers/config"
-	"github.com/ascii-arcade/moonrollers/dice"
-	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/ascii-arcade/moonrollers/screen"
@@ -37,7 +36,7 @@ const logo = `            ++++*+
             +++*++            `
 
 type doneMsg struct{}
-type SwitchToBoardMsg struct{ Game *games.Game }
+type SwitchToBoardMsg struct{ Game *board.Game }
 
 type Model struct {
 	width       int
@@ -49,10 +48,10 @@ type Model struct {
 	errorCode     string
 	gameCodeInput textinput.Model
 
-	player *games.Player
+	player *board.Player
 }
 
-func NewModel(width, height int, style lipgloss.Style, player *games.Player) Model {
+func NewModel(width, height int, style lipgloss.Style, player *board.Player) Model {
 	ti := textinput.New()
 	ti.Width = 9
 	ti.CharLimit = 7
@@ -66,8 +65,8 @@ func NewModel(width, height int, style lipgloss.Style, player *games.Player) Mod
 		player:        player,
 	}
 	for range 12 {
-		i := rand.IntN(len(dice.All()))
-		m.displayDice = append(m.displayDice, dice.All()[i].Render(style, false))
+		i := rand.IntN(len(board.AllFactions()))
+		m.displayDice = append(m.displayDice, board.AllDie()[i].Render(style, false))
 	}
 
 	m.screen = m.newSplashScreen()
@@ -130,8 +129,8 @@ func (m *Model) clearError() {
 }
 
 func (m *Model) joinGame(code string, isNew bool) error {
-	game, err := games.GetOpenGame(code)
-	if err != nil && !(errors.Is(err, games.ErrGameInProgress) && game.HasPlayer(m.player)) {
+	game, err := board.GetOpenGame(code)
+	if err != nil && !(errors.Is(err, board.ErrGameInProgress) && game.HasPlayer(m.player)) {
 		return err
 	}
 	if err := game.AddPlayer(m.player, isNew); err != nil {

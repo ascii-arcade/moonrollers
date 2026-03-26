@@ -1,13 +1,13 @@
-package games
+package board
 
 type Settings struct {
 	CardsOfAFactionToWin int
-	UseStarterCards bool
+	UseStarterCards      bool
 }
 
 func NewSettings() Settings {
 	return Settings{
 		CardsOfAFactionToWin: 3,
-		UseStarterCards: true,
+		UseStarterCards:      true,
 	}
 }

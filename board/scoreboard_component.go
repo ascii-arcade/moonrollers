@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/ascii-arcade/moonrollers/colors"
-	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -15,7 +14,7 @@ const (
 
 type scoreboardComponent struct {
 	model   *Model
-	players []*games.Player
+	players []*Player
 	short   bool
 	style   lipgloss.Style
 }

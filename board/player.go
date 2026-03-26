@@ -1,19 +1,17 @@
-package games
+package board
 
 import (
 	"context"
 
-	"github.com/ascii-arcade/moonrollers/deck"
-	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/charmbracelet/ssh"
 )
 
 type Player struct {
 	Name               string
-	Faction            *factions.Faction
+	Faction            *Faction
 	Points             int
-	Crew               map[string]*deck.Crew
+	Crew               map[string]*Crew
 	CrewCount          map[string]int
 	TurnOrder          int
 	LanguagePreference *language.LanguagePreference
@@ -57,7 +55,7 @@ func (p *Player) OnDisconnect(fn func()) {
 	p.onDisconnect = append(p.onDisconnect, fn)
 }
 
-func (p *Player) AddCrew(crew *deck.Crew, active bool) {
+func (p *Player) AddCrew(crew *Crew, active bool) {
 	if active || p.Crew[crew.Faction.Name] == nil {
 		p.Crew[crew.Faction.Name] = crew
 	}

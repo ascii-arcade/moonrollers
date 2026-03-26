@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ascii-arcade/moonrollers/games"
+	"github.com/ascii-arcade/moonrollers/board"
 	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/language"
 	tea "github.com/charmbracelet/bubbletea"
@@ -37,7 +37,7 @@ func (s *titleScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 			s.model.player.LanguagePreference.SetLanguage("ES")
 		}
 		if keys.MenuStartNewGame.TriggeredBy(msg.String()) {
-			newGame := games.New()
+			newGame := board.New()
 			if err := s.model.joinGame(newGame.Code, true); err != nil {
 				s.model.setError(err.Error())
 				return s.model, nil

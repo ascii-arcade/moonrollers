@@ -1,10 +1,8 @@
-package games
+package board
 
 import (
 	"context"
 
-	"github.com/ascii-arcade/moonrollers/deck"
-	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/generaterandom"
 	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/charmbracelet/ssh"
@@ -20,9 +18,9 @@ func NewPlayer(ctx context.Context, sess ssh.Session, langPref *language.Languag
 		player.connected = true
 		player.ctx = ctx
 	} else {
-		crew := make(map[string]*deck.Crew)
+		crew := make(map[string]*Crew)
 		crewCount := make(map[string]int)
-		for _, faction := range factions.All() {
+		for _, faction := range AllFactions() {
 			crewCount[faction.Name] = 0
 		}
 

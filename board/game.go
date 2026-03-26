@@ -1,4 +1,4 @@
-package games
+package board
 
 import (
 	"math/rand/v2"
@@ -6,9 +6,6 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/ascii-arcade/moonrollers/deck"
-	"github.com/ascii-arcade/moonrollers/dice"
-	"github.com/ascii-arcade/moonrollers/factions"
 	"github.com/ascii-arcade/moonrollers/messages"
 	"github.com/charmbracelet/ssh"
 )
@@ -16,17 +13,18 @@ import (
 type Game struct {
 	Code string
 
-	CrewForHire []*deck.Crew
-	Deck        deck.Deck
-	RollingPool dice.DicePool
-	SupplyPool  dice.DicePool
+	CrewForHire []*Crew
+	Deck        Deck
+	RollingPool DicePool
+	SupplyPool  DicePool
 	RollCount   int
 
 	InputState     int
-	InputCrew      *deck.Crew
-	InputObjective *deck.Objective
+	InputCrew      *Crew
+	InputObjective *Objective
 	InputHazards   []Hazard
 	Index          int
+	PreventBust    bool
 
 	Settings         Settings
 	CurrentTurnIndex int
@@ -150,7 +148,7 @@ func (s *Game) HasPlayer(player *Player) bool {
 	return exists
 }
 
-func (s *Game) IsFactionUsed(faction factions.Faction) bool {
+func (s *Game) IsFactionUsed(faction Faction) bool {
 	for _, player := range s.players {
 		if player.Faction != nil && *player.Faction == faction {
 			return true
@@ -210,13 +208,13 @@ func (s *Game) PullHazards() {
 	s.InputHazards = append(s.InputHazards, hazards[rand.IntN(2)])
 }
 
-func (s *Game) CompleteCard(crew *deck.Crew, whoCompleted *Player) {
+func (s *Game) CompleteCard(crew *Crew, whoCompleted *Player) {
 	s.withLock(func() {
 		for _, objective := range crew.Objectives {
 			players[objective.StartedBy].Points += objective.Points()
 		}
 		whoCompleted.AddCrew(crew, false)
-		s.CrewForHire = slices.DeleteFunc(s.CrewForHire, func(c *deck.Crew) bool {
+		s.CrewForHire = slices.DeleteFunc(s.CrewForHire, func(c *Crew) bool {
 			return c.ID == crew.ID
 		})
 		s.dealCrewForHire()

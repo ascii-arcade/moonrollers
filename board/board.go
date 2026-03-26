@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/ascii-arcade/moonrollers/config"
-	"github.com/ascii-arcade/moonrollers/games"
 	"github.com/ascii-arcade/moonrollers/keys"
 	"github.com/ascii-arcade/moonrollers/language"
 	"github.com/ascii-arcade/moonrollers/messages"
@@ -19,11 +18,11 @@ type Model struct {
 	screen screen.Screen
 	style  lipgloss.Style
 
-	Player *games.Player
-	Game   *games.Game
+	Player *Player
+	Game   *Game
 }
 
-func NewModel(width, height int, style lipgloss.Style, player *games.Player) Model {
+func NewModel(width, height int, style lipgloss.Style, player *Player) Model {
 	m := Model{
 		width:  width,
 		height: height,
@@ -38,7 +37,7 @@ func (m Model) Init() tea.Cmd {
 	return waitForRefreshSignal(m.Player.UpdateChan)
 }
 
-func (m *Model) SetGame(game *games.Game) {
+func (m *Model) SetGame(game *Game) {
 	m.screen = m.newLobbyScreen()
 	m.Game = game
 }

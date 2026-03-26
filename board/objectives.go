@@ -1,22 +1,21 @@
-package deck
+package board
 
 import (
 	"strconv"
 	"strings"
 
 	"github.com/ascii-arcade/moonrollers/colors"
-	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/charmbracelet/lipgloss"
 )
 
 const (
-	emptyPip = "◇"
-	fullPip  = "◆"
-	Hazard   = "!"
+	symbolFullPip  = "◆"
+	symbolEmptyPip = "◇"
+	symbolHazard   = "!"
 )
 
 type Objective struct {
-	Type             *dice.Die
+	Type             *Die
 	Amount           int
 	Hazard           bool
 	CommittingAmount int
@@ -26,7 +25,7 @@ type Objective struct {
 }
 
 func (o *Objective) Points() int {
-	if o.Type.ID == dice.DieWild.ID {
+	if o.Type.ID == DieWild.ID {
 		return 2 * o.Amount
 	}
 	return o.Amount
@@ -42,10 +41,10 @@ func (o *Objective) Render(style lipgloss.Style, selected bool) string {
 	line.WriteString(arrow)
 	line.WriteString(o.getHazard(style))
 	for range o.CompletedAmount {
-		line.WriteString(style.Foreground(o.StartedByColor).Render(fullPip))
+		line.WriteString(style.Foreground(o.StartedByColor).Render(symbolFullPip))
 	}
 	for range o.Amount - o.CompletedAmount {
-		line.WriteString(style.Foreground(o.StartedByColor).Render(emptyPip))
+		line.WriteString(style.Foreground(o.StartedByColor).Render(symbolEmptyPip))
 	}
 	for range 5 - o.Amount {
 		line.WriteString(" ")
@@ -54,22 +53,22 @@ func (o *Objective) Render(style lipgloss.Style, selected bool) string {
 	return line.String()
 }
 
-func (o *Objective) RenderCommitting(dice dice.DicePool, style lipgloss.Style) string {
+func (o *Objective) RenderCommitting(dice DicePool, style lipgloss.Style) string {
 	var line strings.Builder
 	line.WriteString(style.Foreground(o.Type.Color).Render(o.Type.Symbol))
 	line.WriteString(" ")
 	line.WriteString(o.getHazard(style))
 	for i := range o.CommittingAmount {
 		if i < o.Amount {
-			line.WriteString(style.Foreground(o.StartedByColor).Render(fullPip))
+			line.WriteString(style.Foreground(o.StartedByColor).Render(symbolFullPip))
 		}
 	}
 	for range o.Amount - o.CommittingAmount {
 		// if commiting > i {
-		// 	line.WriteString(style.Foreground(o.StartedByColor).Render(fullPip))
+		// 	line.WriteString(style.Foreground(o.StartedByColor).Render(symbolFullPip))
 		// 	continue
 		// }
-		line.WriteString(style.Foreground(o.StartedByColor).Render(emptyPip))
+		line.WriteString(style.Foreground(o.StartedByColor).Render(symbolEmptyPip))
 	}
 	for range 5 - o.Amount {
 		line.WriteString(" ")
@@ -92,11 +91,11 @@ func (o *Objective) IsType(dieType string) bool {
 
 func (o *Objective) getHazard(style lipgloss.Style) string {
 	if o.Hazard {
-		return style.Foreground(colors.Hazard).Render(Hazard)
+		return style.Foreground(colors.Hazard).Render(symbolHazard)
 	}
 	return " "
 }
 
-func (o *Objective) ValidDie(die dice.Die) bool {
-	return o.IsType(die.ID) || o.IsType(dice.DieWild.ID) || o.IsType(die.Mimics)
+func (o *Objective) ValidDie(die Die) bool {
+	return o.IsType(die.ID) || o.IsType(DieWild.ID) || o.IsType(die.Mimics)
 }

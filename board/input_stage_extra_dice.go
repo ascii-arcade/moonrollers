@@ -19,7 +19,7 @@ func newInputExtraDiceComponent(model *Model) inputExtraDiceComponent {
 
 func (c inputExtraDiceComponent) render() string {
 	if c.model.Game.GetCurrentPlayer().Name != c.model.Player.Name {
-		return inputComponentStyle(false).Render(fmt.Sprintf("%s is choosing extra dice...\n", c.model.Game.GetCurrentPlayer().Name))
+		return inputComponentStyle(false).Render(fmt.Sprintf("%s is choosing extra ..\n", c.model.Game.GetCurrentPlayer().Name))
 	}
 	var output strings.Builder
 	output.WriteString("How many extra die would you like to add?\n\n")

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
+	"github.com/ascii-arcade/moonrollers/board"
 	"github.com/ascii-arcade/moonrollers/config"
-	"github.com/ascii-arcade/moonrollers/games"
 )
 
 func Run() error {
@@ -36,9 +36,9 @@ func Run() error {
 		// TODO: Eventually implement admin only information
 		// params := r.URL.Query()
 		// if params.Get("admin_key") == config.GetWebAdminKey() {}
-		totalGames := len(games.GetAll())
+		totalGames := len(board.GetAll())
 		totalStartedGames := 0
-		for _, game := range games.GetAll() {
+		for _, game := range board.GetAll() {
 			if game.InProgress() {
 				totalStartedGames++
 			}
@@ -58,8 +58,8 @@ func Run() error {
 		}{
 			TotalGames:            totalGames,
 			TotalStartedGames:     totalStartedGames,
-			TotalUniquePlayers:    games.GetPlayerCount(),
-			TotalConnectedPlayers: games.GetConnectedPlayerCount(),
+			TotalUniquePlayers:    board.GetPlayerCount(),
+			TotalConnectedPlayers: board.GetConnectedPlayerCount(),
 		}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
