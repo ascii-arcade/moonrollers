@@ -99,6 +99,11 @@ var allCrew = []Crew{
 			{Type: new(DieThruster), Amount: 2},
 			{Type: new(DieReactor), Amount: 1, Hazard: true},
 		},
+		Modifier: func(game *Game) {
+			if game.RollingPool.NumberOf(DieShield.ID) >= 2 {
+				game.PreventBust = true
+			}
+		},
 	},
 	{
 		Name:    "Avari",

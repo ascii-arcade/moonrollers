@@ -20,7 +20,11 @@ func (g *Game) Roll(isRolling bool) {
 			switch {
 			case g.InputCrew != nil && !g.InputCrew.CanCommit(g.RollingPool, g.GetCurrentPlayer().Sess.User()),
 				g.InputObjective != nil && g.RollingPool.ValueOf(g.InputObjective.Type.ID) == 0:
-				g.InputState = Busted
+				if !g.PreventBust {
+					g.InputState = Busted
+					break
+				}
+				g.PreventBust = false
 			case g.InputObjective != nil && g.InputObjective.CompletedAmount < g.InputObjective.Amount:
 				g.InputState = InputStateCommitDice
 			case g.InputCrew != nil && !g.InputCrew.IsComplete():
