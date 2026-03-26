@@ -102,14 +102,20 @@ func (dp *DicePool) NumberOfSelected() int {
 	return count
 }
 
+func (dp DicePool) ValueOf(dieType string) int {
+	count := 0
+	for _, d := range dp.Dice {
+		if d.ID == dieType || d.ID == DieWild.ID || d.MimicsType(dieType) {
+			count += d.Value
+		}
+	}
+	return count
+}
+
 func (dp DicePool) NumberOf(dieType string) int {
 	count := 0
 	for _, d := range dp.Dice {
-		if d.MimicsType(dieType) {
-			count += d.Value
-			continue
-		}
-		if d.ID == dieType || d.ID == DieWild.ID {
+		if d.ID == dieType {
 			count++
 		}
 	}

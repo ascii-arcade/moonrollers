@@ -4,7 +4,6 @@ import (
 	"errors"
 	"slices"
 
-	"github.com/ascii-arcade/moonrollers/deck"
 	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/ascii-arcade/moonrollers/factions"
 )
@@ -23,7 +22,7 @@ func (s *Game) Roll(isRolling bool) {
 		if !isRolling {
 			switch {
 			case s.InputCrew != nil && !s.InputCrew.CanCommit(s.RollingPool, s.GetCurrentPlayer().Sess.User()),
-				s.InputObjective != nil && s.RollingPool.NumberOf(s.InputObjective.Type.ID) == 0:
+				s.InputObjective != nil && s.RollingPool.ValueOf(s.InputObjective.Type.ID) == 0:
 				s.InputState = Busted
 			case s.InputObjective != nil && s.InputObjective.CompletedAmount < s.InputObjective.Amount:
 				s.InputState = InputStateCommitDice
@@ -33,7 +32,7 @@ func (s *Game) Roll(isRolling bool) {
 				s.InputState = InputStateChooseCrew
 			}
 
-			s.ApplyModifiers(&s.RollingPool, s.GetCurrentPlayer().Crew)
+			s.ApplyModifiers()
 
 			slices.SortFunc(s.RollingPool.Dice, func(a, b *dice.Die) int {
 				if a.ID == dice.DieExtra.ID && b.ID != dice.DieExtra.ID {
@@ -48,10 +47,10 @@ func (s *Game) Roll(isRolling bool) {
 	})
 }
 
-func (s *Game) ApplyModifiers(pool *dice.DicePool, crew map[string]*deck.Crew) {
-	for _, c := range crew {
+func (s *Game) ApplyModifiers() {
+	for _, c := range s.GetCurrentPlayer().Crew {
 		if c.Modifier != nil {
-			c.Modifier(pool)
+			c.Modifier(&s.SupplyPool, &s.RollingPool)
 		}
 	}
 }
@@ -80,7 +79,7 @@ func (s *Game) ChooseObjective(index int) {
 		switch {
 		case index < 0,
 			index >= len(s.InputCrew.Objectives),
-			s.RollingPool.NumberOf(s.InputCrew.Objectives[index].Type.ID) == 0,
+			s.RollingPool.ValueOf(s.InputCrew.Objectives[index].Type.ID) == 0,
 			s.InputCrew.Objectives[index].IsCompleted(),
 			s.InputCrew.Objectives[index].StartedBy != "" && s.InputCrew.Objectives[index].StartedBy != s.GetCurrentPlayer().Name:
 			return

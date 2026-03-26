@@ -11,7 +11,7 @@ type Die struct {
 	Symbol   string
 	Selected bool
 	Value    int
-	Mimics   *Die
+	Mimics   string
 }
 
 var (
@@ -54,5 +54,5 @@ func (d *Die) Render(style lipgloss.Style, dark bool) string {
 }
 
 func (d *Die) MimicsType(dieId string) bool {
-	return d.ID == dieId || (d.Mimics != nil && d.Mimics.ID == dieId)
+	return d.Mimics == dieId
 }

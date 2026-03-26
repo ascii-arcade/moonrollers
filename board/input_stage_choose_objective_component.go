@@ -34,7 +34,7 @@ func (c inputStageChooseObjectiveComponent) render() string {
 		switch {
 		case objective.IsCompleted(),
 			objective.StartedBy != "" && objective.StartedBy != c.model.Game.GetCurrentPlayer().Name,
-			c.model.Game.RollingPool.NumberOf(objective.Type.ID) == 0:
+			c.model.Game.RollingPool.ValueOf(objective.Type.ID) == 0:
 			continue
 		}
 		fmt.Fprintf(&output, "[%d] %s\n", index+1, objective.Render(c.model.style, c.model.Game.InputObjective != nil && c.model.Game.InputObjective == objective))

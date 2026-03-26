@@ -87,7 +87,7 @@ func (o *Objective) IsCompleted() bool {
 }
 
 func (o *Objective) IsType(dieType string) bool {
-	return o.Type.ID == dieType || dieType == dice.DieWild.ID
+	return o.Type.ID == dieType
 }
 
 func (o *Objective) getHazard(style lipgloss.Style) string {
@@ -98,5 +98,5 @@ func (o *Objective) getHazard(style lipgloss.Style) string {
 }
 
 func (o *Objective) ValidDie(die dice.Die) bool {
-	return o.IsType(die.ID) || o.IsType(dice.DieWild.ID) || (die.Mimics != nil && o.IsType(die.Mimics.ID))
+	return o.IsType(die.ID) || o.IsType(dice.DieWild.ID) || o.IsType(die.Mimics)
 }
