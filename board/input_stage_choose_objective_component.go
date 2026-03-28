@@ -2,9 +2,11 @@ package board
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/ascii-arcade/moonrollers/keys"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 type inputStageChooseObjectiveComponent struct {
@@ -47,4 +49,19 @@ func (c inputStageChooseObjectiveComponent) render() string {
 	fmt.Fprintf(&output, "\n%s to go back", keys.GamePreviousInputStage.String(c.model.style))
 
 	return inputComponentStyle(false).Render(output.String())
+}
+
+func inputStageChooseObjectiveHandler(s *tableScreen, msg tea.KeyMsg) (*Model, tea.Cmd) {
+	game := s.model.Game
+
+	switch {
+	case keys.GameChooseObjective.TriggeredBy(msg.String()):
+		i, _ := strconv.Atoi(msg.String())
+		game.ChooseObjective(i - 1)
+	case keys.GameChooseConfirm.TriggeredBy(msg.String()):
+		game.ConfirmObjective()
+	case keys.GamePreviousInputStage.TriggeredBy(msg.String()):
+		game.PreviousInputStage()
+	}
+	return s.model, nil
 }

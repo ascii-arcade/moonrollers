@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/ascii-arcade/moonrollers/keys"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -90,4 +91,43 @@ func (c inputStageCommitDiceComponent) render() string {
 	fmt.Fprintf(&output, "\n%s to go back", keys.GamePreviousInputStage.String(style))
 
 	return inputComponentStyle(false).Render(output.String())
+}
+
+func inputStageCommitDiceHandler(s *tableScreen, msg tea.KeyMsg) (*Model, tea.Cmd) {
+	game := s.model.Game
+
+	switch {
+	case keys.GameChooseLeft.TriggeredBy(msg.String()):
+		game.Index--
+		if game.Index < 0 {
+			game.Index = len(game.RollingPool.GetValidDice(game.InputObjective.Type.ID)) - 1
+		}
+	case keys.GameChooseRight.TriggeredBy(msg.String()):
+		game.Index++
+		if game.Index >= len(game.RollingPool.GetValidDice(game.InputObjective.Type.ID)) {
+			game.Index = 0
+		}
+	case keys.GameToggle.TriggeredBy(msg.String()):
+		if game.RollingPool.NumberOfSelected() >= game.InputObjective.Amount && !game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected {
+			return s.model, nil
+		}
+		game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected = !game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected
+		if game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected {
+			game.InputObjective.CommittingAmount += game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Value
+		} else {
+			game.InputObjective.CommittingAmount -= game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Value
+		}
+	case keys.GameChooseConfirm.TriggeredBy(msg.String()):
+		if game.NumberOfCommittedDice() == 0 {
+			return s.model, nil
+		}
+		game.CommitDice()
+		game.InputState = game.nextStage()
+		game.Index = 0
+	case keys.GameEndTurn.TriggeredBy(msg.String()):
+		game.NextTurn(false)
+	case keys.GamePreviousInputStage.TriggeredBy(msg.String()):
+		game.PreviousInputStage()
+	}
+	return s.model, nil
 }

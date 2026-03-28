@@ -3,8 +3,10 @@ package board
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/ascii-arcade/moonrollers/keys"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 type inputStageRollComponent struct {
@@ -30,4 +32,26 @@ func (c inputStageRollComponent) render() string {
 		output.String(),
 		fmt.Sprintf("Press %s to roll!", keys.GameRollDice.String(c.model.style)),
 	)
+}
+
+func inputStageRollHandler(s *tableScreen, msg tea.KeyMsg) (*Model, tea.Cmd) {
+	game := s.model.Game
+
+	switch {
+	case keys.GameRollDice.TriggeredBy(msg.String()):
+		if game.InputObjective != nil && game.InputObjective.IsCompleted() {
+			game.InputObjective = nil
+		}
+		if !s.isRolling {
+			s.rollTickCount = 0
+			s.isRolling = true
+			return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
+				return rollMsg{}
+			})
+		}
+	case keys.GameEndTurn.TriggeredBy(msg.String()):
+		game.NextTurn(false)
+	}
+
+	return s.model, nil
 }

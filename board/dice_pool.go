@@ -57,9 +57,8 @@ func (dp *DicePool) Render(style lipgloss.Style) string {
 }
 
 func (dp DicePool) Roll() {
-	all := AllDie()
 	for i := range dp.Dice {
-		dp.Dice[i] = new(all[rand.Intn(len(all))])
+		dp.Dice[i] = new(AllDie()[rand.Intn(len(AllDie()))])
 	}
 }
 
@@ -171,4 +170,10 @@ func (dp *DicePool) GetValidDice(dieType string) []*Die {
 		}
 	}
 	return valid
+}
+
+func (dp *DicePool) Remove(die *Die) {
+	dp.Dice = slices.DeleteFunc(dp.Dice, func(d *Die) bool {
+		return d == die
+	})
 }

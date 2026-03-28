@@ -42,6 +42,7 @@ func (s *Game) NextTurn(busted bool) {
 		s.InputObjective = nil
 
 		s.initRollingPools(startTurn.RollingPoolSize)
+		s.ApplyModifiers()
 	})
 }
 

@@ -2,7 +2,6 @@ package board
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -54,123 +53,21 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 
 		switch game.InputState {
 		case InputStateRoll:
-			switch {
-			case keys.GameRollDice.TriggeredBy(msg.String()):
-				if game.InputObjective != nil && game.InputObjective.IsCompleted() {
-					game.InputObjective = nil
-				}
-				if !s.isRolling {
-					s.rollTickCount = 0
-					s.isRolling = true
-					return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
-						return rollMsg{}
-					})
-				}
-			case keys.GameEndTurn.TriggeredBy(msg.String()):
-				game.NextTurn(false)
-				return s.model, nil
-			}
+			return inputStageRollHandler(s, msg)
 		case InputStateChooseCrew:
-			switch {
-			case keys.GameChooseCrew.TriggeredBy(msg.String()):
-				i, err := strconv.Atoi(msg.String())
-				if err != nil {
-					return s.model, nil
-				}
-
-				game.ChooseCrewMember(i - 1)
-			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
-				game.ConfirmCrewMember()
-			}
-
+			return inputStageChooseCrewHandler(s, msg)
 		case InputStateChooseObjective:
-			switch {
-			case keys.GameChooseObjective.TriggeredBy(msg.String()):
-				i, _ := strconv.Atoi(msg.String())
-				game.ChooseObjective(i - 1)
-			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
-				game.ConfirmObjective()
-			case keys.GamePreviousInputStage.TriggeredBy(msg.String()):
-				game.PreviousInputStage()
-			}
-
+			return inputStageChooseObjectiveHandler(s, msg)
 		case InputStateCommitDice:
-			switch {
-			case keys.GameChooseLeft.TriggeredBy(msg.String()):
-				game.Index--
-				if game.Index < 0 {
-					game.Index = len(game.RollingPool.GetValidDice(game.InputObjective.Type.ID)) - 1
-				}
-			case keys.GameChooseRight.TriggeredBy(msg.String()):
-				game.Index++
-				if game.Index >= len(game.RollingPool.GetValidDice(game.InputObjective.Type.ID)) {
-					game.Index = 0
-				}
-			case keys.GameToggle.TriggeredBy(msg.String()):
-				if game.RollingPool.NumberOfSelected() >= game.InputObjective.Amount && !game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected {
-					return s.model, nil
-				}
-				game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected = !game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected
-				if game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected {
-					game.InputObjective.CommittingAmount += game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Value
-				} else {
-					game.InputObjective.CommittingAmount -= game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Value
-				}
-			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
-				if game.NumberOfCommittedDice() == 0 {
-					return s.model, nil
-				}
-				game.CommitDice()
-				game.InputState = InputStateRoll
-				switch {
-				case game.InputCrew.IsComplete():
-					game.CompleteCard(game.InputCrew, game.GetCurrentPlayer())
-					game.NextTurn(false)
-				case game.RollingPool.HasExtra() && len(game.SupplyPool.Dice) > 0:
-					game.InputState = InputStateChooseExtraDice
-				case game.InputObjective.Hazard && game.InputObjective.IsCompleted():
-					game.PullHazards()
-					game.InputState = InputStateChooseHazard
-				}
-				game.Index = 0
-			case keys.GameEndTurn.TriggeredBy(msg.String()):
-				game.NextTurn(false)
-			case keys.GamePreviousInputStage.TriggeredBy(msg.String()):
-				game.PreviousInputStage()
-			}
-
+			return inputStageCommitDiceHandler(s, msg)
 		case InputStateChooseExtraDice:
-			switch {
-			case keys.GameChooseExtraDice.TriggeredBy(msg.String()):
-				if game.RollingPool.NumberOfUnrolled() < game.RollingPool.NumberOfExtra() && game.SupplyPool.Length() > 0 {
-					game.RollingPool.AddUnrolled()
-					game.SupplyPool.RemoveUnrolled()
-				}
-			case keys.GameRemove.TriggeredBy(msg.String()):
-				if game.RollingPool.NumberOfUnrolled() > 0 {
-					game.RollingPool.RemoveUnrolled()
-					game.SupplyPool.AddUnrolled()
-				}
-			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
-				game.InputState = InputStateRoll
-				if game.InputObjective.Hazard && game.InputObjective.IsCompleted() {
-					game.PullHazards()
-					game.InputState = InputStateChooseHazard
-				}
-			}
-
+			return inputStageExtraDiceHandler(s, msg)
 		case InputStateChooseHazard:
-			switch {
-			case keys.GameChooseHazard.TriggeredBy(msg.String()):
-				i, _ := strconv.Atoi(msg.String())
-				if i < 1 || i > len(game.InputHazards) {
-					return s.model, nil
-				}
-				chosenHazard := game.InputHazards[i-1]
-				game.GetCurrentPlayer().Hazards = append(game.GetCurrentPlayer().Hazards, chosenHazard)
-				game.InputState = InputStateRoll
-			}
-
+			return inputStageChooseHazardHandler(s, msg)
+		case InputStateOptionalHazard:
+			return inputStageOptionalHazardHandler(s, msg)
+		case InputStateReroll:
+			return inputStageRerollHandler(s, msg)
 		case Busted:
 			if keys.GameEndTurn.TriggeredBy(msg.String()) {
 				game.NextTurn(true)
@@ -212,9 +109,7 @@ func (s *tableScreen) View() string {
 
 	switch s.model.Game.InputState {
 	case InputStateRoll:
-		if s.model.Game.GetCurrentPlayer() == s.model.Player && !s.isRolling {
-			inputStageComponent = newInputStageRollComponent(s.model)
-		}
+		inputStageComponent = newInputStageRollComponent(s.model)
 	case InputStateChooseCrew:
 		inputStageComponent = newInputStageChooseCrewComponent(s.model)
 	case InputStateChooseObjective:
@@ -224,9 +119,11 @@ func (s *tableScreen) View() string {
 	case InputStateChooseExtraDice:
 		inputStageComponent = newInputExtraDiceComponent(s.model)
 	case InputStateChooseHazard:
-		if s.model.Game.GetCurrentPlayer() == s.model.Player {
-			inputStageComponent = newInputStageChooseHazardComponent(s.model)
-		}
+		inputStageComponent = newInputStageChooseHazardComponent(s.model)
+	case InputStateOptionalHazard:
+		inputStageComponent = newInputStageOptionalHazardComponent(s.model)
+	case InputStateReroll:
+		inputStageComponent = newInputStageRerollComponent(s.model)
 	case Busted:
 		inputStageComponent = newBustedComponent(s.model)
 	}

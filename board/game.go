@@ -220,3 +220,17 @@ func (s *Game) CompleteCard(crew *Crew, whoCompleted *Player) {
 		s.dealCrewForHire()
 	})
 }
+
+func (g *Game) nextStage() int {
+	switch {
+	case g.InputCrew.IsComplete():
+		g.CompleteCard(g.InputCrew, g.GetCurrentPlayer())
+		g.NextTurn(false)
+	case g.RollingPool.HasExtra() && len(g.SupplyPool.Dice) > 0:
+		return InputStateChooseExtraDice
+	case g.InputObjective.Hazard && g.InputObjective.IsCompleted():
+		g.PullHazards()
+		return InputStateChooseHazard
+	}
+	return InputStateRoll
+}

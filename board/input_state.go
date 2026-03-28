@@ -9,5 +9,6 @@ const (
 	InputStateCommitDice
 	InputStateChooseExtraDice
 	InputStateChooseHazard
+	InputStateOptionalHazard
 	Busted
 )

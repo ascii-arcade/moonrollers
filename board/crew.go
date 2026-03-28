@@ -141,6 +141,12 @@ var allCrew = []Crew{
 			{Type: new(DieThruster), Amount: 2},
 			{Type: new(DieThruster), Amount: 1, Hazard: true},
 		},
+		Modifier: func(game *Game) {
+			if game.RollingPool.NumberOf(DieThruster.ID) >= 3 {
+				game.InputObjective.CompletedAmount = game.InputObjective.Amount
+				game.InputState = InputStateRoll
+			}
+		},
 	},
 	{
 		Name:    "Bill",
@@ -232,6 +238,11 @@ var allCrew = []Crew{
 			{Type: new(DieShield), Amount: 2},
 			{Type: new(DieShield), Amount: 1, Hazard: true},
 		},
+		Modifier: func(game *Game) {
+			if game.RollingPool.NumberOf(DieShield.ID) == 0 {
+				game.InputState = InputStateOptionalHazard
+			}
+		},
 	},
 	{
 		Name:    "Kal",
@@ -243,6 +254,12 @@ var allCrew = []Crew{
 			{Type: new(DieDamage), Amount: 3},
 			{Type: new(DieShield), Amount: 1, Hazard: true},
 		},
+		Modifier: func(game *Game) {
+			if game.RollCount == 0 {
+				game.RollingPool.AddUnrolled()
+				game.SupplyPool.RemoveUnrolled()
+			}
+		},
 	},
 	{
 		Name:    "Kary",
@@ -253,6 +270,15 @@ var allCrew = []Crew{
 			{Type: new(DieShield), Amount: 3, Hazard: true},
 			{Type: new(DieReactor), Amount: 3},
 			{Type: new(DieThruster), Amount: 1, Hazard: true},
+		},
+		Modifier: func(game *Game) {
+			if game.RollCount == 1 {
+				for _, die := range game.RollingPool.Dice {
+					if die.ID == DieDamage.ID {
+						die.Mimics = DieExtra.ID
+					}
+				}
+			}
 		},
 	},
 	{
@@ -284,6 +310,11 @@ var allCrew = []Crew{
 			{Type: new(DieThruster), Amount: 3},
 			{Type: new(DieShield), Amount: 2},
 			{Type: new(DieDamage), Amount: 1, Hazard: true},
+		},
+		Modifier: func(game *Game) {
+			if game.RollingPool.NumberOf(DieReactor.ID) >= 2 {
+				game.InputState = InputStateReroll
+			}
 		},
 	},
 	{

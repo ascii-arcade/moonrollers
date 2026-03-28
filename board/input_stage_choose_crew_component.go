@@ -2,9 +2,11 @@ package board
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/ascii-arcade/moonrollers/keys"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -45,4 +47,20 @@ func (c inputStageChooseCrewComponent) render() string {
 	}
 
 	return inputComponentStyle(false).Render(output.String())
+}
+
+func inputStageChooseCrewHandler(s *tableScreen, msg tea.KeyMsg) (*Model, tea.Cmd) {
+	game := s.model.Game
+
+	switch {
+	case keys.GameChooseCrew.TriggeredBy(msg.String()):
+		i, err := strconv.Atoi(msg.String())
+		if err != nil {
+			return s.model, nil
+		}
+		game.ChooseCrewMember(i - 1)
+	case keys.GameChooseConfirm.TriggeredBy(msg.String()):
+		game.ConfirmCrewMember()
+	}
+	return s.model, nil
 }

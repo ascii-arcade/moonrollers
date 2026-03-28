@@ -2,7 +2,11 @@ package board
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
+
+	"github.com/ascii-arcade/moonrollers/keys"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 type inputStageChooseHazardComponent struct {
@@ -33,4 +37,20 @@ func (c inputStageChooseHazardComponent) render() string {
 	}
 
 	return inputComponentStyle(false).Render(output.String())
+}
+
+func inputStageChooseHazardHandler(s *tableScreen, msg tea.KeyMsg) (*Model, tea.Cmd) {
+	game := s.model.Game
+
+	switch {
+	case keys.GameChooseHazard.TriggeredBy(msg.String()):
+		i, _ := strconv.Atoi(msg.String())
+		if i < 1 || i > len(game.InputHazards) {
+			return s.model, nil
+		}
+		chosenHazard := game.InputHazards[i-1]
+		game.GetCurrentPlayer().addHazard(chosenHazard.Points)
+		game.InputState = InputStateRoll
+	}
+	return s.model, nil
 }

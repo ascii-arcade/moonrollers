@@ -15,7 +15,7 @@ type Player struct {
 	CrewCount          map[string]int
 	TurnOrder          int
 	LanguagePreference *language.LanguagePreference
-	Hazards            []Hazard
+	Hazards            map[int]*Hazard
 
 	UpdateChan chan int
 
@@ -75,4 +75,14 @@ func (p *Player) update(code int) {
 	case p.UpdateChan <- code:
 	default:
 	}
+}
+
+func (p *Player) addHazard(points int) {
+	if p.Hazards == nil {
+		p.Hazards = make(map[int]*Hazard)
+	}
+	if _, exists := p.Hazards[points]; !exists {
+		p.Hazards[points] = &Hazard{Points: points}
+	}
+	p.Hazards[points].Count++
 }

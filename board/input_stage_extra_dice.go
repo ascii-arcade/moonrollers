@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/ascii-arcade/moonrollers/keys"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 type inputExtraDiceComponent struct {
@@ -27,4 +28,28 @@ func (c inputExtraDiceComponent) render() string {
 	fmt.Fprintf(&output, "%s to remove extra from Pool\n", keys.GameRemove.String(c.model.style))
 	fmt.Fprintf(&output, "%s to continue", keys.GameChooseConfirm.String(c.model.style))
 	return inputComponentStyle(true).Render(output.String())
+}
+
+func inputStageExtraDiceHandler(s *tableScreen, msg tea.KeyMsg) (*Model, tea.Cmd) {
+	game := s.model.Game
+
+	switch {
+	case keys.GameChooseExtraDice.TriggeredBy(msg.String()):
+		if game.RollingPool.NumberOfUnrolled() < game.RollingPool.NumberOfExtra() && game.SupplyPool.Length() > 0 {
+			game.RollingPool.AddUnrolled()
+			game.SupplyPool.RemoveUnrolled()
+		}
+	case keys.GameRemove.TriggeredBy(msg.String()):
+		if game.RollingPool.NumberOfUnrolled() > 0 {
+			game.RollingPool.RemoveUnrolled()
+			game.SupplyPool.AddUnrolled()
+		}
+	case keys.GameChooseConfirm.TriggeredBy(msg.String()):
+		game.InputState = InputStateRoll
+		if game.InputObjective.Hazard && game.InputObjective.IsCompleted() {
+			game.PullHazards()
+			game.InputState = InputStateChooseHazard
+		}
+	}
+	return s.model, nil
 }
