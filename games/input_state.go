@@ -7,5 +7,7 @@ const (
 	InputStateReroll
 	InputStateRollFromSupply
 	InputStateCommitDice
+	InputStateChooseExtraDice
 	InputStateChooseHazard
+	Busted
 )

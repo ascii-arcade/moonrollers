@@ -10,342 +10,519 @@ type Crew struct {
 	ID         string
 	IsStarter  bool
 	Name       string
-	Objectives []Objective
+	Objectives []*Objective
+	Modifier   func(supplyPool, rollingPool *dice.DicePool)
 }
 
-func (c *Crew) AvailableObjectives() []Objective {
+func (c *Crew) AvailableObjectives() []*Objective {
 	return c.Objectives
+}
+
+func (c *Crew) Copy() Crew {
+	objectives := make([]*Objective, len(c.Objectives))
+	for i, objective := range c.Objectives {
+		objectives[i] = new(*objective)
+	}
+	return Crew{
+		Faction:    c.Faction,
+		ID:         c.ID,
+		IsStarter:  c.IsStarter,
+		Name:       c.Name,
+		Objectives: objectives,
+		Modifier:   c.Modifier,
+	}
+}
+
+func (c *Crew) CanCommit(pool dice.DicePool, playerName string) bool {
+	for _, objective := range c.AvailableObjectives() {
+		for _, die := range pool.Dice {
+			if (objective.IsType(die.ID) || die.ID == dice.DieWild.ID || objective.IsType(die.Mimics)) && objective.CanCommitBy(playerName) && !objective.IsCompleted() {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (c *Crew) IsComplete() bool {
+	for _, objective := range c.Objectives {
+		if !objective.IsCompleted() {
+			return false
+		}
+	}
+	return true
 }
 
 var allCrew = []Crew{
 	{
-		Name:    "Aponi",
-		ID:      "aponi",
-		Faction: factions.Blue,
-		Objectives: []Objective{
-			{Type: dice.DieReactor, Amount: 4, Hazard: true},
-			{Type: dice.DieThruster, Amount: 3},
-			{Type: dice.DieShield, Amount: 3, Hazard: true},
-			{Type: dice.DieWild, Amount: 2},
-		},
-	},
-	{
-		Name:    "Vila",
-		ID:      "vila",
-		Faction: factions.Blue,
-		Objectives: []Objective{
-			{Type: dice.DieReactor, Amount: 4},
-			{Type: dice.DieReactor, Amount: 3},
-			{Type: dice.DieReactor, Amount: 2},
-			{Type: dice.DieReactor, Amount: 1, Hazard: true},
-		},
-	},
-	{
-		Name:    "Salatar",
-		ID:      "salatar",
-		Faction: factions.Blue,
-		Objectives: []Objective{
-			{Type: dice.DieReactor, Amount: 4},
-			{Type: dice.DieThruster, Amount: 3, Hazard: true},
-			{Type: dice.DieShield, Amount: 3},
-			{Type: dice.DieDamage, Amount: 1, Hazard: true},
-		},
-	},
-	{
 		Name:    "Ada",
 		ID:      "ada",
 		Faction: factions.Blue,
-		Objectives: []Objective{
-			{Type: dice.DieReactor, Amount: 2},
-			{Type: dice.DieThruster, Amount: 2},
-			{Type: dice.DieShield, Amount: 1, Hazard: true},
+		Objectives: []*Objective{
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 1, Hazard: true},
 		},
 		IsStarter: true,
+		Modifier: func(_, rollingPool *dice.DicePool) {
+			for _, die := range rollingPool.Dice {
+				if die.ID == dice.DieExtra.ID {
+					die.Mimics = dice.DieReactor.ID
+					die.Value = 2
+				}
+			}
+		},
 	},
 	{
-		Name:    "Lee",
-		ID:      "lee",
+		Name:    "Aponi",
+		ID:      "aponi",
 		Faction: factions.Blue,
-		Objectives: []Objective{
-			{Type: dice.DieReactor, Amount: 2},
-			{Type: dice.DieThruster, Amount: 2, Hazard: true},
-			{Type: dice.DieShield, Amount: 2},
-			{Type: dice.DieDamage, Amount: 1, Hazard: true},
+		Objectives: []*Objective{
+			{Type: new(dice.DieReactor), Amount: 4, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 3, Hazard: true},
+			{Type: new(dice.DieWild), Amount: 2},
 		},
-	},
-	{
-		Name:    "Lila",
-		ID:      "lila",
-		Faction: factions.Blue,
-		Objectives: []Objective{
-			{Type: dice.DieReactor, Amount: 3, Hazard: true},
-			{Type: dice.DieThruster, Amount: 3},
-			{Type: dice.DieShield, Amount: 2},
-			{Type: dice.DieDamage, Amount: 1, Hazard: true},
-		},
-	},
-	{
-		Name:    "[REDACTED]",
-		ID:      "redacted",
-		Faction: factions.Green,
-		Objectives: []Objective{
-			{Type: dice.DieShield, Amount: 4, Hazard: true},
-			{Type: dice.DieDamage, Amount: 3},
-			{Type: dice.DieThruster, Amount: 3},
-			{Type: dice.DieWild, Amount: 2},
-		},
-	},
-	{
-		Name:    "Imdar",
-		ID:      "imdar",
-		Faction: factions.Green,
-		Objectives: []Objective{
-			{Type: dice.DieShield, Amount: 4},
-			{Type: dice.DieShield, Amount: 3},
-			{Type: dice.DieShield, Amount: 2},
-			{Type: dice.DieShield, Amount: 1, Hazard: true},
-		},
-	},
-	{
-		Name:    "Namari",
-		ID:      "namari",
-		Faction: factions.Green,
-		Objectives: []Objective{
-			{Type: dice.DieShield, Amount: 4},
-			{Type: dice.DieDamage, Amount: 3, Hazard: true},
-			{Type: dice.DieThruster, Amount: 3},
-			{Type: dice.DieReactor, Amount: 1, Hazard: true},
-		},
-	},
-	{
-		Name:    "Ryle",
-		ID:      "ryle",
-		Faction: factions.Green,
-		Objectives: []Objective{
-			{Type: dice.DieShield, Amount: 2},
-			{Type: dice.DieDamage, Amount: 2},
-			{Type: dice.DieThruster, Amount: 1},
-		},
-		IsStarter: true,
-	},
-	{
-		Name:    "Bill",
-		ID:      "bill",
-		Faction: factions.Green,
-		Objectives: []Objective{
-			{Type: dice.DieShield, Amount: 2, Hazard: true},
-			{Type: dice.DieDamage, Amount: 2},
-			{Type: dice.DieThruster, Amount: 2},
-			{Type: dice.DieReactor, Amount: 1, Hazard: true},
+		Modifier: func(_, rollingPool *dice.DicePool) {
+			if rollingPool.Length() <= 3 {
+				for _, die := range rollingPool.Dice {
+					if die.ID == dice.DieReactor.ID || die.ID == dice.DieWild.ID {
+						die.Mimics = dice.DieReactor.ID
+						die.Value = 2
+					}
+				}
+			}
 		},
 	},
 	{
 		Name:    "AT-OK",
 		ID:      "at-ok",
 		Faction: factions.Green,
-		Objectives: []Objective{
-			{Type: dice.DieShield, Amount: 3, Hazard: true},
-			{Type: dice.DieDamage, Amount: 3},
-			{Type: dice.DieThruster, Amount: 2},
-			{Type: dice.DieReactor, Amount: 1, Hazard: true},
-		},
-	},
-	{
-		Name:    "Dr.Umbrage",
-		ID:      "drumbrage",
-		Faction: factions.Orange,
-		Objectives: []Objective{
-			{Type: dice.DieDamage, Amount: 4, Hazard: true},
-			{Type: dice.DieShield, Amount: 3},
-			{Type: dice.DieReactor, Amount: 3},
-			{Type: dice.DieWild, Amount: 2},
-		},
-	},
-	{
-		Name:    "Saghari",
-		ID:      "saghari",
-		Faction: factions.Orange,
-		Objectives: []Objective{
-			{Type: dice.DieDamage, Amount: 4},
-			{Type: dice.DieDamage, Amount: 3},
-			{Type: dice.DieDamage, Amount: 2},
-			{Type: dice.DieDamage, Amount: 1, Hazard: true},
-		},
-	},
-	{
-		Name:    "Kary",
-		ID:      "kary",
-		Faction: factions.Orange,
-		Objectives: []Objective{
-			{Type: dice.DieDamage, Amount: 4},
-			{Type: dice.DieShield, Amount: 3, Hazard: true},
-			{Type: dice.DieReactor, Amount: 3},
-			{Type: dice.DieThruster, Amount: 1, Hazard: true},
-		},
-	},
-	{
-		Name:    "Dana",
-		ID:      "dana",
-		Faction: factions.Orange,
-		Objectives: []Objective{
-			{Type: dice.DieDamage, Amount: 3},
-			{Type: dice.DieShield, Amount: 3},
-			{Type: dice.DieReactor, Amount: 1, Hazard: true},
-		},
-		IsStarter: true,
-	},
-	{
-		Name:    "Tantin",
-		ID:      "tantin",
-		Faction: factions.Orange,
-		Objectives: []Objective{
-			{Type: dice.DieDamage, Amount: 2},
-			{Type: dice.DieShield, Amount: 2, Hazard: true},
-			{Type: dice.DieReactor, Amount: 2},
-			{Type: dice.DieThruster, Amount: 1, Hazard: true},
-		},
-	},
-	{
-		Name:    "Ryan",
-		ID:      "ryan",
-		Faction: factions.Orange,
-		Objectives: []Objective{
-			{Type: dice.DieDamage, Amount: 3, Hazard: true},
-			{Type: dice.DieShield, Amount: 3},
-			{Type: dice.DieReactor, Amount: 2},
-			{Type: dice.DieThruster, Amount: 1, Hazard: true},
-		},
-	},
-	{
-		Name:    "Moro",
-		ID:      "moro",
-		Faction: factions.Purple,
-		Objectives: []Objective{
-			{Type: dice.DieReactor, Amount: 4},
-			{Type: dice.DieDamage, Amount: 3, Hazard: true},
-			{Type: dice.DieShield, Amount: 3},
-			{Type: dice.DieThruster, Amount: 2, Hazard: true},
-		},
-	},
-	{
-		Name:    "Vanta",
-		ID:      "vanta",
-		Faction: factions.Purple,
-		Objectives: []Objective{
-			{Type: dice.DieWild, Amount: 3},
-			{Type: dice.DieWild, Amount: 2},
-			{Type: dice.DieWild, Amount: 1},
-			{Type: dice.DieDamage, Amount: 1, Hazard: true},
-		},
-	},
-	{
-		Name:    "Meg",
-		ID:      "meg",
-		Faction: factions.Purple,
-		Objectives: []Objective{
-			{Type: dice.DieThruster, Amount: 4, Hazard: true},
-			{Type: dice.DieDamage, Amount: 3},
-			{Type: dice.DieShield, Amount: 3},
-			{Type: dice.DieReactor, Amount: 1, Hazard: true},
-		},
-	},
-	{
-		Name:    "Sella",
-		ID:      "sella",
-		Faction: factions.Purple,
-		Objectives: []Objective{
-			{Type: dice.DieThruster, Amount: 2},
-			{Type: dice.DieReactor, Amount: 2},
-			{Type: dice.DieShield, Amount: 1},
-		},
-		IsStarter: true,
-	},
-	{
-		Name:    "FT-1000",
-		ID:      "ft1000",
-		Faction: factions.Purple,
-		Objectives: []Objective{
-			{Type: dice.DieShield, Amount: 3},
-			{Type: dice.DieThruster, Amount: 2, Hazard: true},
-			{Type: dice.DieDamage, Amount: 2, Hazard: true},
-			{Type: dice.DieReactor, Amount: 2},
+		Objectives: []*Objective{
+			{Type: new(dice.DieShield), Amount: 3, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
 		},
 	},
 	{
 		Name:    "Avari",
 		ID:      "avari",
 		Faction: factions.Purple,
-		Objectives: []Objective{
-			{Type: dice.DieDamage, Amount: 3, Hazard: true},
-			{Type: dice.DieReactor, Amount: 3},
-			{Type: dice.DieShield, Amount: 2},
-			{Type: dice.DieThruster, Amount: 2, Hazard: true},
+		Objectives: []*Objective{
+			{Type: new(dice.DieDamage), Amount: 3, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 2, Hazard: true},
 		},
-	},
-	{
-		Name:    "Sol",
-		ID:      "sol",
-		Faction: factions.Yellow,
-		Objectives: []Objective{
-			{Type: dice.DieThruster, Amount: 4, Hazard: true},
-			{Type: dice.DieReactor, Amount: 3},
-			{Type: dice.DieDamage, Amount: 3, Hazard: true},
-			{Type: dice.DieWild, Amount: 2},
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			for _, die := range supplyPool.Dice {
+				if die.ID != dice.DieWild.ID {
+					return
+				}
+			}
+
+			for range 3 {
+				if supplyPool.Length() == 0 {
+					return
+				}
+				rollingPool.AddUnrolled()
+				supplyPool.RemoveUnrolled()
+			}
 		},
 	},
 	{
 		Name:    "B3-AR",
 		ID:      "b3ar",
 		Faction: factions.Yellow,
-		Objectives: []Objective{
-			{Type: dice.DieThruster, Amount: 4},
-			{Type: dice.DieThruster, Amount: 3},
-			{Type: dice.DieThruster, Amount: 2},
-			{Type: dice.DieThruster, Amount: 1, Hazard: true},
+		Objectives: []*Objective{
+			{Type: new(dice.DieThruster), Amount: 4},
+			{Type: new(dice.DieThruster), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 1, Hazard: true},
+		},
+	},
+	{
+		Name:    "Bill",
+		ID:      "bill",
+		Faction: factions.Green,
+		Objectives: []*Objective{
+			{Type: new(dice.DieShield), Amount: 2, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
+		},
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			if rollingPool.NumberOf(dice.DieShield.ID) == 1 {
+				for _, die := range rollingPool.Dice {
+					if die.ID == dice.DieShield.ID {
+						die.Mimics = dice.DieWild.ID
+					}
+				}
+			}
+		},
+	},
+	{
+		Name:    "Dana",
+		ID:      "dana",
+		Faction: factions.Orange,
+		Objectives: []*Objective{
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
+		},
+		IsStarter: true,
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			for _, die := range rollingPool.Dice {
+				if die.ID == dice.DieExtra.ID {
+					die.Mimics = dice.DieDamage.ID
+					die.Value = 2
+				}
+			}
+		},
+	},
+	{
+		Name:    "Dr.Umbrage",
+		ID:      "drumbrage",
+		Faction: factions.Orange,
+		Objectives: []*Objective{
+			{Type: new(dice.DieDamage), Amount: 4, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieWild), Amount: 2},
+		},
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			if rollingPool.Length() <= 3 {
+				for _, die := range rollingPool.Dice {
+					if die.ID == dice.DieDamage.ID || die.ID == dice.DieWild.ID {
+						die.Mimics = dice.DieDamage.ID
+						die.Value = 2
+					}
+				}
+			}
+		},
+	},
+	{
+		Name:    "FT-1000",
+		ID:      "ft1000",
+		Faction: factions.Purple,
+		Objectives: []*Objective{
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 2, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 2, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 2},
+		},
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			if rollingPool.NumberOf(dice.DieWild.ID) == 1 {
+				for _, die := range rollingPool.Dice {
+					if die.ID == dice.DieWild.ID {
+						die.Mimics = dice.DieExtra.ID
+					}
+				}
+			}
+		},
+	},
+	{
+		Name:    "Imdar",
+		ID:      "imdar",
+		Faction: factions.Green,
+		Objectives: []*Objective{
+			{Type: new(dice.DieShield), Amount: 4},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 1, Hazard: true},
 		},
 	},
 	{
 		Name:    "Kal",
 		ID:      "kal",
 		Faction: factions.Yellow,
-		Objectives: []Objective{
-			{Type: dice.DieThruster, Amount: 4},
-			{Type: dice.DieReactor, Amount: 3, Hazard: true},
-			{Type: dice.DieDamage, Amount: 3},
-			{Type: dice.DieShield, Amount: 1, Hazard: true},
+		Objectives: []*Objective{
+			{Type: new(dice.DieThruster), Amount: 4},
+			{Type: new(dice.DieReactor), Amount: 3, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 1, Hazard: true},
 		},
 	},
 	{
-		Name:    "Nella",
-		ID:      "nella",
-		Faction: factions.Yellow,
-		Objectives: []Objective{
-			{Type: dice.DieThruster, Amount: 2},
-			{Type: dice.DieReactor, Amount: 2},
-			{Type: dice.DieDamage, Amount: 1, Hazard: true},
+		Name:    "Kary",
+		ID:      "kary",
+		Faction: factions.Orange,
+		Objectives: []*Objective{
+			{Type: new(dice.DieDamage), Amount: 4},
+			{Type: new(dice.DieShield), Amount: 3, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 1, Hazard: true},
 		},
-		IsStarter: true,
 	},
 	{
-		Name:    "Zek",
-		ID:      "zek",
-		Faction: factions.Yellow,
-		Objectives: []Objective{
-			{Type: dice.DieThruster, Amount: 2},
-			{Type: dice.DieReactor, Amount: 2, Hazard: true},
-			{Type: dice.DieDamage, Amount: 2},
-			{Type: dice.DieShield, Amount: 1, Hazard: true},
+		Name:    "Lee",
+		ID:      "lee",
+		Faction: factions.Blue,
+		Objectives: []*Objective{
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 2, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 2},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
+		},
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			if rollingPool.NumberOf(dice.DieReactor.ID) == 1 {
+				for _, die := range rollingPool.Dice {
+					if die.ID == dice.DieReactor.ID {
+						die.Mimics = dice.DieWild.ID
+					}
+				}
+			}
+		},
+	},
+	{
+		Name:    "Lila",
+		ID:      "lila",
+		Faction: factions.Blue,
+		Objectives: []*Objective{
+			{Type: new(dice.DieReactor), Amount: 3, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 2},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
+		},
+	},
+	{
+		Name:    "Meg",
+		ID:      "meg",
+		Faction: factions.Purple,
+		Objectives: []*Objective{
+			{Type: new(dice.DieThruster), Amount: 4, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
+		},
+	},
+	{
+		Name:    "Moro",
+		ID:      "moro",
+		Faction: factions.Purple,
+		Objectives: []*Objective{
+			{Type: new(dice.DieReactor), Amount: 4},
+			{Type: new(dice.DieDamage), Amount: 3, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 2, Hazard: true},
 		},
 	},
 	{
 		Name:    "Myla",
 		ID:      "myla",
 		Faction: factions.Yellow,
-		Objectives: []Objective{
-			{Type: dice.DieThruster, Amount: 3, Hazard: true},
-			{Type: dice.DieReactor, Amount: 3},
-			{Type: dice.DieDamage, Amount: 2},
-			{Type: dice.DieShield, Amount: 1, Hazard: true},
+		Objectives: []*Objective{
+			{Type: new(dice.DieThruster), Amount: 3, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 1, Hazard: true},
+		},
+	},
+	{
+		Name:    "Namari",
+		ID:      "namari",
+		Faction: factions.Green,
+		Objectives: []*Objective{
+			{Type: new(dice.DieShield), Amount: 4},
+			{Type: new(dice.DieDamage), Amount: 3, Hazard: true},
+			{Type: new(dice.DieThruster), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
+		},
+	},
+	{
+		Name:    "Nella",
+		ID:      "nella",
+		Faction: factions.Yellow,
+		Objectives: []*Objective{
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
+		},
+		IsStarter: true,
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			for _, die := range rollingPool.Dice {
+				if die.ID == dice.DieExtra.ID {
+					die.Mimics = dice.DieThruster.ID
+					die.Value = 2
+				}
+			}
+		},
+	},
+	{
+		Name:    "[REDACTED]",
+		ID:      "redacted",
+		Faction: factions.Green,
+		Objectives: []*Objective{
+			{Type: new(dice.DieShield), Amount: 4, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieThruster), Amount: 3},
+			{Type: new(dice.DieWild), Amount: 2},
+		},
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			if rollingPool.Length() <= 3 {
+				for _, die := range rollingPool.Dice {
+					if die.ID == dice.DieShield.ID || die.ID == dice.DieWild.ID {
+						die.Mimics = dice.DieShield.ID
+						die.Value = 2
+					}
+				}
+			}
+		},
+	},
+	{
+		Name:    "Ryan",
+		ID:      "ryan",
+		Faction: factions.Orange,
+		Objectives: []*Objective{
+			{Type: new(dice.DieDamage), Amount: 3, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 1, Hazard: true},
+		},
+	},
+	{
+		Name:    "Ryle",
+		ID:      "ryle",
+		Faction: factions.Green,
+		Objectives: []*Objective{
+			{Type: new(dice.DieShield), Amount: 2},
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 1},
+		},
+		IsStarter: true,
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			for _, die := range rollingPool.Dice {
+				if die.ID == dice.DieExtra.ID {
+					die.Mimics = dice.DieShield.ID
+					die.Value = 2
+				}
+			}
+		},
+	},
+	{
+		Name:    "Saghari",
+		ID:      "saghari",
+		Faction: factions.Orange,
+		Objectives: []*Objective{
+			{Type: new(dice.DieDamage), Amount: 4},
+			{Type: new(dice.DieDamage), Amount: 3},
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
+		},
+	},
+	{
+		Name:    "Salatar",
+		ID:      "salatar",
+		Faction: factions.Blue,
+		Objectives: []*Objective{
+			{Type: new(dice.DieReactor), Amount: 4},
+			{Type: new(dice.DieThruster), Amount: 3, Hazard: true},
+			{Type: new(dice.DieShield), Amount: 3},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
+		},
+	},
+	{
+		Name:    "Sella",
+		ID:      "sella",
+		Faction: factions.Purple,
+		Objectives: []*Objective{
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 1},
+		},
+		IsStarter: true,
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			if rollingPool.NumberOfExtra() == 1 {
+				for _, die := range rollingPool.Dice {
+					if die.ID == dice.DieExtra.ID {
+						die.Mimics = dice.DieWild.ID
+					}
+				}
+			}
+		},
+	},
+	{
+		Name:    "Sol",
+		ID:      "sol",
+		Faction: factions.Yellow,
+		Objectives: []*Objective{
+			{Type: new(dice.DieThruster), Amount: 4, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieDamage), Amount: 3, Hazard: true},
+			{Type: new(dice.DieWild), Amount: 2},
+		},
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			if rollingPool.Length() <= 3 {
+				for _, die := range rollingPool.Dice {
+					if die.ID == dice.DieThruster.ID || die.ID == dice.DieWild.ID {
+						die.Mimics = dice.DieThruster.ID
+						die.Value = 2
+					}
+				}
+			}
+		},
+	},
+	{
+		Name:    "Tantin",
+		ID:      "tantin",
+		Faction: factions.Orange,
+		Objectives: []*Objective{
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 2, Hazard: true},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieThruster), Amount: 1, Hazard: true},
+		},
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			if rollingPool.NumberOf(dice.DieDamage.ID) == 1 {
+				for _, die := range rollingPool.Dice {
+					if die.ID == dice.DieDamage.ID {
+						die.Mimics = dice.DieWild.ID
+					}
+				}
+			}
+		},
+	},
+	{
+		Name:    "Vanta",
+		ID:      "vanta",
+		Faction: factions.Purple,
+		Objectives: []*Objective{
+			{Type: new(dice.DieWild), Amount: 3},
+			{Type: new(dice.DieWild), Amount: 2},
+			{Type: new(dice.DieWild), Amount: 1},
+			{Type: new(dice.DieDamage), Amount: 1, Hazard: true},
+		},
+	},
+	{
+		Name:    "Vila",
+		ID:      "vila",
+		Faction: factions.Blue,
+		Objectives: []*Objective{
+			{Type: new(dice.DieReactor), Amount: 4},
+			{Type: new(dice.DieReactor), Amount: 3},
+			{Type: new(dice.DieReactor), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 1, Hazard: true},
+		},
+	},
+	{
+		Name:    "Zek",
+		ID:      "zek",
+		Faction: factions.Yellow,
+		Objectives: []*Objective{
+			{Type: new(dice.DieThruster), Amount: 2},
+			{Type: new(dice.DieReactor), Amount: 2, Hazard: true},
+			{Type: new(dice.DieDamage), Amount: 2},
+			{Type: new(dice.DieShield), Amount: 1, Hazard: true},
+		},
+		Modifier: func(supplyPool, rollingPool *dice.DicePool) {
+			if rollingPool.NumberOf(dice.DieThruster.ID) == 1 {
+				for _, die := range rollingPool.Dice {
+					if die.ID == dice.DieThruster.ID {
+						die.Mimics = dice.DieWild.ID
+					}
+				}
+			}
 		},
 	},
 }

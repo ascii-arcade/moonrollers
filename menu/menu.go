@@ -67,7 +67,7 @@ func NewModel(width, height int, style lipgloss.Style, player *games.Player) Mod
 	}
 	for range 12 {
 		i := rand.IntN(len(dice.All()))
-		m.displayDice = append(m.displayDice, dice.All()[i].Render(style))
+		m.displayDice = append(m.displayDice, dice.All()[i].Render(style, false))
 	}
 
 	m.screen = m.newSplashScreen()

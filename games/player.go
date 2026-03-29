@@ -17,6 +17,7 @@ type Player struct {
 	CrewCount          map[string]int
 	TurnOrder          int
 	LanguagePreference *language.LanguagePreference
+	Hazards            []Hazard
 
 	UpdateChan chan int
 
@@ -57,7 +58,7 @@ func (p *Player) OnDisconnect(fn func()) {
 }
 
 func (p *Player) AddCrew(crew *deck.Crew, active bool) {
-	if active {
+	if active || p.Crew[crew.Faction.Name] == nil {
 		p.Crew[crew.Faction.Name] = crew
 	}
 	p.CrewCount[crew.Faction.Name]++

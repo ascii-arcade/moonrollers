@@ -13,6 +13,9 @@ func (k Keys) TriggeredBy(msg string) bool {
 }
 
 func (k Keys) String(style lipgloss.Style) string {
+	if k[0] == " " {
+		return style.Bold(true).Italic(true).Render("'space'")
+	}
 	return k.IndexedString(0, style)
 }
 
@@ -35,14 +38,20 @@ var (
 	Submit         = Keys{"enter"}
 
 	LobbyStartGame   = Keys{"s"}
-	LobbyJoinFaction = Keys{"1", "2", "3", "4", "5"}
+	LobbyJoinFaction = Keys{"1", "2", "3", "4", "5", "0"}
 	LobbySettings    = Keys{"c"}
 
 	GameIncrementPoint     = Keys{"a"}
 	GameEndTurn            = Keys{"z"}
 	GameRollDice           = Keys{"r"}
 	GameChooseCrew         = Keys{"1", "2", "3", "4", "5", "6"}
+	GameChooseExtraDice    = Keys{" "}
 	GameChooseObjective    = Keys{"1", "2", "3", "4"}
+	GameChooseHazard       = Keys{"1", "2"}
 	GameChooseConfirm      = Keys{"enter"}
 	GamePreviousInputStage = Keys{"esc"}
+	GameChooseLeft         = Keys{"h", "left"}
+	GameChooseRight        = Keys{"l", "right"}
+	GameToggle             = Keys{" "}
+	GameRemove             = Keys{"backspace"}
 )

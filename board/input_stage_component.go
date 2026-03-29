@@ -16,7 +16,7 @@ func newInputStageEmptyComponent() inputStageEmptyComponent {
 }
 
 func (c inputStageEmptyComponent) render() string {
-	return ""
+	return inputComponentStyle(false).Render("")
 }
 
 func inputComponentStyle(isCenter bool) lipgloss.Style {
@@ -27,8 +27,8 @@ func inputComponentStyle(isCenter bool) lipgloss.Style {
 
 	return lipgloss.NewStyle().
 		Width(30).
-		Height(14).
-		Padding(1).
+		Height(15).
+		PaddingLeft(1).PaddingRight(1).
 		Align(align).
 		BorderStyle(lipgloss.NormalBorder()).
 		BorderForeground(colors.InputStageBorder)

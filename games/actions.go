@@ -4,16 +4,12 @@ import (
 	"errors"
 	"slices"
 
+	"github.com/ascii-arcade/moonrollers/dice"
 	"github.com/ascii-arcade/moonrollers/factions"
-	"github.com/ascii-arcade/moonrollers/rules"
 )
 
 func (s *Game) SetFaction(player *Player, faction *factions.Faction) error {
 	return s.withErrLock(func() error {
-		if faction == nil {
-			return errors.New("faction_cannot_be_nil")
-		}
-
 		player.Faction = faction
 		return nil
 	})
@@ -24,24 +20,48 @@ func (s *Game) Roll(isRolling bool) {
 		s.RollCount++
 		s.RollingPool.Roll()
 		if !isRolling {
-			s.InputState = InputStateChooseCrew
+			switch {
+			case s.InputCrew != nil && !s.InputCrew.CanCommit(s.RollingPool, s.GetCurrentPlayer().Sess.User()),
+				s.InputObjective != nil && s.RollingPool.ValueOf(s.InputObjective.Type.ID) == 0:
+				s.InputState = Busted
+			case s.InputObjective != nil && s.InputObjective.CompletedAmount < s.InputObjective.Amount:
+				s.InputState = InputStateCommitDice
+			case s.InputCrew != nil && !s.InputCrew.IsComplete():
+				s.InputState = InputStateChooseObjective
+			default:
+				s.InputState = InputStateChooseCrew
+			}
+
+			s.ApplyModifiers()
+
+			slices.SortFunc(s.RollingPool.Dice, func(a, b *dice.Die) int {
+				if a.ID == dice.DieExtra.ID && b.ID != dice.DieExtra.ID {
+					return -1
+				}
+				if b.ID == dice.DieExtra.ID && a.ID != dice.DieExtra.ID {
+					return 1
+				}
+				return 0
+			})
 		}
 	})
 }
 
+func (s *Game) ApplyModifiers() {
+	for _, c := range s.GetCurrentPlayer().Crew {
+		if c.Modifier != nil {
+			c.Modifier(&s.SupplyPool, &s.RollingPool)
+		}
+	}
+}
+
 func (s *Game) ChooseCrewMember(index int) {
 	s.withLock(func() {
-		player := s.GetCurrentPlayer()
-		commitableToCrew := rules.CommitableToCrew(
-			player.CrewIDs(),
-			s.CrewForHire,
-			s.RollingPool,
-		)
-		if index < 0 || index >= len(commitableToCrew) {
+		if len(s.CrewForHire) <= index || !s.CrewForHire[index].CanCommit(s.RollingPool, s.GetCurrentPlayer().Name) {
 			return
 		}
-
-		s.InputCrew = commitableToCrew[index]
+		inputCrew := s.CrewForHire[index].Copy()
+		s.InputCrew = &inputCrew
 	})
 }
 
@@ -56,11 +76,16 @@ func (s *Game) ConfirmCrewMember() {
 
 func (s *Game) ChooseObjective(index int) {
 	s.withLock(func() {
-		if index < 0 || index >= len(s.InputCrew.Objectives) {
+		switch {
+		case index < 0,
+			index >= len(s.InputCrew.Objectives),
+			s.RollingPool.ValueOf(s.InputCrew.Objectives[index].Type.ID) == 0,
+			s.InputCrew.Objectives[index].IsCompleted(),
+			s.InputCrew.Objectives[index].StartedBy != "" && s.InputCrew.Objectives[index].StartedBy != s.GetCurrentPlayer().Name:
 			return
 		}
 
-		s.InputObjective = &s.InputCrew.Objectives[index]
+		s.InputObjective = s.InputCrew.Objectives[index]
 	})
 }
 
@@ -79,6 +104,8 @@ func (s *Game) PreviousInputStage() {
 		case InputStateChooseObjective:
 			s.InputObjective = nil
 			s.InputState = InputStateChooseCrew
+		case InputStateCommitDice:
+			s.InputState = InputStateChooseObjective
 		}
 	})
 }

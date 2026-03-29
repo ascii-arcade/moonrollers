@@ -12,7 +12,7 @@ type diceComponent struct {
 }
 
 const (
-	rollFrames   = 15
+	rollFrames   = 7
 	rollInterval = 200 * time.Millisecond
 )
 

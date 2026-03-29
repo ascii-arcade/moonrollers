@@ -1,6 +1,7 @@
 package games
 
 import (
+	"math/rand/v2"
 	"slices"
 	"sort"
 	"sync"
@@ -24,6 +25,8 @@ type Game struct {
 	InputState     int
 	InputCrew      *deck.Crew
 	InputObjective *deck.Objective
+	InputHazards   []Hazard
+	Index          int
 
 	Settings         Settings
 	CurrentTurnIndex int
@@ -176,4 +179,46 @@ func (s *Game) GetWinner() *Player {
 		return players[i].Points > players[j].Points
 	})
 	return players[0]
+}
+
+func (s *Game) CommitDice() {
+	s.withLock(func() {
+		for _, die := range s.RollingPool.Dice {
+			if die.Selected {
+				s.InputObjective.CompletedAmount += die.Value
+			}
+		}
+		s.RollingPool.RemoveCommitted()
+		s.InputObjective.StartedBy = s.GetCurrentPlayer().Sess.User()
+		s.InputObjective.StartedByColor = s.GetCurrentPlayer().Faction.Color
+	})
+}
+
+func (s *Game) NumberOfCommittedDice() int {
+	count := 0
+	for _, die := range s.RollingPool.Dice {
+		if die.Selected {
+			count += die.Value
+		}
+	}
+	return count
+}
+
+func (s *Game) PullHazards() {
+	s.InputHazards = s.InputHazards[:0]
+	s.InputHazards = append(s.InputHazards, hazards[rand.IntN(2)])
+	s.InputHazards = append(s.InputHazards, hazards[rand.IntN(2)])
+}
+
+func (s *Game) CompleteCard(crew *deck.Crew, whoCompleted *Player) {
+	s.withLock(func() {
+		for _, objective := range crew.Objectives {
+			players[objective.StartedBy].Points += objective.Points()
+		}
+		whoCompleted.AddCrew(crew, false)
+		s.CrewForHire = slices.DeleteFunc(s.CrewForHire, func(c *deck.Crew) bool {
+			return c.ID == crew.ID
+		})
+		s.dealCrewForHire()
+	})
 }

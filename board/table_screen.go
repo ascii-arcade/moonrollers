@@ -1,7 +1,9 @@
 package board
 
 import (
+	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/ascii-arcade/moonrollers/config"
@@ -29,6 +31,7 @@ func (m *Model) newTableScreen() *tableScreen {
 }
 
 func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
+	game := s.model.Game
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		s.model.height, s.model.width = msg.Height, msg.Width
@@ -37,22 +40,26 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 	case rollMsg:
 		if s.rollTickCount < rollFrames {
 			s.rollTickCount++
-			s.model.Game.Roll(s.isRolling)
+			game.Roll(s.isRolling)
 			return s.model, tea.Tick(rollInterval, func(time.Time) tea.Msg {
 				return rollMsg{}
 			})
 		}
 		s.isRolling = false
-		s.model.Game.Roll(s.isRolling)
+		game.Roll(s.isRolling)
 
 	case tea.KeyMsg:
-		if s.model.Game.GetCurrentPlayer() != s.model.Player {
+		if game.GetCurrentPlayer() != s.model.Player {
 			return s.model, nil
 		}
 
-		switch s.model.Game.InputState {
+		switch game.InputState {
 		case games.InputStateRoll:
-			if keys.GameRollDice.TriggeredBy(msg.String()) {
+			switch {
+			case keys.GameRollDice.TriggeredBy(msg.String()):
+				if game.InputObjective != nil && game.InputObjective.IsCompleted() {
+					game.InputObjective = nil
+				}
 				if !s.isRolling {
 					s.rollTickCount = 0
 					s.isRolling = true
@@ -60,6 +67,9 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 						return rollMsg{}
 					})
 				}
+			case keys.GameEndTurn.TriggeredBy(msg.String()):
+				game.NextTurn(false)
+				return s.model, nil
 			}
 		case games.InputStateChooseCrew:
 			switch {
@@ -69,45 +79,121 @@ func (s *tableScreen) Update(msg tea.Msg) (any, tea.Cmd) {
 					return s.model, nil
 				}
 
-				s.model.Game.ChooseCrewMember(i - 1)
-				return s.model, nil
+				game.ChooseCrewMember(i - 1)
 			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
-				s.model.Game.ConfirmCrewMember()
+				game.ConfirmCrewMember()
 			}
 
 		case games.InputStateChooseObjective:
 			switch {
 			case keys.GameChooseObjective.TriggeredBy(msg.String()):
-				i, err := strconv.Atoi(msg.String())
-				if err != nil {
+				i, _ := strconv.Atoi(msg.String())
+				game.ChooseObjective(i - 1)
+			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
+				game.ConfirmObjective()
+			case keys.GamePreviousInputStage.TriggeredBy(msg.String()):
+				game.PreviousInputStage()
+			}
+
+		case games.InputStateCommitDice:
+			switch {
+			case keys.GameChooseLeft.TriggeredBy(msg.String()):
+				game.Index--
+				if game.Index < 0 {
+					game.Index = len(game.RollingPool.GetValidDice(game.InputObjective.Type.ID)) - 1
+				}
+			case keys.GameChooseRight.TriggeredBy(msg.String()):
+				game.Index++
+				if game.Index >= len(game.RollingPool.GetValidDice(game.InputObjective.Type.ID)) {
+					game.Index = 0
+				}
+			case keys.GameToggle.TriggeredBy(msg.String()):
+				if game.RollingPool.NumberOfSelected() >= game.InputObjective.Amount && !game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected {
 					return s.model, nil
 				}
-
-				s.model.Game.ChooseObjective(i - 1)
-				return s.model, nil
+				game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected = !game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected
+				if game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Selected {
+					game.InputObjective.CommittingAmount += game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Value
+				} else {
+					game.InputObjective.CommittingAmount -= game.RollingPool.GetValidDice(game.InputObjective.Type.ID)[game.Index].Value
+				}
 			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
-				s.model.Game.ConfirmObjective()
+				if game.NumberOfCommittedDice() == 0 {
+					return s.model, nil
+				}
+				game.CommitDice()
+				game.InputState = games.InputStateRoll
+				switch {
+				case game.InputCrew.IsComplete():
+					game.CompleteCard(game.InputCrew, game.GetCurrentPlayer())
+					game.NextTurn(false)
+				case game.RollingPool.HasExtra() && len(game.SupplyPool.Dice) > 0:
+					game.InputState = games.InputStateChooseExtraDice
+				case game.InputObjective.Hazard && game.InputObjective.IsCompleted():
+					game.PullHazards()
+					game.InputState = games.InputStateChooseHazard
+				}
+				game.Index = 0
+			case keys.GameEndTurn.TriggeredBy(msg.String()):
+				game.NextTurn(false)
 			case keys.GamePreviousInputStage.TriggeredBy(msg.String()):
-				s.model.Game.PreviousInputStage()
+				game.PreviousInputStage()
+			}
+
+		case games.InputStateChooseExtraDice:
+			switch {
+			case keys.GameChooseExtraDice.TriggeredBy(msg.String()):
+				if game.RollingPool.NumberOfUnrolled() < game.RollingPool.NumberOfExtra() && game.SupplyPool.Length() > 0 {
+					game.RollingPool.AddUnrolled()
+					game.SupplyPool.RemoveUnrolled()
+				}
+			case keys.GameRemove.TriggeredBy(msg.String()):
+				if game.RollingPool.NumberOfUnrolled() > 0 {
+					game.RollingPool.RemoveUnrolled()
+					game.SupplyPool.AddUnrolled()
+				}
+			case keys.GameChooseConfirm.TriggeredBy(msg.String()):
+				game.InputState = games.InputStateRoll
+				if game.InputObjective.Hazard && game.InputObjective.IsCompleted() {
+					game.PullHazards()
+					game.InputState = games.InputStateChooseHazard
+				}
+			}
+
+		case games.InputStateChooseHazard:
+			switch {
+			case keys.GameChooseHazard.TriggeredBy(msg.String()):
+				i, _ := strconv.Atoi(msg.String())
+				if i < 1 || i > len(game.InputHazards) {
+					return s.model, nil
+				}
+				chosenHazard := game.InputHazards[i-1]
+				game.GetCurrentPlayer().Hazards = append(game.GetCurrentPlayer().Hazards, chosenHazard)
+				game.InputState = games.InputStateRoll
+			}
+
+		case games.Busted:
+			if keys.GameEndTurn.TriggeredBy(msg.String()) {
+				game.NextTurn(true)
 			}
 		}
 
 		if config.Debug {
 			switch {
 			case keys.GameEndTurn.TriggeredBy(msg.String()):
-				s.model.Game.NextTurn()
+				game.NextTurn(false)
 			case msg.String() == "!":
-				_ = s.model.Game.HireCrewMember(0, s.model.Player)
+				_ = game.HireCrewMember(0, s.model.Player)
 			case msg.String() == "@":
-				_ = s.model.Game.HireCrewMember(1, s.model.Player)
+				_ = game.HireCrewMember(1, s.model.Player)
 			case msg.String() == "#":
-				_ = s.model.Game.HireCrewMember(2, s.model.Player)
+				_ = game.HireCrewMember(2, s.model.Player)
 			case msg.String() == "$":
-				_ = s.model.Game.HireCrewMember(3, s.model.Player)
+				_ = game.HireCrewMember(3, s.model.Player)
 			case msg.String() == "%":
-				_ = s.model.Game.HireCrewMember(4, s.model.Player)
+				_ = game.HireCrewMember(4, s.model.Player)
 			case msg.String() == "^":
-				_ = s.model.Game.HireCrewMember(5, s.model.Player)
+				_ = game.HireCrewMember(5, s.model.Player)
 			}
 		}
 	}
@@ -125,17 +211,25 @@ func (s *tableScreen) View() string {
 	var inputStageComponent inputStageComponent
 	inputStageComponent = newInputStageEmptyComponent()
 
-	if s.model.Game.GetCurrentPlayer() == s.model.Player {
-		switch s.model.Game.InputState {
-		case games.InputStateRoll:
-			if !s.isRolling {
-				inputStageComponent = newInputStageRollComponent(s.model)
-			}
-		case games.InputStateChooseCrew:
-			inputStageComponent = newInputStageChooseCrewComponent(s.model)
-		case games.InputStateChooseObjective:
-			inputStageComponent = newInputStageChooseObjectiveComponent(s.model)
+	switch s.model.Game.InputState {
+	case games.InputStateRoll:
+		if s.model.Game.GetCurrentPlayer() == s.model.Player && !s.isRolling {
+			inputStageComponent = newInputStageRollComponent(s.model)
 		}
+	case games.InputStateChooseCrew:
+		inputStageComponent = newInputStageChooseCrewComponent(s.model)
+	case games.InputStateChooseObjective:
+		inputStageComponent = newInputStageChooseObjectiveComponent(s.model)
+	case games.InputStateCommitDice:
+		inputStageComponent = newInputStageCommitDiceComponent(s.model)
+	case games.InputStateChooseExtraDice:
+		inputStageComponent = newInputExtraDiceComponent(s.model)
+	case games.InputStateChooseHazard:
+		if s.model.Game.GetCurrentPlayer() == s.model.Player {
+			inputStageComponent = newInputStageChooseHazardComponent(s.model)
+		}
+	case games.Busted:
+		inputStageComponent = newBustedComponent(s.model)
 	}
 
 	rightSplit := lipgloss.JoinVertical(
@@ -144,6 +238,20 @@ func (s *tableScreen) View() string {
 		rollingPoolComponent.render(),
 		inputStageComponent.render(),
 	)
+
+	var footer strings.Builder
+	fmt.Fprintf(&footer, "%s", s.model.Player.Name)
+	if s.model.Player.Points > 0 {
+		fmt.Fprintf(&footer, " | %d points", s.model.Player.Points)
+	}
+
+	playerName := s.style.PaddingLeft(1).Render(s.model.Game.GetCurrentPlayer().Name + "'s turn")
+	if s.model.Game.GetCurrentPlayer() == s.model.Player {
+		playerName = s.style.PaddingLeft(1).Render("Your turn")
+	}
+
+	footer.WriteString(" - ")
+	footer.WriteString(s.style.Render(playerName))
 
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
@@ -154,5 +262,6 @@ func (s *tableScreen) View() string {
 			rightSplit,
 		),
 		playerHandComponent.render(),
+		s.style.Padding(0, 1).Render(footer.String()),
 	)
 }
